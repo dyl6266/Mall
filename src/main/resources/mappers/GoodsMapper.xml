@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dy.mapper.GoodsMapper">
+
+	<sql id="goodsColumns">
+		  idx
+		, code
+		, name
+		, info
+		, price
+		, quantity
+		, status
+		, delete_yn
+		, insert_time
+		, update_time
+	</sql>
+
+	<insert id="insertGoods" parameterType="com.dy.domain.GoodsDTO">
+		INSERT INTO goods (
+			<include refid="goodsColumns" />
+		) VALUES (
+			  #{idx}
+			, #{code}
+			, #{name}
+			, #{info}
+			, #{price}
+			, #{quantity}
+			, IFNULL(#{status}, 'Y')
+			, 'N'
+			, NOW()
+			, NULL
+		)
+	</insert>
+
+	<select id="selectGoodsDetails" parameterType="string" resultType="com.dy.domain.GoodsDTO">
+		SELECT
+			<include refid="goodsColumns" />
+		FROM
+			goods
+		WHERE
+			code = #{code}
+		AND
+			(status = 'Y' AND delete_yn = 'N')
+	</select>
+
+	<update id="updateGoods" parameterType="com.dy.domain.GoodsDTO">
+		UPDATE goods
+		SET
+			  update_time = NOW()
+			, name = #{name}
+			, info = #{info}
+			, price = #{price}
+			, quantity = #{quantity}
+			, status = #{status}
+		WHERE
+			code = #{code}
+	</update>
+
+	<delete id="deleteGoods" parameterType="string">
+		UPDATE goods
+		SET
+			delete_yn = 'Y'
+		WHERE
+			code = #{code}
+	</delete>
+
+	<select id="selectGoodsList" resultType="com.dy.domain.GoodsDTO">
+		SELECT
+			<include refid="goodsColumns" />
+		FROM
+			goods
+		WHERE
+			(status = 'Y' AND delete_yn = 'N')
+		ORDER BY
+			idx DESC, insert_time DESC
+	</select>
+
+	<select id="selectGoodsTotalCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			goods
+		WHERE
+			(status = 'Y' AND delete_yn = 'N')
+	</select>
+
+	<select id="generateGoodsCode" resultType="string">
+		SELECT
+			CONCAT(#{tableName, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, '-', LPAD(COUNT(idx) + 1, 5, 0))
+		FROM
+			goods
+	</select>
+
+	<select id="checkForDuplicateGoodsCode" parameterType="string" resultType="int">
+		SELECT
+			COUNT(code)
+		FROM
+			goods
+		WHERE
+			code = #{code}
+	</select>
+
+</mapper>

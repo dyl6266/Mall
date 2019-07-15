@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	<script>
+		$(function() {
+			$.ajax({
+				url : "/goods/GOODS-00005",
+				type : "get",
+				headers: {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "get"
+				},
+				dataType : "json",
+				async : false,
+				success : function(response) {
+// 					console.log(response);
+// 					console.log(response.goods);
+					console.log(response.goods.code);
+				},
+				error : function(request, status, error) {
+					alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
+				}
+			});
+			
+		});
+	</script>
+</body>
+</html>
