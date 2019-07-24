@@ -127,16 +127,16 @@ public class GoodsController {
 	}
 	// end of method
 
-	@DeleteMapping(value = "/goods/{codeList}")
+	@DeleteMapping(value = "/goods/{codes}")
 	@ResponseBody
-	public JsonObject deleteGoods(@PathVariable("codeList") List<String> codeList) {
+	public JsonObject deleteGoods(@PathVariable("codes") List<String> codes) {
 
 		JsonObject jsonObj = new JsonObject();
-		if (CollectionUtils.isEmpty(codeList)) {
+		if (CollectionUtils.isEmpty(codes)) {
 			jsonObj.addProperty("message", "삭제할 상품을 선택해 주세요.");
 		} else {
 			try {
-				boolean result = goodsService.deleteGoods(codeList);
+				boolean result = goodsService.deleteGoods(codes);
 				if (result == false) {
 					jsonObj.addProperty("message", "상품 삭제에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
 					jsonObj.addProperty("result", false);

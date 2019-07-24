@@ -33,7 +33,7 @@ public class GoodsDTO extends DTO {
 	private int price;
 
 	/** 상품 수량 */
-	@Min(value = 0, message = "상품 수량은 최소 0 이상이어야 합니다.")
+	@Min(value = 1, message = "상품 수량은 최소 1 이상이어야 합니다.")
 	private int quantity;
 
 	/** 상품 상태 */

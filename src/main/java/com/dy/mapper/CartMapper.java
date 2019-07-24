@@ -14,8 +14,6 @@ public interface CartMapper {
 
 	public int insertGoodsToCart(HashMap<String, Object> params);
 
-	public int updateGoodsInCart(CartDTO params);
-
 	public int deleteGoodsInCart(HashMap<String, Object> params);
 
 	public List<CartDTO> selectGoodsListInCart(String email);

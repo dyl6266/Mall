@@ -47,9 +47,9 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 
 	@Override
-	public boolean deleteGoods(List<String> codeList) {
+	public boolean deleteGoods(List<String> codes) {
 
-		int queryResult = goodsMapper.deleteGoods(codeList);
+		int queryResult = goodsMapper.deleteGoods(codes);
 		if (queryResult < 1) {
 			return false;
 		}

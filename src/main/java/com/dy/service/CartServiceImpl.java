@@ -28,53 +28,25 @@ public class CartServiceImpl implements CartService {
 		 *  TODO => 사용자 이메일이 존재하는지 체크하는 메소드 만들기 (UserDTO 오브젝트)
 		 *  		아니면 컨트롤러에서 Json으로 처리해야 하나...? 잘 생각해보자
 		 */
-		String code = params.getGoods().getCode();
-
-		GoodsDTO goods = goodsMapper.selectGoodsDetails(code);
-		if (goods == null || goods.getStatus() == Status.N) {
+		GoodsDTO goods = goodsMapper.selectGoodsDetails(params.getCode());
+		if (goods == null || (goods.getStatus() == Status.N || Status.S == goods.getStatus())) {
 			return false;
-		} else {
-			int queryResult = cartMapper.insertGoodsToCart(params);
-			if (queryResult != 1) {
-				return false;
-			}
+		}
+
+		int queryResult = cartMapper.insertGoodsToCart(params);
+		if (queryResult != 1) {
+			return false;
 		}
 
 		return true;
 	}
 
 	@Override
-	public boolean changeQuantityOfGoodsInCart(CartDTO params) {
-		/*
-		 *  TODO => 사용자 이메일이 존재하는지 체크하는 메소드 만들기 (UserDTO 오브젝트)
-		 *  		아니면 컨트롤러에서 Json으로 처리해야 하나...? 잘 생각해보자
-		 */
-		String code = params.getGoods().getCode();
-		int quantity = params.getGoods().getQuantity();
-
-		/*
-		 *  TODO => 상품의 수량보다 장바구니의 수량이 더 많은 경우는 화면에서 제약을 줄까?
-		 *  		이것도 생각해보자
-		 */
-		GoodsDTO goods = goodsMapper.selectGoodsDetails(code);
-		if (goods == null || quantity > goods.getQuantity()) {
-			return false;
-		} else {
-			int queryResult = cartMapper.updateGoodsInCart(params);
-			if (queryResult != 1) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	@Override
-	public boolean removeGoodsInCart(String email, List<String> codeList) {
+	public boolean removeGoodsInCart(String email, List<String> codes) {
 
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("email", email);
-		params.put("codeList", codeList);
+		params.put("codes", codes);
 
 		int queryResult = cartMapper.deleteGoodsInCart(params);
 		if (queryResult < 1) {

@@ -68,14 +68,14 @@
 //
 //	@Test
 //	public void 장바구니_삭제() {
-//		List<String> codeList = new ArrayList<>();
-//		codeList.add("GOODS-00002");
-//		codeList.add("GOODS-00001");
-//		codeList.add("GOODS-00010");
+//		List<String> codes = new ArrayList<>();
+//		codes.add("GOODS-00002");
+//		codes.add("GOODS-00001");
+//		codes.add("GOODS-00010");
 //
 //		HashMap<String, Object> params = new HashMap<>();
 //		params.put("email", "1song2devil3@naver.com");
-//		params.put("codeList", codeList);
+//		params.put("codes", codes);
 //		try {
 //			cartMapper.deleteGoodsInCart(params);
 //		} catch (DataAccessException e) {
