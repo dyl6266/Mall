@@ -7,7 +7,7 @@
 		  idx
 		, code
 		, name
-		, info
+		, description
 		, price
 		, quantity
 		, status
@@ -23,7 +23,7 @@
 			  #{idx}
 			, #{code}
 			, #{name}
-			, #{info}
+			, #{description}
 			, #{price}
 			, #{quantity}
 			, IFNULL(#{status}, 'Y')
@@ -49,7 +49,7 @@
 		SET
 			  update_time = NOW()
 			, name = #{name}
-			, info = #{info}
+			, description = #{description}
 			, price = #{price}
 			, quantity = #{quantity}
 			, status = #{status}
@@ -57,12 +57,13 @@
 			code = #{code}
 	</update>
 
-	<delete id="deleteGoods" parameterType="string">
-		UPDATE goods
-		SET
-			delete_yn = 'Y'
+	<delete id="deleteGoods" parameterType="list">
+		DELETE FROM goods
 		WHERE
-			code = #{code}
+			code IN
+			<foreach item="code" index="index" collection="list" open="(" separator="," close=")">
+				#{code}
+			</foreach>
 	</delete>
 
 	<select id="selectGoodsList" resultType="com.dy.domain.GoodsDTO">

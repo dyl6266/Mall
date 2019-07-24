@@ -1,19 +1,17 @@
 package com.dy.domain;
 
-import java.util.Date;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import com.dy.common.Const.Status;
-import com.dy.common.Const.YesNo;
+import com.dy.common.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class GoodsDTO {
+public class GoodsDTO extends DTO {
 
 	/** 상품 번호 (PK) */
 	private Integer idx;
@@ -26,9 +24,9 @@ public class GoodsDTO {
 	@NotBlank(message = "상품명을 입력해 주세요.")
 	private String name;
 
-	/** 상품 정보 */
-	@NotBlank(message = "상품 정보를 입력해 주세요.")
-	private String info;
+	/** 상품 설명 */
+	@NotBlank(message = "상품 설명을 입력해 주세요.")
+	private String description;
 
 	/** 상품 가격 */
 	@Min(value = 1000, message = "상품 가격은 최소 1,000원 이상이어야 합니다.")
@@ -40,14 +38,5 @@ public class GoodsDTO {
 
 	/** 상품 상태 */
 	private Status status;
-
-	/** 상품 삭제 여부 */
-	private YesNo deleteYn;
-
-	/** 상품 등록일 */
-	private Date insertTime;
-
-	/** 상품 수정일 */
-	private Date updateTime;
 
 }

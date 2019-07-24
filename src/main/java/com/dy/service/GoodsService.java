@@ -10,7 +10,7 @@ public interface GoodsService {
 
 	public GoodsDTO getGoodsDetails(String code);
 
-	public int deleteGoods(String code);
+	public boolean deleteGoods(List<String> codeList);
 
 	public List<GoodsDTO> getGoodsList();
 

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dy.mapper.CartMapper">
+
+	<sql id="cartColumns">
+		  idx
+		, email
+		, code
+		, quantity
+		, delete_yn
+		, insert_time
+		, update_time
+	</sql>
+
+	<insert id="insertGoodsToCart" parameterType="com.dy.domain.CartDTO">
+		INSERT INTO cart (
+			<include refid="cartColumns" />
+		) VALUES (
+			  #{idx}
+			, #{email}
+			, #{goods.code}
+			, #{goods.quantity}
+			, 'N'
+			, NOW()
+			, NULL
+		)
+	</insert>
+
+	<update id="updateGoodsInCart" parameterType="com.dy.domain.CartDTO">
+		UPDATE cart
+		SET
+			  update_time = NOW()
+			, quantity = #{goods.quantity}
+		WHERE
+			(email = #{email} AND code = #{goods.code})
+	</update>
+
+	<delete id="deleteGoodsInCart" parameterType="hashmap">
+		DELETE FROM cart
+		WHERE
+			email = #{email}
+		AND
+			code IN
+			<foreach item="code" index="index" collection="codeList" open="(" separator="," close=")">
+				#{code}
+			</foreach>
+	</delete>
+
+	<select id="selectGoodsListInCart" parameterType="string" resultType="com.dy.domain.GoodsDTO">
+		SELECT
+			<include refid="cartColumns" />
+		FROM
+			cart
+		WHERE
+			email = #{email}
+		ORDER BY
+			idx DESC, insert_time DESC
+	</select>
+
+	<select id="selectGoodsCountInCart" parameterType="hashmap" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			cart
+		WHERE
+			email = #{email}
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( code ) == false">
+			AND
+				code = #{code}
+		</if>
+	</select>
+
+</mapper>
