@@ -10,6 +10,7 @@ import org.apache.ibatis.type.JdbcType;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 public class JsonTypeHandler extends BaseTypeHandler<Object> {
 
@@ -31,7 +32,7 @@ public class JsonTypeHandler extends BaseTypeHandler<Object> {
 			return obj;
 		}
 
-		return gson.fromJson(obj.toString(), Object.class);
+		return gson.fromJson(obj.toString(), JsonObject.class);
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class JsonTypeHandler extends BaseTypeHandler<Object> {
 			return obj;
 		}
 
-		return gson.fromJson(obj.toString(), Object.class);
+		return gson.fromJson(obj.toString(), JsonObject.class);
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class JsonTypeHandler extends BaseTypeHandler<Object> {
 			return obj;
 		}
 
-		return gson.fromJson(obj.toString(), Object.class);
+		return gson.fromJson(obj.toString(), JsonObject.class);
 	}
 
 }

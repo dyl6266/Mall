@@ -3,6 +3,15 @@
 
 <mapper namespace="com.dy.mapper.StockMapper">
 
+	<resultMap id="stockResultMap" type="com.dy.domain.StockDTO">
+		<id 	property="idx" 			column="idx" />
+		<result property="code" 		column="code" />
+		<result property="options" 		column="options" 		typeHandler="com.dy.handler.JsonTypeHandler" />
+		<result property="deleteYn" 	column="delete_yn" />
+		<result property="insertTime" 	column="insert_time" />
+		<result property="updateTime" 	column="update_time" />
+	</resultMap>
+
 	<sql id="stockColumns">
 		  idx
 		, code
@@ -25,7 +34,7 @@
 		)
 	</insert>
 
-	<select id="selectStockDetails" parameterType="string" resultType="com.dy.domain.StockDTO">
+	<select id="selectStockDetails" parameterType="string" resultMap="stockResultMap">
 		SELECT
 			<include refid="stockColumns" />
 		FROM
@@ -53,7 +62,7 @@
 			code = #{code}
 	</delete>
 
-	<select id="selectStockList" resultType="com.dy.domain.StockDTO">
+	<select id="selectStockList" resultMap="stockResultMap">
 		SELECT
 			<include refid="stockColumns" />
 		FROM
