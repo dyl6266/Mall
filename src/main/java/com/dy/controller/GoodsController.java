@@ -114,9 +114,8 @@ public class GoodsController {
 		} else {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			/*
-			 * 오브젝트를 파싱해서 JsonObject에 담기 위해서는 JsonElement를 사용
-			 * 이러한 방식을 사용하지 않으면 웹에서 이상한 결과가 나오게 됨
-			 * CommentController의 getCommentList()도 참고할 것
+			 * 오브젝트를 파싱해서 JsonObject에 담기 위해서는 JsonElement를 사용 이러한 방식을 사용하지 않으면 웹에서 이상한 결과가
+			 * 나오게 됨 CommentController의 getCommentList()도 참고할 것
 			 */
 			JsonElement jsonElem = gson.toJsonTree(goods);
 
@@ -175,9 +174,10 @@ public class GoodsController {
 	}
 	// end of method
 
-	@GetMapping("/test")
-	public String test() {
-		return "test";
+	@GetMapping("/goods/list")
+	public String openGoodsListPage() {
+
+		return "goods/list";
 	}
 
 }
