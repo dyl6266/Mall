@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.dy.domain.CombineDTO;
 import com.dy.domain.GoodsDTO;
 import com.dy.service.GoodsService;
 import com.google.gson.Gson;
@@ -37,7 +38,7 @@ public class GoodsController {
 
 	@PostMapping(value = "/goods")
 	@ResponseBody
-	public JsonObject insertGoods(@Validated @RequestBody GoodsDTO params, BindingResult bindingResult) {
+	public JsonObject insertGoods(@Validated @RequestBody CombineDTO params, BindingResult bindingResult) {
 
 		JsonObject jsonObj = new JsonObject();
 
@@ -68,38 +69,38 @@ public class GoodsController {
 	}
 	// end of method
 
-	@PatchMapping(value = "/goods/{code}")
-	@ResponseBody
-	public JsonObject updateGoods(@PathVariable("code") String code, @Validated @RequestBody GoodsDTO params,
-			BindingResult bindingResult) {
-
-		JsonObject jsonObj = new JsonObject();
-
-		if (bindingResult.hasErrors()) {
-			FieldError fieldError = bindingResult.getFieldError();
-			jsonObj.addProperty("message", fieldError.getDefaultMessage());
-		} else {
-			try {
-				boolean result = goodsService.registerGoods(params);
-				if (result == false) {
-					jsonObj.addProperty("message", "상품 수정에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
-				} else {
-					jsonObj.addProperty("message", "상품 수정이 완료되었습니다.");
-				}
-				jsonObj.addProperty("result", result);
-
-			} catch (DataAccessException e) {
-				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
-				jsonObj.addProperty("result", false);
-
-			} catch (Exception e) {
-				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
-				jsonObj.addProperty("result", false);
-			}
-		}
-
-		return jsonObj;
-	}
+//	@PatchMapping(value = "/goods/{code}")
+//	@ResponseBody
+//	public JsonObject updateGoods(@PathVariable("code") String code, @Validated @RequestBody GoodsDTO params,
+//			BindingResult bindingResult) {
+//
+//		JsonObject jsonObj = new JsonObject();
+//
+//		if (bindingResult.hasErrors()) {
+//			FieldError fieldError = bindingResult.getFieldError();
+//			jsonObj.addProperty("message", fieldError.getDefaultMessage());
+//		} else {
+//			try {
+//				boolean result = goodsService.registerGoods(params);
+//				if (result == false) {
+//					jsonObj.addProperty("message", "상품 수정에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
+//				} else {
+//					jsonObj.addProperty("message", "상품 수정이 완료되었습니다.");
+//				}
+//				jsonObj.addProperty("result", result);
+//
+//			} catch (DataAccessException e) {
+//				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
+//				jsonObj.addProperty("result", false);
+//
+//			} catch (Exception e) {
+//				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
+//				jsonObj.addProperty("result", false);
+//			}
+//		}
+//
+//		return jsonObj;
+//	}
 	// end of method
 
 	@GetMapping(value = "/goods/{code}")

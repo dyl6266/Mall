@@ -21,7 +21,7 @@ public class Const {
 	}
 
 	public enum TableName {
-		GOODS("상품");
+		GOODS("상품"), STOCK("재고"), CART("장바구니");
 
 		private String tableName;
 

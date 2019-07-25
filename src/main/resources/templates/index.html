@@ -229,6 +229,30 @@
 		</div>
 	</div>
 </div>
+
+<div>
+	<form name="form" action="/test" method="post" onsubmit="return validationOfForm(this)">
+		<table>
+			<thead>
+				<tr>
+					<th>옵션명</th>
+					<th>옵션값</th>
+				</tr>
+				<tr>
+					<td>색상</td>
+					<td>사이즈</td>
+				</tr>
+				<tr>
+					<td><input type="text" name="color" /></td>
+					<td id="size"><input type="text" name="size" onkeydown="test(this)" maxlength="3" /></td>
+				</tr>
+			</thead>
+		</table>
+		<div>
+			<button type="submit">전송</button>
+		</div>
+	</form>
+</div>
 <!-- //container -->
 
 
@@ -259,5 +283,127 @@
 
 
 </div>
+	<script>
+		function test(obj) {
+
+			var keyCode = window.event.keyCode;
+			if (keyCode === 9) {
+				/*
+				 * isEmpty 함수로 처리하기
+				 */
+				if ( obj.value == "" ) {
+					alert("사이즈를 입력해 주세요.");
+					return false;
+				}
+
+				$('input[name="size"]').removeAttr("onkeydown");
+
+				console.log($('input[name="size"]').val());
+				var html = '<input type="text" name="size" onkeydown="test(this)" maxlength="3" />';
+				$("#size").append(html);
+			}
+		}
+		
+		function validationOfForm(form) {
+			console.log(form.size);
+			
+
+// 			var data = {
+// 				"name" : "반팔티",
+// 				"description" : "허름한 반팔티",
+// 				"price" : 5700,
+// 				"option" : {
+// 					"화이트" : {
+// 						"210" : 5,
+// 						"230" : 3,
+// 						"260" : 0
+// 					},
+// 					"블랙" : {
+// 						"220" : 7,
+// 						"240" : 5,
+// 						"270" : 3
+// 					},
+// 					"블루" : {
+// 						"225" : 11,
+// 						"235" : 13,
+// 						"265" : 11
+// 					}
+// 				}
+// 			};
+
+			
+		var data = {
+				"goods" : {
+					"name" : "반팔티",
+					"description" : "허름한 반팔티",
+					"price" : 5700
+				},
+				"stock" : {
+					"options" : {
+						"화이트" : {
+							"210" : 5,
+							"230" : 3,
+							"260" : 0
+						},
+						"블랙" : {
+							"220" : 7,
+							"240" : 5,
+							"270" : 3
+						},
+						"블루" : {
+							"225" : 11,
+							"235" : 13,
+							"265" : 11
+						}
+					}
+				}
+			};
+
+			var params = new Object();
+			params["name"] = "반팔티";
+			params["description"] = "허름한 반팔티";
+			params["price"] = 5700, params["options"] = {
+				"white" : {
+					"210" : 5,
+					"230" : 3,
+					"260" : 0
+				},
+				"black" : {
+					"220" : 7,
+					"240" : 5,
+					"270" : 3
+				},
+				"blue" : {
+					"225" : 11,
+					"235" : 13,
+					"265" : 11
+				}
+			};
+
+			console.log(params);
+			// 			console.log(params["color"]);
+			// 			return false;
+
+			$.ajax({
+				url : form.action,
+				type : "post",
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "post"
+				},
+				dataType : "json",
+				data : JSON.stringify(params),
+				async : false,
+				success : function(response) {
+					console.log(response);
+				},
+				error : function(a, b, c) {
+					console.log(a);
+				}
+			});
+
+			return false;
+		}
+	</script>
 </body>
 </html>

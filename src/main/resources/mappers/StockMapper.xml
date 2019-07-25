@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dy.mapper.StockMapper">
+
+	<sql id="stockColumns">
+		  idx
+		, code
+		, options
+		, delete_yn
+		, insert_time
+		, update_time
+	</sql>
+
+	<insert id="insertStock" parameterType="com.dy.domain.StockDTO">
+		INSERT INTO stock (
+			<include refid="stockColumns" />
+		) VALUES (
+			  #{idx}
+			, #{code}
+			, #{options, typeHandler=com.dy.handler.JsonTypeHandler}
+			, 'N'
+			, NOW()
+			, NULL
+		)
+	</insert>
+
+	<select id="selectStockDetails" parameterType="string" resultType="com.dy.domain.StockDTO">
+		SELECT
+			<include refid="stockColumns" />
+		FROM
+			stock
+		WHERE
+			delete_yn = 'N'
+		AND
+			code = #{code}
+	</select>
+
+	<update id="updateStock" parameterType="com.dy.domain.StockDTO">
+		UPDATE stock
+		SET
+			  update_time = NOW()
+			, options= #{options, typeHandler=com.dy.handler.JsonTypeHandler}
+		WHERE
+			code = #{code}
+	</update>
+
+	<delete id="deleteStock" parameterType="string">
+		DELETE FROM stock
+		WHERE
+			delete_yn = 'Y'
+		AND
+			code = #{code}
+	</delete>
+
+	<select id="selectStockList" resultType="com.dy.domain.StockDTO">
+		SELECT
+			<include refid="stockColumns" />
+		FROM
+			stock
+		WHERE
+			delete_yn = 'N'
+		ORDER BY
+			idx DESC, insert_time DESC
+	</select>
+
+	<select id="selectStockTotalCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			stock
+		WHERE
+			delete_yn = 'N'
+	</select>
+
+	
+
+</mapper>

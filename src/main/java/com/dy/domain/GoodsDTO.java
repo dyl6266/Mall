@@ -1,5 +1,6 @@
 package com.dy.domain;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
@@ -17,7 +18,6 @@ public class GoodsDTO extends DTO {
 	private Integer idx;
 
 	/** 상품 코드 */
-	@NotBlank(message = "상품 코드를 입력해 주세요.")
 	private String code;
 
 	/** 상품명 */
@@ -32,11 +32,11 @@ public class GoodsDTO extends DTO {
 	@Min(value = 1000, message = "상품 가격은 최소 1,000원 이상이어야 합니다.")
 	private int price;
 
-	/** 상품 수량 */
-	@Min(value = 1, message = "상품 수량은 최소 1 이상이어야 합니다.")
-	private int quantity;
-
 	/** 상품 상태 */
 	private Status status;
+
+	/** 재고 정보 */
+	@Valid
+	private StockDTO stock;
 
 }
