@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import com.dy.common.Const.TableName;
 import com.dy.domain.GoodsDTO;
+import com.dy.domain.StockDTO;
 import com.dy.mapper.GoodsMapper;
 import com.dy.mapper.StockMapper;
 
@@ -62,7 +63,14 @@ public class GoodsServiceImpl implements GoodsService {
 
 	@Override
 	public GoodsDTO getGoodsDetails(String code) {
-		return goodsMapper.selectGoodsDetails(code);
+
+		GoodsDTO goods = goodsMapper.selectGoodsDetails(code);
+		if (goods != null) {
+			StockDTO stock = stockMapper.selectStockDetails(code);
+			goods.setStock(stock);
+		}
+
+		return goods;
 	}
 
 	@Override

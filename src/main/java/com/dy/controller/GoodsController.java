@@ -120,7 +120,6 @@ public class GoodsController {
 			 * 나오게 됨 CommentController의 getCommentList()도 참고할 것
 			 */
 			JsonElement jsonElem = gson.toJsonTree(goods);
-
 			jsonObj.add("goods", jsonElem);
 		}
 
