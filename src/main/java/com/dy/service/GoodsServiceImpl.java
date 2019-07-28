@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.dy.common.Const.TableName;
-import com.dy.domain.CombineDTO;
 import com.dy.domain.GoodsDTO;
 import com.dy.mapper.GoodsMapper;
 import com.dy.mapper.StockMapper;
@@ -22,11 +21,11 @@ public class GoodsServiceImpl implements GoodsService {
 	private StockMapper stockMapper;
 
 	@Override
-	public boolean registerGoods(CombineDTO params) {
+	public boolean registerGoods(GoodsDTO params) {
 
 		int queryResult;
 
-		if (StringUtils.isEmpty(params.getGoods().getCode())) {
+		if (StringUtils.isEmpty(params.getCode())) {
 			/* 상품 코드 생성 */
 			String code = goodsMapper.generateGoodsCode(TableName.GOODS);
 
@@ -37,8 +36,8 @@ public class GoodsServiceImpl implements GoodsService {
 			}
 
 			/* 상품 등록 쿼리 */
-			params.getGoods().setCode(code);
-			queryResult = goodsMapper.insertGoods(params.getGoods());
+			params.setCode(code);
+			queryResult = goodsMapper.insertGoods(params);
 			if (queryResult != 1) {
 				return false;
 			}
@@ -52,7 +51,7 @@ public class GoodsServiceImpl implements GoodsService {
 
 		} else {
 			/* 상품 수정 쿼리 */
-			queryResult = goodsMapper.updateGoods(params.getGoods());
+			queryResult = goodsMapper.updateGoods(params);
 			if (queryResult != 1) {
 				return false;
 			}

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -40,6 +40,7 @@
 <script>window.jQuery || document.write('<script src="lib/js/jquery-ui.min.js"><\/script>')</script>
 
 <script type="text/javascript" src="lib/js/ui.js"></script>
+<script src="js/common.js}"></script>
 
 </head>
 <body>
@@ -231,22 +232,75 @@
 </div>
 
 <div>
-	<form name="form" action="/test" method="post" onsubmit="return validationOfForm(this)">
+	<form name="form" th:action="@{/goods}" method="post" onsubmit="return validationOfForm(this)">
 		<table>
-			<thead>
+			<colgroup>
+				<col width="190px" />
+				<col width="auto" />
+			</colgroup>
+			<tbody>
 				<tr>
-					<th>옵션명</th>
-					<th>옵션값</th>
+					<th>이 름</th>
+					<td><input type="text" name="name" /></td>
 				</tr>
 				<tr>
-					<td>색상</td>
-					<td>사이즈</td>
+					<th>설 명</th>
+					<td><textarea name="description"></textarea></td>
 				</tr>
 				<tr>
-					<td><input type="text" name="color" /></td>
-					<td id="size"><input type="text" name="size" onkeydown="test(this)" maxlength="3" /></td>
+					<th>가 격</th>
+					<td><input type="text" name="price" /></td>
 				</tr>
-			</thead>
+				<tr>
+					<th>색 상</th>
+					<td id="hehe">
+						<input type="text" name="color" onkeydown="addColorOrSize(this)" maxlength="10" />
+					</td>
+				</tr>
+				<tr>
+					<th>사이즈 단위</th>
+					<td>
+						<select name="unit" onchange="createSizeInput(this)">
+							<option value="5">5</option>
+							<option value="10">10</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<!--/* 체크박스로 구현할지 입력으로 구현할지 생각해보기 */-->
+					<th>사 이 즈</th>
+					<td>
+						<input type="text" name="size" data-color="블루" />
+						<select name="quantity" data-color="블루">
+							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
+						</select><br />
+						<input type="text" name="size" data-color="블루" />
+						<select name="quantity" data-color="블루">
+							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
+						</select><br />
+					</td>
+					<td>
+						<input type="text" name="size" data-color="레드" />
+						<select name="quantity" data-color="레드">
+							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
+						</select><br />
+						<input type="text" name="size" data-color="레드" />
+						<select name="quantity" data-color="레드">
+							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
+						</select><br />
+					</td>
+					<td>
+						<input type="text" name="size" data-color="화이트" />
+						<select name="quantity" data-color="화이트">
+							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
+						</select><br />
+						<input type="text" name="size" data-color="화이트" />
+						<select name="quantity" data-color="화이트">
+							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
+						</select><br />
+					</td>
+				</tr>
+			</tbody>
 		</table>
 		<div>
 			<button type="submit">전송</button>
@@ -283,106 +337,117 @@
 
 
 </div>
-	<script>
-		function test(obj) {
+	<script th:inline="javascript">
+		/* <![CDATA[ */
+
+
+		function createSizeInput(obj) {
+
+			var colors = $("input[name='color']");
+			var html = "";
+// 			html += '<td>';
+				html += '<input type="text" name="size" onkeydown="addColorOrSize(this)" maxlength="3" /><br />';
+// 			html += '</td>';
+			
+			for (var i = 0; i < 5; i++) {
+				console.log(i)
+			}
+			
+			return false;
+			
+		
+			for ( var i = 0; i < colors.length; i++ ) {
+				$(obj.form.tempSize).parent().before(html);
+			}
+			console.log(colors.length);
+			console.log($("input[name='size']").length);
+			
+		}
+		
+		function addColorOrSize(obj) {
 
 			var keyCode = window.event.keyCode;
 			if (keyCode === 9) {
-				/*
-				 * isEmpty 함수로 처리하기
-				 */
-				if ( obj.value == "" ) {
-					alert("사이즈를 입력해 주세요.");
-					return false;
+				if ( isEmpty(obj.value) ) {
+					if (obj.name === "color") {
+						alert("색상을 입력해 주세요.");
+						return false;
+					} else if (obj.name === "size") {
+						alert("사이즈를 입력해 주세요.");
+						return false;
+					}
+				} else {
+					var html = "";
+// 					html += '<td>';
+						html += '<input type="text" name="'+obj.name+'" onkeydown="addColorOrSize(this)" maxlength="'+obj.getAttribute("maxlength")+'" />';
+// 					html += '</td>';
+
+					$('input[name="'+obj.name+'"]').removeAttr("onkeydown");
+					$(obj).after(html);
 				}
 
-				$('input[name="size"]').removeAttr("onkeydown");
-
-				console.log($('input[name="size"]').val());
-				var html = '<input type="text" name="size" onkeydown="test(this)" maxlength="3" />';
-				$("#size").append(html);
 			}
 		}
 		
+		function removeColorOrSize(obj) {
+		
+			console.log( $(obj).parent().attr("id") );
+			$(obj).parent().remove()
+		}
+
 		function validationOfForm(form) {
-			console.log(form.size);
-			
 
-// 			var data = {
-// 				"name" : "반팔티",
-// 				"description" : "허름한 반팔티",
-// 				"price" : 5700,
-// 				"option" : {
-// 					"화이트" : {
-// 						"210" : 5,
-// 						"230" : 3,
-// 						"260" : 0
-// 					},
-// 					"블랙" : {
-// 						"220" : 7,
-// 						"240" : 5,
-// 						"270" : 3
-// 					},
-// 					"블루" : {
-// 						"225" : 11,
-// 						"235" : 13,
-// 						"265" : 11
-// 					}
-// 				}
-// 			};
-
-			
-		var data = {
-				"goods" : {
-					"name" : "반팔티",
-					"description" : "허름한 반팔티",
-					"price" : 5700
-				},
-				"stock" : {
-					"options" : {
-						"화이트" : {
-							"210" : 5,
-							"230" : 3,
-							"260" : 0
-						},
-						"블랙" : {
-							"220" : 7,
-							"240" : 5,
-							"270" : 3
-						},
-						"블루" : {
-							"225" : 11,
-							"235" : 13,
-							"265" : 11
-						}
-					}
-				}
-			};
-
+			/*[- 전체 사이즈를 담는 배열 -]*/
+			var sizeArr = new Array();
+			/*[- 각 색상의 사이즈, 수량들을 담는 오브젝트  -]*/
+			var option = new Object();
+			/*[- 전체 색상의 사이즈, 수량들을 담는 오브젝트  -]*/
+			var options = new Object();
+			/*[- 서버에 전송할 각 데이터들을 담는 오브젝트 -]*/
+			var param = new Object();
+			/*[- 서버에 전송할 전체 데이터들을 담는 오브젝트 -]*/
 			var params = new Object();
-			params["name"] = "반팔티";
-			params["description"] = "허름한 반팔티";
-			params["price"] = 5700, params["options"] = {
-				"white" : {
-					"210" : 5,
-					"230" : 3,
-					"260" : 0
-				},
-				"black" : {
-					"220" : 7,
-					"240" : 5,
-					"270" : 3
-				},
-				"blue" : {
-					"225" : 11,
-					"235" : 13,
-					"265" : 11
-				}
-			};
 
-			console.log(params);
-			// 			console.log(params["color"]);
-			// 			return false;
+			$(form.color).each(function(idx, color) {
+				$(form.size).each(function(idx, size) {
+					/*[- 해당 색상과 사이즈의 data 속성의 값이 일치하면 배열에 추가 -]*/
+					if (color.value === $(size).data("color")) {
+						sizeArr.push(size.value);
+					}
+				});
+
+				$(form.quantity).each(function(idx, quantity) {
+					/*[- 해당 색상과 수량의 data 속성의 값이 일치하면 배열에 추가 -]*/
+					if (color.value === $(quantity).data("color")) {
+						/*[- 예시:) 사이즈가 200이고 수량이 5개인 경우 "200": 5와 같은 형태로 오브젝트에 추가 -]*/
+						option[String(sizeArr[idx])] = parseInt(quantity.value);
+					}
+				});
+
+				/*[- 예시:) 블루 색상의 경우 {"블루": {"200": 5}}와 같은 형태로 오브젝트에 추가 -]*/
+				options[color.value] = option;
+				/*[- 이전 색상의 사이즈, 수량의 정보를 지우기 위해 오브젝트를 재생성, delete options.XXX를 사용해도 됨 -]*/
+				option = new Object();
+			});
+
+			/*[- 전체 색상의 사이즈, 수량을 오브젝트에 추가 -]*/
+			param["options"] = options;
+			/*[- CombineDTO의 stock 인스턴스와 매핑 -]*/
+			params["stock"] = param;
+
+			/*[- 폼의 모든 입력 데이터를 array 형태로 serialize -]*/
+			var formData = $(form).serializeArray();
+			$(formData).each(function(idx, obj) {
+				if (isEmpty(obj.value) == false) {
+					/*[- 예시:) 이름이 나이키의 경우 "name": "나이키"와 같은 형태로 오브젝트에 추가 -]*/
+					params[obj.name] = obj.value;
+				}
+			});
+
+			/*[- params에 추가한 색상, 사이즈, 수량의 정보는 이미 존재하기 때문에 삭제 -]*/
+			delete params.color;
+			delete params.quantity;
+			delete params.size;
 
 			$.ajax({
 				url : form.action,
@@ -397,13 +462,46 @@
 				success : function(response) {
 					console.log(response);
 				},
-				error : function(a, b, c) {
-					console.log(a);
+				error : function(request, status, error) {
+					console.log(request);
 				}
 			});
 
 			return false;
 		}
+		
+		function test(obj) {
+			$(obj).remove();
+		}
+		
+		function isEmpty(value) {
+			if (value == null || value == "" || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+				return true;
+			}
+
+			return false;
+		}
+		
+		$.fn.serializeObject = function() {
+
+			  var result = {}
+			  var extend = function(i, element) {
+			    var node = result[element.name]
+			    if ("undefined" !== typeof node && node !== null) {
+			      if ($.isArray(node)) {
+			        node.push(element.value)
+			      } else {
+			        result[element.name] = [node, element.value]
+			      }
+			    } else {
+			      result[element.name] = element.value
+			    }
+			  }
+
+			  $.each(this.serializeArray(), extend)
+			  return result
+			}
+		/* ]]> */
 	</script>
 </body>
 </html>
