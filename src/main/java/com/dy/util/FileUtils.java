@@ -18,7 +18,7 @@ public final class FileUtils {
 	private final static String uploadPath = "C:" + File.separator + "upload" + File.separator
 			+ CommonUtils.getCurrentTime().substring(2, 10);
 
-	private static void makeThumbnail(String uploadPath, String savedFilename, String extension) throws IOException {
+	private static String makeThumbnail(String uploadPath, String savedFilename, String extension) throws IOException {
 
 		/* 원본 이미지 인스턴스 */
 		File file = new File(uploadPath, savedFilename);
@@ -30,14 +30,17 @@ public final class FileUtils {
 		/* 썸네일 이미지 업로드 경로 */
 		uploadPath = uploadPath + File.separator;
 
+		String thumbnail = uploadPath + "t_" + savedFilename;
+
 		/* 썸네일 이미지 인스턴스 */
-		file = new File(uploadPath + "t_" + savedFilename);
+		file = new File(thumbnail);
 
 		/* 디렉터리에 썸네일 이미지 추가 */
 		ImageIO.write(destImage, extension.toUpperCase(), file);
+		return thumbnail;
 	}
 
-	public static boolean uploadImageFile(String originalFilename, byte[] fileBytes) throws IOException {
+	public static String uploadImageFile(String originalFilename, byte[] fileBytes) throws IOException {
 
 		/* 저장 파일명 */
 		String savedFilename = CommonUtils.getRandomString() + "_" + originalFilename;
@@ -54,7 +57,8 @@ public final class FileUtils {
 		/* 확장자가 이미지 타입인지 체크 */
 		MediaType mediaType = MediaUtils.getMediaType(extension);
 		if (ObjectUtils.isEmpty(mediaType)) {
-			return false;
+//			return false;
+			return null;
 		}
 
 		/* uploadPath에 savedFilename의 이름을 가진 파일을 생성 */
@@ -62,8 +66,8 @@ public final class FileUtils {
 		FileCopyUtils.copy(fileBytes, file);
 
 		/* 썸네일 이미지 생성 */
-		makeThumbnail(uploadPath, savedFilename, extension);
-		return true;
+		String thumbnail = makeThumbnail(uploadPath, savedFilename, extension);
+		return thumbnail;
 	}
 
 	/*

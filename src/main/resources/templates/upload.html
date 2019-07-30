@@ -25,7 +25,11 @@
 	</form>
 	
 	<div class="drop">
-		
+		<img id="original" />
+	</div>
+	
+	<div class="drop" style="margin-top: 300px;">
+		<img id="thumbnail" />
 	</div>
 	
 	<script>
@@ -36,17 +40,50 @@
 		$(".drop").on("drop", function(e) {
 			e.preventDefault();
 			
-			// 이벤트와 같이 전달된 파일 데이터 조회
+			// 이벤트와 같이 전달받은 파일 데이터 조회
 			var files = e.originalEvent.dataTransfer.files;
-			
 			var file = files[0];
-			console.log(file);
 			
 			var formData = new FormData();
 			formData.append("file", file);
+
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
 			
+			reader.onload = function(e) {
+				/*
+				 * reader.result = e.target.result와 같음
+				 */
+				
+				// 원본 이미지
+				document.getElementById('original').src = reader.result;
+				
+				// 썸네일 이미지
+				var img = new Image(); // drawImage 메소드에 넣기 위해 이미지 오브젝트화
+				img.src = e.target.result; // data-uri를 이미지 오브젝트에 주입
+				img.onload = function() {
+					// 리사이즈를 위해 캔버스 오브젝트 생성
+					var canvas = document.createElement("canvas");
+					var canvasContext = canvas.getContext("2d");
+					
+					// 캔버스 사이즈 설정
+					canvas.width = img.width * 0.5;
+					canvas.height = img.height * 0.5;
+					
+					// 이미지를 캔버스에 렌더링
+					canvasContext.drawImage(this, 0, 0, canvas.width, canvas.height);
+					
+					// 캔버스에 그린 이미지를 다시 data-uri 형태로 변환
+					var dataURI = canvas.toDataURL("image.*");
+					
+					// 썸네일 미리보기
+					document.getElementById('thumbnail').src = dataURI;
+				}
+			}
+
+			return false;
 			$.ajax({
-				url : "/print",
+				url : "/uploadTest",
 				type : "post",
 				dataType : "text",
 				data : formData,
@@ -59,7 +96,7 @@
 					console.log("error : " + request);
 				}
 			});
-			
+
 			return false;
 		});
 	</script>

@@ -43,9 +43,11 @@ public class MainController {
 		return "upload";
 	}
 
-	@PostMapping(value = "/uploadTest")
-	public void testByUpload(MultipartFile file, Model model, MultipartRequest multipartRequest) throws IOException {
+	@PostMapping(value = "/uploadTest", produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String testByUpload(MultipartFile file, Model model, MultipartRequest multipartRequest) throws IOException {
 
+		String t = "";
 		if (file.isEmpty() == false) {
 			System.out.println("original filename : " + file.getOriginalFilename());
 			System.out.println("size : " + file.getSize());
@@ -55,16 +57,18 @@ public class MainController {
 			System.out.println("inputStream : " + file.getInputStream());
 
 			try {
-				boolean isUploaded = FileUtils.uploadImageFile(file.getOriginalFilename(), file.getBytes());
-				if (isUploaded == false) {
-					System.out.println("오이오이 실패라구웃");
-				}
+				t = FileUtils.uploadImageFile(file.getOriginalFilename(), file.getBytes());
+//				if (isUploaded == false) {
+//					System.out.println("오이오이 실패라구웃");
+//				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+
+		return t;
 	}
 
 	@GetMapping(value = "/print")
