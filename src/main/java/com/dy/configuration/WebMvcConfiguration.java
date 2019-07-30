@@ -35,9 +35,4 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 		return multipartResolver;
 	}
 
-	@Bean
-	public String uploadPath() {
-		return "C:\\upload\\2019-07-29";
-	}
-
 }
