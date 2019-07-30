@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
-import com.dy.util.FileUtils;
+import com.dy.util.AttachFileUtils;
 import com.dy.util.MediaUtils;
 
 @Controller
@@ -57,7 +57,7 @@ public class MainController {
 			System.out.println("inputStream : " + file.getInputStream());
 
 			try {
-				t = FileUtils.uploadImageFile(file.getOriginalFilename(), file.getBytes());
+				t = AttachFileUtils.uploadImageFile(file.getOriginalFilename(), file.getBytes());
 //				if (isUploaded == false) {
 //					System.out.println("오이오이 실패라구웃");
 //				}

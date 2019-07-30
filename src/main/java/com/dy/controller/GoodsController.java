@@ -54,6 +54,7 @@ public class GoodsController {
 				} else {
 					jsonObj.addProperty("message", "상품 등록이 완료되었습니다.");
 				}
+				jsonObj.addProperty("code", params.getCode());
 				jsonObj.addProperty("result", result);
 
 			} catch (DataAccessException e) {

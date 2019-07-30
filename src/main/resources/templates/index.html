@@ -1,6 +1,16 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
+	<style type="text/css">
+		.drop {
+			width: 80%; height: 100px;
+			border: 1px dotted gray;
+			background-color: lightblue;
+			margin: 0 auto;
+			margin-top: 50px;
+		}
+	</style>
+
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -21,10 +31,10 @@
 
 <!-- Css -->
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-<script>window.jQuery || document.write('<link rel="stylesheet" href="lib/css/jquery-ui.min.css">')</script>
+<script>window.jQuery || document.write('<link rel="stylesheet" href="/css/jquery-ui.min.css">')</script>
 
-<link rel="stylesheet" type="text/css" href="lib/css/style.css"/>
-<link rel="stylesheet" type="text/css" href="lib/css/media.css"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/media.css}"/>
 
 <!-- IE9이하버전 css적용 -->
 <!--[if IE]>
@@ -35,12 +45,12 @@
 
 <!-- Js -->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="lib/js/jquery-1.12.0.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="/js/jquery-1.12.0.min.js"><\/script>')</script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script>window.jQuery || document.write('<script src="lib/js/jquery-ui.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="/js/jquery-ui.min.js"><\/script>')</script>
 
-<script type="text/javascript" src="lib/js/ui.js"></script>
-<script src="js/common.js}"></script>
+<script type="text/javascript" th:src="@{/js/ui.js}"></script>
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
 
 </head>
 <body>
@@ -300,6 +310,14 @@
 						</select><br />
 					</td>
 				</tr>
+				<tr>
+					<th>이미지</th>
+					<td>
+						<div class="drop">
+							<!--/* drag & drop 이벤트 발생 시, 추가되는 이미지 */-->
+						</div>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 		<div>
@@ -340,6 +358,23 @@
 	<script th:inline="javascript">
 		/* <![CDATA[ */
 
+		$(".drop").on("dragenter dragover", function(e) {
+			e.preventDefault();
+		});
+	
+		var cnt = 0;
+		var formData = new FormData();
+		$(".drop").on("drop", function(e) {
+			e.preventDefault();
+			
+			// 이벤트와 같이 전달받은 파일 데이터 조회
+			var files = e.originalEvent.dataTransfer.files;
+			var file = files[0];
+			
+			formData.append("files", file);
+			console.log(cnt++);
+			return false;
+		});
 
 		function createSizeInput(obj) {
 
@@ -436,8 +471,8 @@
 			params["stock"] = param;
 
 			/*[- 폼의 모든 입력 데이터를 array 형태로 serialize -]*/
-			var formData = $(form).serializeArray();
-			$(formData).each(function(idx, obj) {
+			var formArr = $(form).serializeArray();
+			$(formArr).each(function(idx, obj) {
 				if (isEmpty(obj.value) == false) {
 					/*[- 예시:) 이름이 나이키의 경우 "name": "나이키"와 같은 형태로 오브젝트에 추가 -]*/
 					params[obj.name] = obj.value;
@@ -461,6 +496,9 @@
 				async : false,
 				success : function(response) {
 					console.log(response);
+					if (isEmpty(response.code) == false && response.result == true) {
+						uploadOfGoodsImage(response.code);
+					}
 				},
 				error : function(request, status, error) {
 					console.log(request);
@@ -470,6 +508,25 @@
 			return false;
 		}
 		
+		function uploadOfGoodsImage(code) {
+
+			if (isEmpty(code)) {
+				alert("잘못된 접근입니다. 새로고침 후 다시 시도해 주세요.");
+				return false;
+			}
+			
+			formData.append("code", code);
+			
+			$.ajax({
+				url : /*[[ @{/attach} ]]*/,
+				type : "post",
+				dataType : "json",
+				data : formData,
+				contentType : false,
+				processData : false, // 데이터를 일반적인 Query String으로 변환할 것인지를 결정하는 속성으로 기본값으로 true를 가짐
+			});
+		}
+			
 		function test(obj) {
 			$(obj).remove();
 		}

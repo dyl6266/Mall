@@ -12,16 +12,21 @@ import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ObjectUtils;
 
-public final class FileUtils {
+import com.dy.domain.AttachDTO;
+
+public class AttachFileUtils {
+
+	private AttachFileUtils() {
+	}
 
 	/* 업로드 경로 */
 	private final static String uploadPath = "C:" + File.separator + "upload" + File.separator
 			+ CommonUtils.getCurrentTime().substring(2, 10);
 
-	private static String makeThumbnail(String uploadPath, String savedFilename, String extension) throws IOException {
+	private static String makeThumbnail(String uploadPath, String storedName, String extension) throws IOException {
 
 		/* 원본 이미지 인스턴스 */
-		File file = new File(uploadPath, savedFilename);
+		File file = new File(uploadPath, storedName);
 
 		/* 실제 이미지가 아닌 메모리상의 이미지를 의미하는 인스턴스 (원본 이미지) */
 		BufferedImage sourceImage = ImageIO.read(file);
@@ -30,7 +35,7 @@ public final class FileUtils {
 		/* 썸네일 이미지 업로드 경로 */
 		uploadPath = uploadPath + File.separator;
 
-		String thumbnail = uploadPath + "t_" + savedFilename;
+		String thumbnail = uploadPath + "t_" + storedName;
 
 		/* 썸네일 이미지 인스턴스 */
 		file = new File(thumbnail);
@@ -40,10 +45,10 @@ public final class FileUtils {
 		return thumbnail;
 	}
 
-	public static String uploadImageFile(String originalFilename, byte[] fileBytes) throws IOException {
+	public static String uploadImageFile(String originalName, byte[] bytes) throws IOException {
 
 		/* 저장 파일명 */
-		String savedFilename = CommonUtils.getRandomString() + "_" + originalFilename;
+		String storedName = CommonUtils.getRandomString() + "_" + originalName;
 
 		/* uploadPath에 해당하는 디렉터리가 존재하지 않으면, 부모 디렉터리를 포함한 모든 디렉터리를 생성 */
 		File file = new File(uploadPath);
@@ -52,7 +57,7 @@ public final class FileUtils {
 		}
 
 		/* 파일 확장자 */
-		String extension = FilenameUtils.getExtension(originalFilename);
+		String extension = FilenameUtils.getExtension(originalName);
 
 		/* 확장자가 이미지 타입인지 체크 */
 		MediaType mediaType = MediaUtils.getMediaType(extension);
@@ -61,12 +66,16 @@ public final class FileUtils {
 			return null;
 		}
 
-		/* uploadPath에 savedFilename의 이름을 가진 파일을 생성 */
-		file = new File(uploadPath, savedFilename);
-		FileCopyUtils.copy(fileBytes, file);
+		/* uploadPath에 storedName의 이름을 가진 파일을 생성 */
+		file = new File(uploadPath, storedName);
+		FileCopyUtils.copy(bytes, file);
 
 		/* 썸네일 이미지 생성 */
-		String thumbnail = makeThumbnail(uploadPath, savedFilename, extension);
+		String thumbnail = makeThumbnail(uploadPath, storedName, extension);
+		
+		AttachDTO attach = new AttachDTO();
+//		attac
+		
 		return thumbnail;
 	}
 

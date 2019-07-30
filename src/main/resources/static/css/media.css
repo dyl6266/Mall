@@ -1,0 +1,59 @@
+/* 반응형  */
+
+.mobile_block {display:none !important;}
+
+@media screen and (min-width: 1920px) {
+}
+
+@media screen and (max-width: 1680px) {
+}
+
+@media screen and (max-width: 1410px) {
+}
+
+@media screen and (max-width: 1290px) {
+}
+
+@media screen and (min-width: 1023px) {
+	.header_wrap .gnb_wrap .depth2 {display:none;}
+	.gnb_bg {display:none;}
+}
+
+@media screen and (max-width: 1023px) {
+	.mobile_none {display:none !important;}
+	.mobile_block {display:block !important;}
+
+
+
+	/* ********** UI ****************************** */
+	/* Btn */
+	.btn {height: 35px; padding: 0 10px; line-height: 35px; font-size: 13px;}
+
+	.btn_wrap .btn {width: 80px; height: 35px; line-height: 35px; font-size: 13px;}
+
+	/* Label */
+	.label {font-size: 12px;}
+
+	/* Input, Select, Textarea */
+	input[type="text"],
+	input[type="search"],
+	input[type="password"],
+	input[type="file"],
+	input[type="submit"],
+	input[type="button"] {height:35px; padding: 0 5px;}
+	select {height: 35px; padding: 0 25px 0 5px; font-size: 13px;}
+
+
+	/* Layer popup */
+	.popup_inner {max-width: 96%; width: 96%; margin: 50px auto 0; max-height: calc(100% - 100px);}
+	.popup_inner .btn_close {right: 0; top: -45px; width: 40px; height: 40px; background-size: 25px}
+}
+
+@media screen and (max-width: 769px) {
+}
+
+@media screen and (max-width: 481px) {
+}
+
+@media screen and (max-width: 361px) {
+}

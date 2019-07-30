@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,10 +21,10 @@
 
 <!-- Css -->
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-<script>window.jQuery || document.write('<link rel="stylesheet" href="../lib/css/jquery-ui.min.css">')</script>
+<script>window.jQuery || document.write('<link rel="stylesheet" href="/css/jquery-ui.min.css">')</script>
 
-<link rel="stylesheet" type="text/css" href="../lib/css/style.css"/>
-<link rel="stylesheet" type="text/css" href="../lib/css/media.css"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/media.css}"/>
 
 <!-- IE9이하버전 css적용 -->
 <!--[if IE]>
@@ -35,11 +35,11 @@
 
 <!-- Js -->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="../lib/js/jquery-1.12.0.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="/js/jquery-1.12.0.min.js"><\/script>')</script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script>window.jQuery || document.write('<script src="../lib/js/jquery-ui.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="/js/jquery-ui.min.js"><\/script>')</script>
 
-<script type="text/javascript" src="../lib/js/ui.js"></script>
+<script type="text/javascript" th:src="@{/js/ui.js}"></script>
 
 </head>
 <body>

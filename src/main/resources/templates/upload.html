@@ -19,13 +19,14 @@
 	<script>window.jQuery || document.write('<script src="lib/js/jquery-ui.min.js"><\/script>')</script>
 </head>
 <body>
-	<form action="/uploadTest" method="post" enctype="multipart/form-data">
-		<input type="file" name="file" multiple="multiple" />
+	<form action="/attach" method="post" enctype="multipart/form-data">
+		<input type="file" name="files" multiple="multiple" />
+		<input type="file" name="files" multiple="multiple" />
 		<input type="submit" />
 	</form>
 	
 	<div class="drop">
-		<img id="original" />
+		<img id="original" width="100%" />
 	</div>
 	
 	<div class="drop" style="margin-top: 300px;">

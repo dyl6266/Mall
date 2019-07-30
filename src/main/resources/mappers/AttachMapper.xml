@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dy.mapper.AttachMapper">
+
+	<sql id="attachColumns">
+		  idx
+		, code
+		, original_name
+		, stored_name
+		, size
+		, delete_yn
+		, insert_time
+		, update_time
+	</sql>
+
+	<insert id="attachColumns" parameterType="com.dy.domain.AttachDTO">
+		INSERT INTO attach (
+			<include refid="attachColumns" />
+		) VALUES (
+			  #{idx}
+			, #{code}
+			, #{originalName}
+			, 'N'
+			, IFNULL(#{size}, 0)
+			, 'N'
+			, NOW()
+			, NULL
+		)
+	</insert>
+
+	<select id="selectAttachDetails" parameterType="integer" resultType="com.dy.domain.AttachDTO">
+		SELECT
+			<include refid="attachColumns" />
+		FROM
+			attach
+		WHERE
+			delete_yn = 'N'
+		AND
+			idx = #{idx}
+	</select>
+
+	<update id="updateAttach" parameterType="com.dy.domain.AttachDTO">
+		UPDATE attach
+		SET
+			  update_time = NOW()
+			, original_name = #{originalName}
+			, stored_name = #{storedName}
+			, size = IFNULL(#{size}, 0)
+			, options= #{options, typeHandler=com.dy.handler.JsonTypeHandler}
+		WHERE
+			code = #{code}
+	</update>
+
+	<delete id="deleteAttach" parameterType="integer">
+		DELETE FROM attach
+		WHERE
+			delete_yn = 'Y'
+		AND
+			idx = #{idx}
+	</delete>
+
+	<select id="selectAttachList" resultType="com.dy.domain.AttachDTO">
+		SELECT
+			<include refid="attachColumns" />
+		FROM
+			attach
+		WHERE
+			delete_yn = 'N'
+		AND
+			code = #{code}
+		ORDER BY
+			idx DESC, insert_time DESC
+	</select>
+
+	<select id="selectAttachTotalCount" parameterType="string" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			attach
+		WHERE
+			delete_yn = 'N'
+		AND
+			code = #{code}
+	</select>
+
+	
+
+</mapper>
