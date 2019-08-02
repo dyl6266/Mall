@@ -12,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.dy.domain.AttachDTO;
-
 public class AttachFileUtils {
 
 	private AttachFileUtils() {
@@ -72,10 +70,6 @@ public class AttachFileUtils {
 
 		/* 썸네일 이미지 생성 */
 		String thumbnail = makeThumbnail(uploadPath, storedName, extension);
-		
-		AttachDTO attach = new AttachDTO();
-//		attac
-		
 		return thumbnail;
 	}
 

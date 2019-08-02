@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class AttachController {
 
 		JsonObject jsonObj = new JsonObject();
 
-		if (files.isEmpty()) {
+		if (files.isEmpty() || StringUtils.isEmpty(code)) {
 			jsonObj.addProperty("message", "잘못된 요청입니다. 다시 시도해 주세요.");
 			jsonObj.addProperty("result", false);
 		} else {

@@ -1,10 +1,9 @@
 package com.dy.domain;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import com.dy.common.DTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.google.gson.JsonObject;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +20,7 @@ public class StockDTO extends DTO {
 	private String code;
 
 	/** 상품 옵션 (색상, 사이즈, 수량 정보를 담는 JSON) */
-	@NotNull(message = "상품의 옵션(색상, 사이즈, 수량)을 입력해 주세요.")
-	private JsonObject options;
+	@NotBlank(message = "상품의 옵션(색상, 사이즈, 수량)을 입력해 주세요.")
+	private String options;
 
 }

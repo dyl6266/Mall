@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dy.domain.GoodsDTO;
 import com.dy.service.GoodsService;
@@ -39,33 +40,43 @@ public class GoodsController {
 	 */
 	@PostMapping(value = "/goods")
 	@ResponseBody
-	public JsonObject insertGoods(@Validated @RequestBody GoodsDTO params, BindingResult bindingResult) {
+	public JsonObject insertGoods(MultipartFile[] files, @Validated GoodsDTO params, BindingResult bindingResult) {
 
 		JsonObject jsonObj = new JsonObject();
 
-		if (bindingResult.hasErrors()) {
-			FieldError fieldError = bindingResult.getFieldError();
-			jsonObj.addProperty("message", fieldError.getDefaultMessage());
-		} else {
-			try {
-				boolean result = goodsService.registerGoods(params);
-				if (result == false) {
-					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
-				} else {
-					jsonObj.addProperty("message", "상품 등록이 완료되었습니다.");
-				}
-				jsonObj.addProperty("code", params.getCode());
-				jsonObj.addProperty("result", result);
-
-			} catch (DataAccessException e) {
-				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
-				jsonObj.addProperty("result", false);
-
-			} catch (Exception e) {
-				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
-				jsonObj.addProperty("result", false);
+		if (files.length > 0) {
+			for (MultipartFile file : files) {
+				System.out.println(file.getContentType());
+				System.out.println(file.getOriginalFilename());
+				System.out.println(file.getSize());
 			}
+			return null;
 		}
+
+//		if (bindingResult.hasErrors()) {
+//			FieldError fieldError = bindingResult.getFieldError();
+//			jsonObj.addProperty("message", fieldError.getDefaultMessage());
+//		} else {
+//			try {
+//				boolean result = goodsService.registerGoods(params);
+//				if (result == false) {
+//					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
+//				} else {
+//					jsonObj.addProperty("message", "상품 등록이 완료되었습니다.");
+//				}
+//				jsonObj.addProperty("code", params.getCode());
+//				jsonObj.addProperty("result", result);
+//
+//			} catch (DataAccessException e) {
+//				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
+//				jsonObj.addProperty("result", false);
+//
+//			} catch (Exception e) {
+//				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
+//				jsonObj.addProperty("result", false);
+//				e.printStackTrace();
+//			}
+//		}
 
 		return jsonObj;
 	}
@@ -177,9 +188,25 @@ public class GoodsController {
 	// end of method
 
 	@GetMapping("/goods/list")
-	public String openGoodsListPage() {
+	public String openGoodsList() {
 
 		return "goods/list";
+	}
+
+	@GetMapping("/goods/details")
+	public String openGoodsDetails(Model model) {
+
+		List<GoodsDTO> goodsList = null;
+		try {
+			goodsList = goodsService.getGoodsList();
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("goodsList", goodsList);
+
+		return "goods/details";
 	}
 
 }

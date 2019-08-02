@@ -242,7 +242,7 @@
 </div>
 
 <div>
-	<form name="form" th:action="@{/goods}" method="post" onsubmit="return validationOfForm(this)">
+	<form name="form" th:action="@{/goods}" method="post" onsubmit="return validationOfForm(this)" enctype="multipart/form-data">
 		<table>
 			<colgroup>
 				<col width="190px" />
@@ -251,20 +251,22 @@
 			<tbody>
 				<tr>
 					<th>이 름</th>
-					<td><input type="text" name="name" /></td>
+					<td><input type="text" name="name" value="테스트 상품" /></td>
 				</tr>
 				<tr>
 					<th>설 명</th>
-					<td><textarea name="description"></textarea></td>
+					<td><textarea name="description">테스트 상품입니다.</textarea></td>
 				</tr>
 				<tr>
 					<th>가 격</th>
-					<td><input type="text" name="price" /></td>
+					<td><input type="text" name="price" value="15000" /></td>
 				</tr>
 				<tr>
 					<th>색 상</th>
 					<td id="hehe">
-						<input type="text" name="color" onkeydown="addColorOrSize(this)" maxlength="10" />
+						<input type="text" name="color" onkeydown="addColorOrSize(this)" maxlength="10" value="블루" />
+						<input type="text" name="color" onkeydown="addColorOrSize(this)" maxlength="10" value="레드" />
+						<input type="text" name="color" onkeydown="addColorOrSize(this)" maxlength="10" value="화이트" />
 					</td>
 				</tr>
 				<tr>
@@ -280,31 +282,31 @@
 					<!--/* 체크박스로 구현할지 입력으로 구현할지 생각해보기 */-->
 					<th>사 이 즈</th>
 					<td>
-						<input type="text" name="size" data-color="블루" />
+						<input type="text" name="size" data-color="블루" value="200" />
 						<select name="quantity" data-color="블루">
 							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
 						</select><br />
-						<input type="text" name="size" data-color="블루" />
+						<input type="text" name="size" data-color="블루" value="210" />
 						<select name="quantity" data-color="블루">
 							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
 						</select><br />
 					</td>
 					<td>
-						<input type="text" name="size" data-color="레드" />
+						<input type="text" name="size" data-color="레드" value="220" />
 						<select name="quantity" data-color="레드">
 							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
 						</select><br />
-						<input type="text" name="size" data-color="레드" />
+						<input type="text" name="size" data-color="레드" value="230" />
 						<select name="quantity" data-color="레드">
 							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
 						</select><br />
 					</td>
 					<td>
-						<input type="text" name="size" data-color="화이트" />
+						<input type="text" name="size" data-color="화이트" value="250" />
 						<select name="quantity" data-color="화이트">
 							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
 						</select><br />
-						<input type="text" name="size" data-color="화이트" />
+						<input type="text" name="size" data-color="화이트" value="260" />
 						<select name="quantity" data-color="화이트">
 							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
 						</select><br />
@@ -358,77 +360,75 @@
 	<script th:inline="javascript">
 		/* <![CDATA[ */
 
+		/*[- 마우스 이벤트를 무시 -]*/
 		$(".drop").on("dragenter dragover", function(e) {
 			e.preventDefault();
 		});
-	
+
+		/*[- 이미지를 처리하는 오브젝트 -]*/
+		var imgData = new FormData();
 		var cnt = 0;
-		var formData = new FormData();
 		$(".drop").on("drop", function(e) {
 			e.preventDefault();
-			
-			// 이벤트와 같이 전달받은 파일 데이터 조회
+		
+			/*[- 이벤트와 같이 전달받은 파일 데이터 조회 -]*/
 			var files = e.originalEvent.dataTransfer.files;
 			var file = files[0];
-			
-			formData.append("files", file);
-			console.log(cnt++);
+
+			imgData.append("files", file);
+// 			console.log(cnt++);
 			return false;
 		});
 
-		function createSizeInput(obj) {
+// 		function createSizeInput(obj) {
 
-			var colors = $("input[name='color']");
-			var html = "";
-// 			html += '<td>';
-				html += '<input type="text" name="size" onkeydown="addColorOrSize(this)" maxlength="3" /><br />';
-// 			html += '</td>';
+// 			var colors = $("input[name='color']");
+// 			var html = "";
+// // 			html += '<td>';
+// 				html += '<input type="text" name="size" onkeydown="addColorOrSize(this)" maxlength="3" /><br />';
+// // 			html += '</td>';
 			
-			for (var i = 0; i < 5; i++) {
-				console.log(i)
-			}
+// 			for (var i = 0; i < 5; i++) {
+// 				console.log(i)
+// 			}
 			
-			return false;
-			
+// 			return false;
 		
-			for ( var i = 0; i < colors.length; i++ ) {
-				$(obj.form.tempSize).parent().before(html);
-			}
-			console.log(colors.length);
-			console.log($("input[name='size']").length);
+// 			for ( var i = 0; i < colors.length; i++ ) {
+// 				$(obj.form.tempSize).parent().before(html);
+// 			}
 			
-		}
+// 		}
 		
-		function addColorOrSize(obj) {
+// 		function addColorOrSize(obj) {
 
-			var keyCode = window.event.keyCode;
-			if (keyCode === 9) {
-				if ( isEmpty(obj.value) ) {
-					if (obj.name === "color") {
-						alert("색상을 입력해 주세요.");
-						return false;
-					} else if (obj.name === "size") {
-						alert("사이즈를 입력해 주세요.");
-						return false;
-					}
-				} else {
-					var html = "";
-// 					html += '<td>';
-						html += '<input type="text" name="'+obj.name+'" onkeydown="addColorOrSize(this)" maxlength="'+obj.getAttribute("maxlength")+'" />';
-// 					html += '</td>';
+// 			var keyCode = window.event.keyCode;
+// 			if (keyCode === 9) {
+// 				if ( isEmpty(obj.value) ) {
+// 					if (obj.name === "color") {
+// 						alert("색상을 입력해 주세요.");
+// 						return false;
+// 					} else if (obj.name === "size") {
+// 						alert("사이즈를 입력해 주세요.");
+// 						return false;
+// 					}
+// 				} else {
+// 					var html = "";
+// // 					html += '<td>';
+// 						html += '<input type="text" name="'+obj.name+'" onkeydown="addColorOrSize(this)" maxlength="'+obj.getAttribute("maxlength")+'" />';
+// // 					html += '</td>';
 
-					$('input[name="'+obj.name+'"]').removeAttr("onkeydown");
-					$(obj).after(html);
-				}
+// 					$('input[name="'+obj.name+'"]').removeAttr("onkeydown");
+// 					$(obj).after(html);
+// 				}
 
-			}
-		}
+// 			}
+// 		}
 		
-		function removeColorOrSize(obj) {
-		
-			console.log( $(obj).parent().attr("id") );
-			$(obj).parent().remove()
-		}
+// 		function removeColorOrSize(obj) {
+// 			console.log( $(obj).parent().attr("id") );
+// 			$(obj).parent().remove()
+// 		}
 
 		function validationOfForm(form) {
 
@@ -484,21 +484,35 @@
 			delete params.quantity;
 			delete params.size;
 
+			var formData = new FormData(form);
+			formData.append("stock.options", JSON.stringify(options));
+
+			var images = imgData.getAll("files");
+			if (isEmpty(images) == false) {
+				console.log(images);
+				$(images).each(function(idx, image) {
+					formData.append("files", image);
+				});
+			}
+
 			$.ajax({
 				url : form.action,
 				type : "post",
-				headers : {
-					"Content-Type" : "application/json",
-					"X-HTTP-Method-Override" : "post"
-				},
+// 				headers : {
+// 					"Content-Type" : "application/json",
+// 					"X-HTTP-Method-Override" : "post"
+// 				},
 				dataType : "json",
-				data : JSON.stringify(params),
-				async : false,
+				data : formData,
+// 				enctype: "multipart/form-data",
+				contentType : false,
+				processData : false, // 데이터를 일반적인 Query String으로 변환할 것인지를 결정하는 속성으로 기본값으로 true를 가짐
+// 				async : false,
 				success : function(response) {
 					console.log(response);
-					if (isEmpty(response.code) == false && response.result == true) {
-						uploadOfGoodsImage(response.code);
-					}
+// 					if (isEmpty(response.code) == false && response.result == true) {
+// 						uploadOfGoodsImage(response.code);
+// 					}
 				},
 				error : function(request, status, error) {
 					console.log(request);
