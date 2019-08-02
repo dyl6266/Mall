@@ -1,8 +1,6 @@
 package com.dy.controller;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -15,14 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 
 import com.dy.util.AttachFileUtils;
 import com.dy.util.MediaUtils;
@@ -43,38 +37,10 @@ public class MainController {
 		return "upload";
 	}
 
-	@PostMapping(value = "/uploadTest", produces = "text/plain;charset=UTF-8")
-	@ResponseBody
-	public String testByUpload(MultipartFile file, Model model, MultipartRequest multipartRequest) throws IOException {
-
-		String t = "";
-		if (file.isEmpty() == false) {
-			System.out.println("original filename : " + file.getOriginalFilename());
-			System.out.println("size : " + file.getSize());
-			System.out.println("content type : " + file.getContentType());
-			System.out.println("resource : " + file.getResource());
-			System.out.println("name : " + file.getName());
-			System.out.println("inputStream : " + file.getInputStream());
-
-			try {
-				t = AttachFileUtils.uploadImageFile(file.getOriginalFilename(), file.getBytes());
-//				if (isUploaded == false) {
-//					System.out.println("오이오이 실패라구웃");
-//				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		return t;
-	}
-
 	@GetMapping(value = "/print")
 	@ResponseBody
-	public ResponseEntity<byte[]> testByImagePrint(@RequestParam(value = "filename", required = false) String filename,
-			@RequestParam(value = "uploadPath", required = false) String uploadPath) {
+	public ResponseEntity<byte[]> testByImagePrint(
+			@RequestParam(value = "filename", required = false) String filename) {
 
 		ResponseEntity<byte[]> entity = null;
 
@@ -90,7 +56,7 @@ public class MainController {
 
 		InputStream input = null;
 		try {
-			input = new FileInputStream(uploadPath + filename);
+			input = new FileInputStream(AttachFileUtils.uploadPath + filename);
 			byte[] fileBytes = IOUtils.toByteArray(input);
 
 			entity = new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);

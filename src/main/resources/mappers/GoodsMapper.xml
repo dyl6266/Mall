@@ -37,9 +37,9 @@
 		FROM
 			goods
 		WHERE
-			code = #{code}
-		AND
 			(status = 'Y' AND delete_yn = 'N')
+		AND
+			code = #{code}
 	</select>
 
 	<update id="updateGoods" parameterType="com.dy.domain.GoodsDTO">

@@ -21,7 +21,7 @@
 			  #{idx}
 			, #{code}
 			, #{originalName}
-			, 'N'
+			, #{storedName}
 			, IFNULL(#{size}, 0)
 			, 'N'
 			, NOW()

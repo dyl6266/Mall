@@ -22,6 +22,6 @@ public class AttachDTO extends DTO {
 	private String storedName;
 
 	/** 파일 크기 */
-	private int size;
+	private Long size;
 
 }

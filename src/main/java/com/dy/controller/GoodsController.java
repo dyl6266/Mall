@@ -1,5 +1,6 @@
 package com.dy.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dy.domain.GoodsDTO;
 import com.dy.service.GoodsService;
+import com.dy.util.AttachFileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -40,43 +43,34 @@ public class GoodsController {
 	 */
 	@PostMapping(value = "/goods")
 	@ResponseBody
-	public JsonObject insertGoods(MultipartFile[] files, @Validated GoodsDTO params, BindingResult bindingResult) {
+	public JsonObject insertGoods(@Validated GoodsDTO params, BindingResult bindingResult, MultipartFile[] files) {
 
 		JsonObject jsonObj = new JsonObject();
 
-		if (files.length > 0) {
-			for (MultipartFile file : files) {
-				System.out.println(file.getContentType());
-				System.out.println(file.getOriginalFilename());
-				System.out.println(file.getSize());
-			}
-			return null;
-		}
+		if (bindingResult.hasErrors()) {
+			FieldError fieldError = bindingResult.getFieldError();
+			jsonObj.addProperty("message", fieldError.getDefaultMessage());
+		} else {
+			try {
+				/* 상품 등록 */
+				boolean isInserted = ObjectUtils.isEmpty(files) == false ? goodsService.registerGoods(params, files) : goodsService.registerGoods(params);
+				if (isInserted == false) {
+					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
+				} else {
+					jsonObj.addProperty("message", "상품 등록이 완료되었습니다.");
+					jsonObj.addProperty("result", isInserted);
+				}
+				// end of else
 
-//		if (bindingResult.hasErrors()) {
-//			FieldError fieldError = bindingResult.getFieldError();
-//			jsonObj.addProperty("message", fieldError.getDefaultMessage());
-//		} else {
-//			try {
-//				boolean result = goodsService.registerGoods(params);
-//				if (result == false) {
-//					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
-//				} else {
-//					jsonObj.addProperty("message", "상품 등록이 완료되었습니다.");
-//				}
-//				jsonObj.addProperty("code", params.getCode());
-//				jsonObj.addProperty("result", result);
-//
-//			} catch (DataAccessException e) {
-//				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
-//				jsonObj.addProperty("result", false);
-//
-//			} catch (Exception e) {
-//				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
-//				jsonObj.addProperty("result", false);
-//				e.printStackTrace();
-//			}
-//		}
+			} catch (DataAccessException e) {
+				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+
+			} catch (Exception e) {
+				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+			}
+		}
 
 		return jsonObj;
 	}
