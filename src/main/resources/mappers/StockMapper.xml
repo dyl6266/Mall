@@ -6,6 +6,7 @@
 	<sql id="stockColumns">
 		  idx
 		, code
+		, color
 		, options
 		, delete_yn
 		, insert_time
@@ -18,6 +19,7 @@
 		) VALUES (
 			  #{idx}
 			, #{code}
+			, #{color}
 			, #{options}
 			, 'N'
 			, NOW()

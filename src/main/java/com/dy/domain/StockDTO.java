@@ -19,7 +19,11 @@ public class StockDTO extends DTO {
 	/** 상품 코드 */
 	private String code;
 
-	/** 상품 옵션 (색상, 사이즈, 수량 정보를 담는 JSON) */
+	/** 상품 색상 */
+	@NotBlank(message = "상품의 색상을 입력해 주세요.")
+	private String color;
+
+	/** 상품 옵션 (사이즈, 수량 정보를 담는 JSON) */
 	@NotBlank(message = "상품의 옵션(색상, 사이즈, 수량)을 입력해 주세요.")
 	private String options;
 

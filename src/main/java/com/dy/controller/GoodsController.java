@@ -1,5 +1,7 @@
 package com.dy.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -180,6 +182,12 @@ public class GoodsController {
 		return jsonObj;
 	}
 	// end of method
+	
+	@GetMapping(value = "/goods/register")
+	public String openGoodsRegister() {
+		
+		return "goods/register";
+	}
 
 	@GetMapping("/goods/list")
 	public String openGoodsList(Model model) {
@@ -195,6 +203,31 @@ public class GoodsController {
 		GoodsDTO goods = goodsService.getGoodsDetails(code);
 		model.addAttribute("goods", goods);
 
+		Gson gson = new GsonBuilder().create();
+
+		String optionsStr = goods.getStock().getOptions();
+		JsonObject jsonObj = gson.fromJson(optionsStr, JsonObject.class);
+
+//		List<HashMap<String, Object>> options = new ArrayList<>();
+		HashMap<String, HashMap<String, Object>> options = new HashMap<>();
+
+		// 색상을 담는 List
+		List<String> colors = new ArrayList<>();
+
+//		for (String color : jsonObj.keySet()) {
+//			colors.add(color);
+//
+//			System.out.println("color : " + color);
+//			JsonElement jsonElem = jsonObj.get(color);
+//
+//			// {210=1.0, 200=1.0} 형태의 데이터를 갖는 Map
+//			HashMap<String, Object> colorsMap = gson.fromJson(jsonElem, HashMap.class);
+//			for (String size : colorsMap.keySet()) {
+//				
+//			}
+//		}
+
+		model.addAttribute("options", options);
 		return "goods/details";
 	}
 
