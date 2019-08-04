@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<body th:fragment="basic">
+		<div id="wrapper">
+
+			<div class="shortcut">
+				<ul>
+					<li><a href="#container">본문 바로가기</a></li>
+					<li><a href="#menu">메뉴 바로가기</a></li>
+				</ul>
+			</div>
+			<!--/* //.shortcut */-->
+
+			<header>
+				<div class="header_wrap fl_wrap">
+					<div class="inner">
+						<a href="#" class="logo">LOGO<img src="" alt="" /></a>
+
+						<div class="gnb">
+							<ul class="utill">
+								<li class="btn_gnb_close mobile_block" onclick="gnbClose(this);"><a href="javascript:void(0)">모바일gnb 닫기</a></li>
+								<li><a href="#">로그인</a></li>
+								<li><a href="#">회원가입</a></li>
+							</ul>
+
+							<nav>
+								<a href="">Menu1</a>
+								<a href="">Menu2</a>
+								<a href="">Menu3</a>
+								<a href="">Menu4</a>
+								<a href="">Menu5</a>
+							</nav>
+						</div>
+						<!--/* //.gnb */-->
+					</div>
+					<!--/* //.inner */-->
+
+					<!--/* 모바일 gnb */-->
+					<a href="javascript:void(0)" class="btn_gnb mobile_block" onclick="gnbOpen(this);">모바일gnb</a>
+					<!--/* 모바일 gnb 배경 */-->
+					<div class="gnb_bg" onclick="gnbClose(this);">모바일gnb 배경</div>
+				</div>
+				<!--/* //.header_wrap */-->
+			</header>
+			<!--/* //header */-->
+
+			<!--/* 실제 Content가 들어가는 영역 */-->
+			<th:block layout:fragment="content"></th:block>
+
+			<footer>
+				<div class="footer_wrap">
+					<div class="footer_menu">
+						<ul class="inner">			   
+							<li><a href="">개인정보처리방침</a></li>
+							<li><a href="">이용약관</a></li>
+							<li><a href="">문의하기</a></li>
+						</ul>
+					</div>
+					<!--/* //.footer_menu */-->
+					<div class="copyright clear">
+						<div class="inner">
+							<p>
+								<span>주소 : 인천광역시 부평구 산곡2동</span>
+								<span>연락처 : 010-3328-0000</span>
+								<span>팩스 : 032-517-0000</span>
+							</p>
+							<p> Copyright 2019 do-yonug's mall All Rights reserved.</p>
+						</div>
+						<!--/* //.inner */-->
+					</div>
+					<!--/* //.copyright */-->
+				</div>
+				<!--/* //.footer_wrap */-->
+			</footer>
+			<!--/* //footer */-->
+		</div>
+		<!--/* //#wrapper */-->
+
+		<!--/* 자바스크립트가 들어가는 영역 */-->
+		<th:block layout:fragment="script"></th:block>
+	</body>
+</html>

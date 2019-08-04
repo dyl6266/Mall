@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.dy.interceptor.LoggerInterceptor;
 
 @Configuration
-//@EnableWebMvc
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
 	/*
@@ -18,7 +17,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new LoggerInterceptor());
+		registry.addInterceptor(new LoggerInterceptor()).excludePathPatterns("/static/**");
 	}
 
 	/*

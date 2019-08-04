@@ -1,16 +1,6 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="ko">
 <head>
-	<style type="text/css">
-		.drop {
-			width: 80%; height: 100px;
-			border: 1px dotted gray;
-			background-color: lightblue;
-			margin: 0 auto;
-			margin-top: 50px;
-		}
-	</style>
-
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -25,16 +15,16 @@
 
 <title>do-yonug's mall</title>
 
-<!-- Favicon -->
-<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
-<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+<!-- Favicon
+<link rel="shortcut icon" href="../static/images/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="../static/images/favicon.ico" type="image/x-icon" /> -->
 
 <!-- Css -->
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-<script>window.jQuery || document.write('<link rel="stylesheet" href="/css/jquery-ui.min.css">')</script>
+<script>window.jQuery || document.write('<link rel="stylesheet" href="../static/lib/css/jquery-ui.min.css">')</script>
 
-<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-<link rel="stylesheet" type="text/css" th:href="@{/css/media.css}"/>
+<link rel="stylesheet" type="text/css" href="../static/lib/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../static/lib/css/media.css"/>
 
 <!-- IE9이하버전 css적용 -->
 <!--[if IE]>
@@ -45,12 +35,15 @@
 
 <!-- Js -->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="/js/jquery-1.12.0.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="../static/lib/js/jquery-1.12.0.min.js"><\/script>')</script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script>window.jQuery || document.write('<script src="/js/jquery-ui.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="../static/lib/js/jquery-ui.min.js"><\/script>')</script>
 
-<script type="text/javascript" th:src="@{/js/ui.js}"></script>
-<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<!-- slick -->
+<link rel="stylesheet" type="text/css" href="../static/lib/jquery/slick/slick.css"/>
+<script type="text/javascript" src="../static/lib/jquery/slick/slick.min.js"></script>
+
+<script type="text/javascript" src="../static/lib/js/ui.js"></script>
 
 </head>
 <body>
@@ -69,25 +62,30 @@
 
 <!-- header -->
 <header>
-	<div class="header_wrap">
-		<div class="util">
-			<ul class="inner">
-				<li><a href="#">로그인</a></li>
-				<li><a href="#">회원가입</a></li>
-			</ul>
-		</div>
-		<div class="gnb">
-			<div class="inner">
-				<a href="#" class="logo">LOGO<img src="" alt="" /></a>
+	<div class="header_wrap fl_wrap">
+		<div class="inner">
+			<a href="#" class="logo">LOGO<img src="" alt="" /></a>
+
+			<div class="gnb">
+				<ul class="utill">
+					<li class="btn_gnb_close mobile_block" onclick="gnbClose(this);"><a href="javascript:void(0)">모바일gnb 닫기</a></li>
+
+					<li><a href="#">로그인</a></li>
+					<li><a href="#">회원가입</a></li>
+				</ul>
+
 				<nav>
-					<a href="">menu1</a>
-					<a href="">menu1</a>
-					<a href="">menu1</a>
-					<a href="">menu1</a>
-					<a href="">menu1</a>
+					<a href="">Menu1</a>
+					<a href="">Menu2</a>
+					<a href="">Menu3</a>
+					<a href="">Menu4</a>
+					<a href="">Menu5</a>
 				</nav>
 			</div>
 		</div>
+
+		<a href="javascript:void(0)" class="btn_gnb mobile_block" onclick="gnbOpen(this);">모바일gnb</a><!-- 모바일 gnb -->
+		<div class="gnb_bg" onclick="gnbClose(this);">모바일gnb 배경</div><!-- 모바일 gnb 배경 -->
 	</div>
 </header>
 <!-- //header -->
@@ -95,16 +93,35 @@
 
 <!-- container -->
 <div id="container">
+	<div class="main_visual">
+		<!-- slide -->
+		<div class="main_slide_wrap">
+			<div class="main_slide">
+				<div class="" style="background: url('../static/images/common/visual.jpg') center center no-repeat;">slide01</div>
+				<div class="" style="background: url('../static/images/common/visual.jpg') center center no-repeat;">slide01</div>
+				<div class="" style="background: url('../static/images/common/visual.jpg') center center no-repeat;">slide01</div>
+			</div>
+			<script>
+				$(document).ready(function () {
+					$('.main_slide').slick({
+						dots: true,
+						infinite: true,
+						arrows: false,
+						speed: 500,
+						fade: true,
+					});
+				});
+			</script>
+		</div>
+	</div>
+
 	<div class="favorite main_goods clear">
 		<div class="inner">
-			<p class="title">
-				인기 상품
-				<a href="" class="more">More</a>
-			</p>
+			<p class="title">BEST SELLER</p>
 			<ul>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -113,7 +130,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -122,7 +139,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -131,7 +148,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -139,19 +156,17 @@
 					</a>
 				</li>
 			</ul>
+			<a href="#" class="btn btn_border_black btn_more clear">+ 더보기</a>
 		</div>
 	</div>
 
 	<div class="new main_goods clear">
 		<div class="inner">
-			<p class="title">
-				새로운 상품
-				<a href="" class="more">More</a>
-			</p>
+			<p class="title">NEW ARRIVAL</p>
 			<ul>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -160,7 +175,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -169,7 +184,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -178,7 +193,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -186,19 +201,17 @@
 					</a>
 				</li>
 			</ul>
+			<a href="#" class="btn btn_border_black btn_more clear">+ 더보기</a>
 		</div>
 	</div>
 
 	<div class="discount main_goods clear">
 		<div class="inner">
-			<p class="title">
-				할인 상품
-				<a href="" class="more">More</a>
-			</p>
+			<p class="title">SALE</p>
 			<ul>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -208,7 +221,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -218,7 +231,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -228,7 +241,7 @@
 				</li>
 				<li>
 					<a href="" class="img_wrap">
-						<span class="img_box"><img src="" alt=""></span>
+						<span class="img_box"><img src="../static/images/common/thumb.jpg" alt="" /></span>
 					</a>
 					<a href="" class="txt_wrap">
 						<span class="name">나이키</span>
@@ -237,95 +250,9 @@
 					</a>
 				</li>
 			</ul>
+			<a href="#" class="btn btn_border_black btn_more clear">+ 더보기</a>
 		</div>
 	</div>
-</div>
-
-<div>
-	<form name="form" th:action="@{/goods}" method="post" onsubmit="return validationOfForm(this)" enctype="multipart/form-data">
-		<table>
-			<colgroup>
-				<col width="190px" />
-				<col width="auto" />
-			</colgroup>
-			<tbody>
-				<tr>
-					<th>이 름</th>
-					<td><input type="text" name="name" value="테스트 상품" /></td>
-				</tr>
-				<tr>
-					<th>설 명</th>
-					<td><textarea name="description">테스트 상품입니다.</textarea></td>
-				</tr>
-				<tr>
-					<th>가 격</th>
-					<td><input type="text" name="price" value="15000" /></td>
-				</tr>
-				<tr>
-					<th>색 상</th>
-					<td id="hehe">
-						<input type="text" name="color" onkeydown="addColorOrSize(this)" maxlength="10" value="블루" />
-						<input type="text" name="color" onkeydown="addColorOrSize(this)" maxlength="10" value="레드" />
-						<input type="text" name="color" onkeydown="addColorOrSize(this)" maxlength="10" value="화이트" />
-					</td>
-				</tr>
-				<tr>
-					<th>사이즈 단위</th>
-					<td>
-						<select name="unit" onchange="createSizeInput(this)">
-							<option value="5">5</option>
-							<option value="10">10</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<!--/* 체크박스로 구현할지 입력으로 구현할지 생각해보기 */-->
-					<th>사 이 즈</th>
-					<td>
-						<input type="text" name="size" data-color="블루" value="200" />
-						<select name="quantity" data-color="블루">
-							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
-						</select><br />
-						<input type="text" name="size" data-color="블루" value="210" />
-						<select name="quantity" data-color="블루">
-							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
-						</select><br />
-					</td>
-					<td>
-						<input type="text" name="size" data-color="레드" value="220" />
-						<select name="quantity" data-color="레드">
-							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
-						</select><br />
-						<input type="text" name="size" data-color="레드" value="230" />
-						<select name="quantity" data-color="레드">
-							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
-						</select><br />
-					</td>
-					<td>
-						<input type="text" name="size" data-color="화이트" value="250" />
-						<select name="quantity" data-color="화이트">
-							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
-						</select><br />
-						<input type="text" name="size" data-color="화이트" value="260" />
-						<select name="quantity" data-color="화이트">
-							<option th:each="seq : ${#numbers.sequence( 1, 30 )}" th:value="${seq}" th:text="${seq}"></option>
-						</select><br />
-					</td>
-				</tr>
-				<tr>
-					<th>이미지</th>
-					<td>
-						<div class="drop">
-							<!--/* drag & drop 이벤트 발생 시, 추가되는 이미지 */-->
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<div>
-			<button type="submit">전송</button>
-		</div>
-	</form>
 </div>
 <!-- //container -->
 
@@ -357,222 +284,5 @@
 
 
 </div>
-	<script th:inline="javascript">
-		/* <![CDATA[ */
-
-		/*[- 마우스 이벤트를 무시 -]*/
-		$(".drop").on("dragenter dragover", function(e) {
-			e.preventDefault();
-		});
-
-		/*[- 이미지를 처리하는 오브젝트 -]*/
-		var imgData = new FormData();
-		var cnt = 0;
-		$(".drop").on("drop", function(e) {
-			e.preventDefault();
-		
-			/*[- 이벤트와 같이 전달받은 파일 데이터 조회 -]*/
-			var files = e.originalEvent.dataTransfer.files;
-			var file = files[0];
-
-			imgData.append("files", file);
-// 			console.log(cnt++);
-			return false;
-		});
-
-// 		function createSizeInput(obj) {
-
-// 			var colors = $("input[name='color']");
-// 			var html = "";
-// // 			html += '<td>';
-// 				html += '<input type="text" name="size" onkeydown="addColorOrSize(this)" maxlength="3" /><br />';
-// // 			html += '</td>';
-			
-// 			for (var i = 0; i < 5; i++) {
-// 				console.log(i)
-// 			}
-			
-// 			return false;
-		
-// 			for ( var i = 0; i < colors.length; i++ ) {
-// 				$(obj.form.tempSize).parent().before(html);
-// 			}
-			
-// 		}
-		
-// 		function addColorOrSize(obj) {
-
-// 			var keyCode = window.event.keyCode;
-// 			if (keyCode === 9) {
-// 				if ( isEmpty(obj.value) ) {
-// 					if (obj.name === "color") {
-// 						alert("색상을 입력해 주세요.");
-// 						return false;
-// 					} else if (obj.name === "size") {
-// 						alert("사이즈를 입력해 주세요.");
-// 						return false;
-// 					}
-// 				} else {
-// 					var html = "";
-// // 					html += '<td>';
-// 						html += '<input type="text" name="'+obj.name+'" onkeydown="addColorOrSize(this)" maxlength="'+obj.getAttribute("maxlength")+'" />';
-// // 					html += '</td>';
-
-// 					$('input[name="'+obj.name+'"]').removeAttr("onkeydown");
-// 					$(obj).after(html);
-// 				}
-
-// 			}
-// 		}
-		
-// 		function removeColorOrSize(obj) {
-// 			console.log( $(obj).parent().attr("id") );
-// 			$(obj).parent().remove()
-// 		}
-
-		function validationOfForm(form) {
-
-			/*[- 전체 사이즈를 담는 배열 -]*/
-			var sizeArr = new Array();
-			/*[- 각 색상의 사이즈, 수량들을 담는 오브젝트  -]*/
-			var option = new Object();
-			/*[- 전체 색상의 사이즈, 수량들을 담는 오브젝트  -]*/
-			var options = new Object();
-			/*[- 서버에 전송할 각 데이터들을 담는 오브젝트 -]*/
-			var param = new Object();
-			/*[- 서버에 전송할 전체 데이터들을 담는 오브젝트 -]*/
-			var params = new Object();
-
-			$(form.color).each(function(idx, color) {
-				$(form.size).each(function(idx, size) {
-					/*[- 해당 색상과 사이즈의 data 속성의 값이 일치하면 배열에 추가 -]*/
-					if (color.value === $(size).data("color")) {
-						sizeArr.push(size.value);
-					}
-				});
-
-				$(form.quantity).each(function(idx, quantity) {
-					/*[- 해당 색상과 수량의 data 속성의 값이 일치하면 배열에 추가 -]*/
-					if (color.value === $(quantity).data("color")) {
-						/*[- 예시:) 사이즈가 200이고 수량이 5개인 경우 "200": 5와 같은 형태로 오브젝트에 추가 -]*/
-						option[String(sizeArr[idx])] = parseInt(quantity.value);
-					}
-				});
-
-				/*[- 예시:) 블루 색상의 경우 {"블루": {"200": 5}}와 같은 형태로 오브젝트에 추가 -]*/
-				options[color.value] = option;
-				/*[- 이전 색상의 사이즈, 수량의 정보를 지우기 위해 오브젝트를 재생성, delete options.XXX를 사용해도 됨 -]*/
-				option = new Object();
-			});
-
-			/*[- 전체 색상의 사이즈, 수량을 오브젝트에 추가 -]*/
-			param["options"] = options;
-			/*[- CombineDTO의 stock 인스턴스와 매핑 -]*/
-			params["stock"] = param;
-
-			/*[- 폼의 모든 입력 데이터를 array 형태로 serialize -]*/
-			var formArr = $(form).serializeArray();
-			$(formArr).each(function(idx, obj) {
-				if (isEmpty(obj.value) == false) {
-					/*[- 예시:) 이름이 나이키의 경우 "name": "나이키"와 같은 형태로 오브젝트에 추가 -]*/
-					params[obj.name] = obj.value;
-				}
-			});
-
-			/*[- params에 추가한 색상, 사이즈, 수량의 정보는 이미 존재하기 때문에 삭제 -]*/
-			delete params.color;
-			delete params.quantity;
-			delete params.size;
-
-			var formData = new FormData(form);
-			formData.append("stock.options", JSON.stringify(options));
-
-			var images = imgData.getAll("files");
-			if (isEmpty(images) == false) {
-				console.log(images);
-				$(images).each(function(idx, image) {
-					formData.append("files", image);
-				});
-			}
-
-			$.ajax({
-				url : form.action,
-				type : "post",
-// 				headers : {
-// 					"Content-Type" : "application/json",
-// 					"X-HTTP-Method-Override" : "post"
-// 				},
-				dataType : "json",
-				data : formData,
-// 				enctype: "multipart/form-data",
-				contentType : false,
-				processData : false, // 데이터를 일반적인 Query String으로 변환할 것인지를 결정하는 속성으로 기본값으로 true를 가짐
-// 				async : false,
-				success : function(response) {
-					console.log(response);
-// 					if (isEmpty(response.code) == false && response.result == true) {
-// 						uploadOfGoodsImage(response.code);
-// 					}
-				},
-				error : function(request, status, error) {
-					console.log(request);
-				}
-			});
-
-			return false;
-		}
-		
-		function uploadOfGoodsImage(code) {
-
-			if (isEmpty(code)) {
-				alert("잘못된 접근입니다. 새로고침 후 다시 시도해 주세요.");
-				return false;
-			}
-			
-			formData.append("code", code);
-			
-			$.ajax({
-				url : /*[[ @{/attach} ]]*/,
-				type : "post",
-				dataType : "json",
-				data : formData,
-				contentType : false,
-				processData : false, // 데이터를 일반적인 Query String으로 변환할 것인지를 결정하는 속성으로 기본값으로 true를 가짐
-			});
-		}
-			
-		function test(obj) {
-			$(obj).remove();
-		}
-		
-		function isEmpty(value) {
-			if (value == null || value == "" || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
-				return true;
-			}
-
-			return false;
-		}
-		
-		$.fn.serializeObject = function() {
-
-			  var result = {}
-			  var extend = function(i, element) {
-			    var node = result[element.name]
-			    if ("undefined" !== typeof node && node !== null) {
-			      if ($.isArray(node)) {
-			        node.push(element.value)
-			      } else {
-			        result[element.name] = [node, element.value]
-			      }
-			    } else {
-			      result[element.name] = element.value
-			    }
-			  }
-
-			  $.each(this.serializeArray(), extend)
-			  return result
-			}
-		/* ]]> */
-	</script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package com.dy.controller;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,12 +17,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dy.domain.GoodsDTO;
 import com.dy.service.GoodsService;
-import com.dy.util.AttachFileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -53,7 +52,8 @@ public class GoodsController {
 		} else {
 			try {
 				/* 상품 등록 */
-				boolean isInserted = ObjectUtils.isEmpty(files) == false ? goodsService.registerGoods(params, files) : goodsService.registerGoods(params);
+				boolean isInserted = ObjectUtils.isEmpty(files) == false ? goodsService.registerGoods(params, files)
+						: goodsService.registerGoods(params);
 				if (isInserted == false) {
 					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
 				} else {
@@ -182,23 +182,18 @@ public class GoodsController {
 	// end of method
 
 	@GetMapping("/goods/list")
-	public String openGoodsList() {
+	public String openGoodsList(Model model) {
 
+		List<GoodsDTO> goodsList = goodsService.getGoodsList();
+		model.addAttribute("goodsList", goodsList);
 		return "goods/list";
 	}
 
 	@GetMapping("/goods/details")
-	public String openGoodsDetails(Model model) {
+	public String openGoodsDetails(@RequestParam(value = "code", required = false) String code, Model model) {
 
-		List<GoodsDTO> goodsList = null;
-		try {
-			goodsList = goodsService.getGoodsList();
-		} catch (DataAccessException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		model.addAttribute("goodsList", goodsList);
+		GoodsDTO goods = goodsService.getGoodsDetails(code);
+		model.addAttribute("goods", goods);
 
 		return "goods/details";
 	}

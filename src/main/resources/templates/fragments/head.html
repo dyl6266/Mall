@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head th:fragment="basic">
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+		<!--/* Sns */-->
+		<meta property="og:type" content="website">
+		<meta property="og:site_name" content="사이트명">
+		<meta property="og:image" content="이미지 url">
+		<!--/* 비율은 2:1 */-->
+		<meta property="og:title" content="제목">
+		<meta property="og:description" content="설명">
+		<meta property="og:url" content="페이지 url">
+
+		<title>do-yonug's mall</title>
+
+		<!--/* Favicon */-->
+		<!--/* <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" /> */-->
+		<!--/* <link rel="icon" href="/images/favicon.ico" type="image/x-icon" /> */-->
+
+		<!--/* Css */-->
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+		<script>window.jQuery || document.write('<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}">')</script>
+
+		<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/css/media.css}" />
+
+		<!--/* IE9이하버전 css적용 */-->
+		<!--/* [if IE]>
+		<style>
+			select {padding: 0 0 0 5px;}
+		</style>
+		<! [endif] */-->
+
+		<!--/* Js */-->
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script>window.jQuery || document.write('<script th:src="@{/js/jquery-1.12.0.min.js}"><\/script>')</script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+		<script>window.jQuery || document.write('<script th:src="@{/js/jquery-ui.min.js}"><\/script>')</script>
+
+		<script type="text/javascript" th:src="@{/js/ui.js}"></script>
+		<script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+		<!--/* fragment 속성은 공통 레이아웃에서 선언하여, 실제 Content 페이지의 내용을 채우게 됨 */-->
+		<th:block layout:fragment="add-resource"></th:block>
+	</head>
+</html>
