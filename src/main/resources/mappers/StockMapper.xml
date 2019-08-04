@@ -42,7 +42,8 @@
 		UPDATE stock
 		SET
 			  update_time = NOW()
-			, options= #{options}
+			, color = #{color}
+			, options = #{options}
 		WHERE
 			code = #{code}
 	</update>
@@ -55,24 +56,32 @@
 			code = #{code}
 	</delete>
 
-	<select id="selectStockList" resultType="com.dy.domain.StockDTO">
+	<select id="selectStockList" parameterType="string" resultType="com.dy.domain.StockDTO">
 		SELECT
 			<include refid="stockColumns" />
 		FROM
 			stock
 		WHERE
 			delete_yn = 'N'
+		<if test="@com.dy.project.common.util.MyBatisUtils@isEmpty( code ) == false">
+			AND
+				code = #{code}
+		</if>
 		ORDER BY
 			idx DESC, insert_time DESC
 	</select>
 
-	<select id="selectStockTotalCount" resultType="int">
+	<select id="selectStockTotalCount" parameterType="string" resultType="int">
 		SELECT
 			COUNT(*)
 		FROM
 			stock
 		WHERE
 			delete_yn = 'N'
+		<if test="@com.dy.project.common.util.MyBatisUtils@isEmpty( code ) == false">
+			AND
+				code = #{code}
+		</if>
 	</select>
 
 	

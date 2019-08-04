@@ -3,7 +3,7 @@ package com.dy.common;
 public class Const {
 
 	public enum Status {
-		Y("판매"), N("판매 중지"), D("할인"), S("품절");
+		Y("정상"), N("중지"), D("할인"), S("품절"), R("환불");
 
 		private String status;
 

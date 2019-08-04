@@ -2,14 +2,12 @@ package com.dy.domain;
 
 import javax.validation.constraints.NotBlank;
 
-import com.dy.common.DTO;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CartDTO extends DTO {
+public class CartDTO extends CommonDTO {
 
 	/** 상품(카트) 번호 (PK) */
 	private Integer idx;

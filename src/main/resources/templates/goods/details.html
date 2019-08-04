@@ -14,43 +14,25 @@
 					<!-- slide -->
 					<div class="slide_wrap">
 						<div class="slide">
-							<div class="">
+							<!--/* 오브젝트 다음에 status(변수)를 지정할 수 있고, 지정하지 않은 경우 imageStat.index, size, count, even, odd, first, last와 같이 사용할 수 있음 */-->
+							<div class="" th:if="${not #arrays.isEmpty(images)}" th:each="image, status : ${images}">
 								<div class="img_wrap">
-									<span class="img_box"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-								</div>
-							</div>
-							<div class="">
-								<div class="img_wrap">
-									<span class="img_box"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-								</div>
-							</div>
-							<div class="">
-								<div class="img_wrap">
-									<span class="img_box"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-								</div>
-							</div>
-							<div class="">
-								<div class="img_wrap">
-									<span class="img_box"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-								</div>
-							</div>
-							<div class="">
-								<div class="img_wrap">
-									<span class="img_box"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
+									<span class="img_box">
+										<img th:src="@{/goods/images/} + ${image.storedName}" th:alt="shoes + ${status.index}" />
+									</span>
 								</div>
 							</div>
 						</div>
 						<div class="slide_pager">
-							<div class=""><img th:src="@{/images/common/thumb.jpg}" alt="" /></div>
-							<div class=""><img th:src="@{/images/common/thumb.jpg}" alt="" /></div>
-							<div class=""><img th:src="@{/images/common/thumb.jpg}" alt="" /></div>
-							<div class=""><img th:src="@{/images/common/thumb.jpg}" alt="" /></div>
-							<div class=""><img th:src="@{/images/common/thumb.jpg}" alt="" /></div>
-							<div class=""><img th:src="@{/images/common/thumb.jpg}" alt="" /></div>
+							<div class="" th:if="${not #arrays.isEmpty(images)}" th:each="image : ${images}">
+								<img th:src="@{/goods/images/} + ${image.storedName}" alt="shoes image" />
+							</div>
 						</div>
 						<script>
 							$(document).ready(function () {
 								$('.slide').slick({
+									autoplay: true,
+									autoplaySpeed: 1500,
 									slidesToShow: 1,
 									slidesToScroll: 1,
 									arrows: false,
@@ -69,134 +51,69 @@
 						</script>
 					</div>
 					<!-- //slide -->
-		
+
 					<!-- 상세정보 -->
 					<div class="pd_info_wrap">
-						<!-- 상세 이름, 가격, 별점 -->
-						<div class="pd_title_wrap">
-							<h1 th:text="${goods.name}" class="pd_title">상품명</h1>
-							<p th:text="${#numbers.formatInteger( goods.price, 3, 'COMMA' )}" class="pd_price">75,000 원</p>
-							<div class="pd_review">
-								<span class="ic_star ic_star3"></span>
-							</div> 
-						</div>
-						<!-- //상세 이름, 가격 -->
-		
-						<!-- 상세 옵션 -->
-						<div class="pd_option_wrap">
-							<div class="pd_option option_color">
-								<h2 class="tit">
-									색상
-								</h2>
-								<div class="cont">
-									<label for="black" class="radio_color">
-										<input type="radio" name="color" id="black" checked />
-										<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-									</label>
-									<label for="navy" class="radio_color">
-										<input type="radio" name="color" id="navy" />
-										<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-									</label>
-									<label for="blue" class="radio_color">
-										<input type="radio" name="color" id="blue" />
-										<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-									</label>
+						<form th:action="@{/goods/purchase}" th:object="${goods}" method="post" onsubmit="return validationOfForm(this)">
+							<!-- 상세 이름, 가격, 별점 -->
+							<div class="pd_title_wrap">
+								<h1 th:text="${goods.name}" class="pd_title">상품명</h1>
+								<p th:text="${#numbers.formatInteger( goods.price, 3, 'COMMA' )}" class="pd_price">75,000 원</p>
+								<div class="pd_review">
+									<span class="ic_star ic_star3"></span>
+								</div> 
+							</div>
+							<!-- //상세 이름, 가격 -->
+			
+							<!-- 상세 옵션 -->
+							<div class="pd_option_wrap">
+								<div class="pd_option option_color">
+									<h2 class="tit">
+										색상
+										<span th:text="${goods.stock.color}"></span>
+									</h2>
+									<!-- <div class="cont">
+										<label for="black" class="radio_color">
+											<input type="radio" name="color" id="black" checked />
+											<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
+										</label>
+										<label for="navy" class="radio_color">
+											<input type="radio" name="color" id="navy" />
+											<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
+										</label>
+										<label for="blue" class="radio_color">
+											<input type="radio" name="color" id="blue" />
+											<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
+										</label>
+									</div> -->
+								</div>
+			
+								<div class="pd_option option_size">
+									<h2 class="tit">사이즈</h2>
+									<div class="cont">
+										<label class="radio_size" th:if="${not #arrays.isEmpty( options )}" th:each="size : ${options.keySet()}" th:for="size + ${size}" th:classappend="${#strings.equals( options.get(size), '0' )} ? 'soldout'">
+											<input type="radio" name="size" id="size" th:value="${options.get(size)}" th:disabled="${#strings.equals( options.get(size), '0' )}" />
+											<span class="" th:text="${size}">사이즈</span>
+										</label>
+									</div>
+								</div>
+			
+								<div class="pd_option option_quantity">
+									<h2 class="tit">수량</h2>
+									<div class="cont">
+										<input type="text" id="quantity" name="quantity" value="1" />
+										<button type="button" class="btn_plus" onclick="addQuantity(document.getElementById('quantity'))">+</button>
+										<button type="button" class="btn_minus" onclick="reduceQuantity(document.getElementById('quantity'))">-</button>
+									</div>
 								</div>
 							</div>
-		
-							<div class="pd_option option_size">
-								<h2 class="tit">사이즈</h2>
-								<div class="cont">
-									<label for="size220" class="radio_size soldout">
-										<input type="radio" name="size" id="size220" disabled />
-										<span class="">220</span>
-									</label>
-									<label for="size225" class="radio_size soldout">
-										<input type="radio" name="size" id="size225" disabled />
-										<span class="">225</span>
-									</label>
-									<label for="size230" class="radio_size soldout">
-										<input type="radio" name="size" id="size230" disabled />
-										<span class="">230</span>
-									</label>
-									<label for="size235" class="radio_size active">
-										<input type="radio" name="size" id="size235" checked />
-										<span class="">235</span>
-									</label>
-									<label for="size240" class="radio_size">
-										<input type="radio" name="size" id="size240" />
-										<span class="">240</span>
-									</label>
-									<label for="size245" class="radio_size soldout">
-										<input type="radio" name="size" id="size245" disabled />
-										<span class="">245</span>
-									</label>
-									<label for="size250" class="radio_size soldout">
-										<input type="radio" name="size" id="size250" disabled />
-										<span class="">250</span>
-									</label>
-									<label for="size255" class="radio_size">
-										<input type="radio" name="size" id="size255" />
-										<span class="">255</span>
-									</label>
-									<label for="size260" class="radio_size">
-										<input type="radio" name="size" id="size260" />
-										<span class="">260</span>
-									</label>
-									<label for="size265" class="radio_size">
-										<input type="radio" name="size" id="size265" />
-										<span class="">265</span>
-									</label>
-									<label for="size270" class="radio_size">
-										<input type="radio" name="size" id="size270" />
-										<span class="">270</span>
-									</label>
-									<label for="size275" class="radio_size soldout">
-										<input type="radio" name="size" id="size275" disabled />
-										<span class="">275</span>
-									</label>
-									<label for="size280" class="radio_size soldout">
-										<input type="radio" name="size" id="size280" disabled />
-										<span class="">280</span>
-									</label>
-									<label for="size285" class="radio_size soldout">
-										<input type="radio" name="size" id="size285" disabled />
-										<span class="">285</span>
-									</label>
-									<label for="size290" class="radio_size">
-										<input type="radio" name="size" id="size290" />
-										<span class="">290</span>
-									</label>
-									<label for="size295" class="radio_size">
-										<input type="radio" name="size" id="size295" />
-										<span class="">295</span>
-									</label>
-									<label for="size300" class="radio_size">
-										<input type="radio" name="size" id="size300" />
-										<span class="">300</span>
-									</label>
-									<label for="size305" class="radio_size">
-										<input type="radio" name="size" id="size305" />
-										<span class="">305</span>
-									</label>
-								</div>
+							<!-- //상세 옵션 -->
+			
+							<div class="btn_wrap">
+								<a href="#" class="btn btn_black">장바구니 담기</a>
+								<button type="submit" class="btn btn_orange">바로구매</button>
 							</div>
-		
-							<div class="pd_option option_quantity">
-								<h2 class="tit">수량</h2>
-								<div class="cont">
-									<input type="text" value="1" />
-									<button type="button" class="btn_plus">+</button>
-									<button type="button" class="btn_minus">-</button>
-								</div>
-							</div>
-						</div>
-						<!-- //상세 옵션 -->
-		
-						<div class="btn_wrap">
-							<a href="#" class="btn btn_black">장바구니 담기</a>
-							<a href="#" class="btn btn_orange">바로구매</a>
-						</div>
+						</form>
 					</div>
 					<!-- //상세정보 -->
 		
@@ -323,34 +240,71 @@
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
 			/* <![CDATA[ */
-				
-				$(function() {
-					var uri = /*[[ @{/goods/} + ${goods.code} ]]*/;
 
-					$.ajax({
-						url : uri,
-						type : "get",
-						headers: {
-							"Content-Type" : "application/json",
-							"X-HTTP-Method-Override" : "get"
-						 },
-						dataType : "json",
-						async : false,
-						success : function(response) {
-							var options = JSON.parse(response.goods.stock.options);
-							var colors = Object.keys(options);
-							var test = options[colors];
-							$(colors).each(function(idx, color) {
-								$(".option_color > h2").append("<span>"+color+"</span>");
-							});
-						},
-						error : function(request, status, error) {
-							alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
-						}
-					});
-		
-					return false;
+			/*[- 사이즈 lables -]*/
+			$(function() {
+				var lables = $(".radio_size").not(".soldout");
+
+				lables.children("span").on("click", function() {
+					lables.removeClass("active");
+					$(this).parent().addClass("active");
+					$(this).siblings("input").prop("checked", true);
 				});
+			});
+			
+			function validationOfForm(form) {
+				
+				if ( isEmpty(form.size.value) ) {
+					alert("사이즈를 선택해 주세요.");
+					return false;
+				}
+				console.log(form.size.value);
+				return false;
+			}
+
+			function addQuantity(obj) {
+				var quantity = parseInt(obj.value);
+				obj.value = quantity + 1;
+			}
+
+			function reduceQuantity(obj) {
+				
+				var quantity = parseInt(obj.value);
+				if (quantity <= 1) {
+					alert("수량은 최소 1개까지 설정할 수 있습니다.");
+					return false;
+				}
+
+				obj.value = quantity - 1;
+			}
+			
+// 				$(function() {
+// 					var uri = /*[[ @{/goods/} + ${goods.code} ]]*/;
+
+// 					$.ajax({
+// 						url : uri,
+// 						type : "get",
+// 						headers: {
+// 							"Content-Type" : "application/json",
+// 							"X-HTTP-Method-Override" : "get"
+// 						 },
+// 						dataType : "json",
+// 						async : false,
+// 						success : function(response) {
+// 							var options = JSON.parse(response.goods.stock.options);
+// 							var colors = Object.keys(options);
+// 							var test = options[colors];
+// 							$(colors).each(function(idx, color) {
+// 								$(".option_color > h2").append("<span>"+color+"</span>");
+// 							});
+// 						},
+// 						error : function(request, status, error) {
+// 							alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
+// 						}
+// 					});
+		
+// 					return false;
+// 				});
 
 			/* ]]> */
 		</script>

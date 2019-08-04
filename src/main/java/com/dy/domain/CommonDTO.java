@@ -1,4 +1,4 @@
-package com.dy.common;
+package com.dy.domain;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DTO {
+public class CommonDTO {
 
 	/** 삭제 여부 */
 	private YesNo deleteYn;

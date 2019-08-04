@@ -1,13 +1,11 @@
 package com.dy.domain;
 
-import com.dy.common.DTO;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AttachDTO extends DTO {
+public class AttachDTO extends CommonDTO {
 
 	/** 첨부 번호 (PK) */
 	private Integer idx;

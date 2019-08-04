@@ -1,10 +1,13 @@
 package com.dy.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -129,6 +132,26 @@ public class GoodsServiceImpl implements GoodsService {
 		}
 
 		return goods;
+	}
+
+	@Override
+	public Map<String, Object> getGoodsDetailsWithImages(String code) {
+
+		Map<String, Object> map = new HashMap<>();
+
+		GoodsDTO goods = goodsMapper.selectGoodsDetails(code);
+		if (goods != null) {
+			StockDTO stock = stockMapper.selectStockDetails(code);
+			goods.setStock(stock);
+		}
+		map.put("goods", goods);
+
+		List<AttachDTO> attachList = attachMapper.selectAttachList(code);
+		if (CollectionUtils.isEmpty(attachList) == false) {
+			map.put("images", attachList);
+		}
+
+		return map;
 	}
 
 	@Override

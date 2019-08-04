@@ -2,7 +2,6 @@ package com.dy.domain;
 
 import javax.validation.constraints.NotBlank;
 
-import com.dy.common.DTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -11,7 +10,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class StockDTO extends DTO {
+public class StockDTO extends CommonDTO {
 
 	/** 상품(재고) 번호 (PK) */
 	private Integer idx;

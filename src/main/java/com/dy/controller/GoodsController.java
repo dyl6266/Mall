@@ -1,13 +1,22 @@
 package com.dy.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dy.domain.GoodsDTO;
 import com.dy.service.GoodsService;
+import com.dy.util.MediaUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -71,6 +81,7 @@ public class GoodsController {
 			} catch (Exception e) {
 				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
 				jsonObj.addProperty("result", false);
+				e.printStackTrace();
 			}
 		}
 
@@ -182,10 +193,11 @@ public class GoodsController {
 		return jsonObj;
 	}
 	// end of method
-	
+
 	@GetMapping(value = "/goods/register")
-	public String openGoodsRegister() {
-		
+	public String openGoodsRegister(Model model) {
+
+		model.addAttribute("goods", new GoodsDTO());
 		return "goods/register";
 	}
 
@@ -200,35 +212,56 @@ public class GoodsController {
 	@GetMapping("/goods/details")
 	public String openGoodsDetails(@RequestParam(value = "code", required = false) String code, Model model) {
 
-		GoodsDTO goods = goodsService.getGoodsDetails(code);
-		model.addAttribute("goods", goods);
+		Map<String, Object> map = goodsService.getGoodsDetailsWithImages(code);
+		for (String key : map.keySet()) {
+			model.addAttribute(key, map.get(key));
+		}
 
-		Gson gson = new GsonBuilder().create();
+		if (map.get("goods") != null) {
+			GoodsDTO goods = (GoodsDTO) map.get("goods");
+			String optionsStr = goods.getStock().getOptions();
 
-		String optionsStr = goods.getStock().getOptions();
-		JsonObject jsonObj = gson.fromJson(optionsStr, JsonObject.class);
+			JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
+			model.addAttribute("options", options);
+		}
 
-//		List<HashMap<String, Object>> options = new ArrayList<>();
-		HashMap<String, HashMap<String, Object>> options = new HashMap<>();
-
-		// 색상을 담는 List
-		List<String> colors = new ArrayList<>();
-
-//		for (String color : jsonObj.keySet()) {
-//			colors.add(color);
-//
-//			System.out.println("color : " + color);
-//			JsonElement jsonElem = jsonObj.get(color);
-//
-//			// {210=1.0, 200=1.0} 형태의 데이터를 갖는 Map
-//			HashMap<String, Object> colorsMap = gson.fromJson(jsonElem, HashMap.class);
-//			for (String size : colorsMap.keySet()) {
-//				
-//			}
-//		}
-
-		model.addAttribute("options", options);
 		return "goods/details";
+	}
+
+	@GetMapping(value = "/goods/images/{filename}")
+	@ResponseBody
+	public ResponseEntity<byte[]> printGoodsImages(@PathVariable("filename") String filename) {
+
+		ResponseEntity<byte[]> entity = null;
+
+		String ext = FilenameUtils.getExtension(filename);
+		MediaType mediaType = MediaUtils.getMediaType(ext);
+
+		if (ObjectUtils.isEmpty(mediaType)) {
+			return null;
+		}
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(mediaType);
+
+		InputStream input = null;
+		try {
+			input = new FileInputStream("/upload" + File.separator + "19-08-05" + File.separator + filename);
+			byte[] fileBytes = IOUtils.toByteArray(input);
+
+			entity = new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+			input.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		return entity;
 	}
 
 }

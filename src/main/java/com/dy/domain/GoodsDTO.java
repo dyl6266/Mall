@@ -5,14 +5,13 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import com.dy.common.Const.Status;
-import com.dy.common.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class GoodsDTO extends DTO {
+public class GoodsDTO extends CommonDTO {
 
 	/** 상품 번호 (PK) */
 	private Integer idx;

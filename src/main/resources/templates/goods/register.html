@@ -242,7 +242,7 @@
 </div>
 
 <div>
-	<form name="form" th:action="@{/goods}" method="post" onsubmit="return validationOfForm(this)" enctype="multipart/form-data">
+	<form name="form" th:action="@{/goods}" th:object="${goods}" method="post" onsubmit="return validationOfForm(this)" enctype="multipart/form-data">
 		<table>
 			<colgroup>
 				<col width="190px" />
@@ -251,20 +251,20 @@
 			<tbody>
 				<tr>
 					<th>이 름</th>
-					<td><input type="text" name="name" value="테스트 상품" /></td>
+					<td><input type="text" th:field="*{name}" /></td>
 				</tr>
 				<tr>
 					<th>설 명</th>
-					<td><textarea name="description">테스트 상품입니다.</textarea></td>
+					<td><textarea th:field="*{description}"></textarea></td>
 				</tr>
 				<tr>
 					<th>가 격</th>
-					<td><input type="text" name="price" value="15000" /></td>
+					<td><input type="text" th:field="*{price}" /></td>
 				</tr>
 				<tr>
 					<th>색 상</th>
-					<td id="hehe">
-						<input type="text" name="color" maxlength="10" value="블루" />
+					<td>
+						<input type="text" th:field="*{stock.color}" maxlength="10" />
 					</td>
 				</tr>
 				<!-- <tr>
@@ -277,13 +277,11 @@
 					</td>
 				</tr> -->
 				<tr>
-					<!--/* 체크박스로 구현할지 입력으로 구현할지 생각해보기 */-->
 					<th>사 이 즈</th>
 					<td>
 						<ul id="optionsUl">
 							<li th:each="seq : ${#numbers.sequence( 200, 250, 5 )}">
 								<span th:text="${seq}" th:attr="data-size=${seq}"></span>
-								<!-- <input type="text" name="size" th:value ="${seq}" /> -->
 								<input type="text" name="quantity" value ="0" />
 							</li>
 						</ul>
@@ -363,7 +361,7 @@
 			$("#optionsUl > li").each(function(idx, obj) {
 				var size = $(obj).children("span").text();
 				var quantity = $(obj).children("input").val();
-				options[size] = quantity;
+				options[String(size)] = parseInt(quantity);
 			});
 
 			var formData = new FormData(form);
@@ -388,6 +386,7 @@
 				async : false, // Ajax 아이콘 처리를 하려면 주석 처리하기
 				success : function(response) {
 					console.log(response);
+					alert(response.message);
 // 					if (isEmpty(response.code) == false && response.result == true) {
 // 						uploadOfGoodsImage(response.code);
 // 					}

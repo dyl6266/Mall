@@ -20,7 +20,7 @@ import com.dy.domain.AttachDTO;
 public class AttachFileUtils {
 
 	/* 업로드 경로 */
-	public final static String uploadPath = "C:" + File.separator + "upload" + File.separator
+	private final static String uploadPath = "C:" + File.separator + "upload" + File.separator
 			+ CommonUtils.getCurrentTime().substring(2, 10);
 
 	private static boolean makeThumbnail(String storedName, String extension) {
@@ -56,7 +56,7 @@ public class AttachFileUtils {
 	public static List<AttachDTO> uploadFiles(MultipartFile[] files, String code) {
 
 		/* 파일의 정보를 담는 List */
-		List<AttachDTO> attachList = null;
+		List<AttachDTO> attachList = new ArrayList<>();
 
 		/* uploadPath에 해당하는 디렉터리가 존재하지 않으면, 부모 디렉터리를 포함한 모든 디렉터리를 생성 */
 		File target = new File(uploadPath);
@@ -94,7 +94,6 @@ public class AttachFileUtils {
 				attach.setSize(file.getSize());
 
 				/* 파일 정보 추가 */
-				attachList = new ArrayList<>();
 				attachList.add(attach);
 			} catch (IOException e) {
 				// TODO => 예외 핸들링 처리하기

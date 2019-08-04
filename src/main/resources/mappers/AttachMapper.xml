@@ -14,7 +14,7 @@
 		, update_time
 	</sql>
 
-	<insert id="attachColumns" parameterType="com.dy.domain.AttachDTO">
+	<insert id="insertAttach" parameterType="com.dy.domain.AttachDTO">
 		INSERT INTO attach (
 			<include refid="attachColumns" />
 		) VALUES (
@@ -60,7 +60,7 @@
 			idx = #{idx}
 	</delete>
 
-	<select id="selectAttachList" resultType="com.dy.domain.AttachDTO">
+	<select id="selectAttachList" parameterType="string" resultType="com.dy.domain.AttachDTO">
 		SELECT
 			<include refid="attachColumns" />
 		FROM
