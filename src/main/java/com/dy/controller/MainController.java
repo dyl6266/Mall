@@ -21,4 +21,10 @@ public class MainController {
 		return "upload";
 	}
 
+	@GetMapping(value = "/login")
+	public String openLoginPage() {
+
+		return "login";
+	}
+
 }

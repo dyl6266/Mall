@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dy.mapper.AuthorityMapper">
+
+	<sql id="authorityColumns">
+		  idx
+		, username
+		, name
+		, delete_yn
+		, insert_user
+		, insert_time
+		, update_user
+		, update_time
+	</sql>
+
+	<insert id="insertUserAuthority" parameterType="com.dy.domain.AuthorityDTO">
+		INSERT INTO authority (
+			<include refid="authorityColumns" />
+		) VALUES (
+			  #{idx}
+			, #{username}
+			, IFNULL(#{name}, 'MEMBER')
+			, 'N'
+			, IFNULL(#{username}, 'ADMIN')
+			, NOW()
+			, NULL
+			, NULL
+		)
+	</insert>
+
+	<update id="updateUserAuthority" parameterType="AuthorityDTO">
+		UPDATE authority
+		SET
+			  update_time = NOW()
+			, update_user = IFNULL(#{username}, 'ADMIN')
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( name ) == false">
+			, name = #{name}
+		WHERE
+			username = #{username}
+		</if>
+	</update>
+
+	<delete id="deleteUserAuthority" parameterType="AuthorityDTO">
+		DELETE FROM authority
+		WHERE
+			username = #{username}
+		AND
+			name = #{name}
+	</delete>
+
+	<select id="selectUserAuthorities" parameterType="string" resultType="org.springframework.security.core.authority.SimpleGrantedAuthority">
+		SELECT
+			name
+		FROM
+			authority
+		WHERE
+			delete_yn = 'N'
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( value ) == false">
+		AND
+			username = #{value}
+		</if>
+	</select>
+
+	<select id="selectUserAuthorityTotalCount" parameterType="AuthorityDTO" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			authority
+		WHERE
+			delete_yn = 'N'
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( username ) == false">
+		AND
+			username = #{username}
+		</if>
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( name ) == false">
+		AND
+			name = #{name}
+		</if>
+	</select>
+
+</mapper>

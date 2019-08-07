@@ -14,7 +14,7 @@
 		, update_time
 	</sql>
 
-	<insert id="insertAttach" parameterType="com.dy.domain.AttachDTO">
+	<insert id="insertAttach" parameterType="AttachDTO">
 		INSERT INTO attach (
 			<include refid="attachColumns" />
 		) VALUES (
@@ -29,7 +29,7 @@
 		)
 	</insert>
 
-	<select id="selectAttachDetails" parameterType="integer" resultType="com.dy.domain.AttachDTO">
+	<select id="selectAttachDetails" parameterType="integer" resultType="AttachDTO">
 		SELECT
 			<include refid="attachColumns" />
 		FROM
@@ -40,7 +40,7 @@
 			idx = #{idx}
 	</select>
 
-	<update id="updateAttach" parameterType="com.dy.domain.AttachDTO">
+	<update id="updateAttach" parameterType="AttachDTO">
 		UPDATE attach
 		SET
 			  update_time = NOW()
@@ -60,7 +60,7 @@
 			idx = #{idx}
 	</delete>
 
-	<select id="selectAttachList" parameterType="string" resultType="com.dy.domain.AttachDTO">
+	<select id="selectAttachList" parameterType="string" resultType="AttachDTO">
 		SELECT
 			<include refid="attachColumns" />
 		FROM

@@ -8,8 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.dy.common.Const.Authority;
+import com.dy.common.Const.Status;
 import com.dy.common.Const.TableName;
 import com.dy.domain.GoodsDTO;
 import com.dy.domain.StockDTO;
@@ -35,7 +38,22 @@ public class ServiceTests {
 
 	@Autowired
 	private GoodsMapper goodsMapper;
-	
+
+	@Autowired
+	private PasswordEncoder encoder;
+
+	@Test
+	public void 회원가입() {
+		String test = encoder.encode("1234");
+		System.out.println(test);
+//		MemberDTO member = new MemberDTO();
+//		member.setEmail("dyl6266@naver.com");
+//		member.setPassword(encoder.encode("flehdud##@*2436"));
+//		member.setName("이도영");
+//		member.setPhone("01033282436");
+//		memberMapper.insertMember(member);
+	}
+
 	@Test
 	public void 재고_조회() {
 		StockDTO stock = stockMapper.selectStockDetails("GOODS-00001");

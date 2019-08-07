@@ -12,7 +12,7 @@
 		, update_time
 	</sql>
 
-	<insert id="insertGoodsToCart" parameterType="com.dy.domain.CartDTO">
+	<insert id="insertGoodsToCart" parameterType="CartDTO">
 		INSERT INTO cart (
 			<include refid="cartColumns" />
 		) VALUES (
@@ -36,7 +36,7 @@
 			</foreach>
 	</delete>
 
-	<select id="selectGoodsListInCart" parameterType="string" resultType="com.dy.domain.GoodsDTO">
+	<select id="selectGoodsListInCart" parameterType="string" resultType="GoodsDTO">
 		SELECT
 			<include refid="cartColumns" />
 		FROM

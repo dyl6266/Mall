@@ -13,7 +13,7 @@
 		, update_time
 	</sql>
 
-	<insert id="insertStock" parameterType="com.dy.domain.StockDTO">
+	<insert id="insertStock" parameterType="StockDTO">
 		INSERT INTO stock (
 			<include refid="stockColumns" />
 		) VALUES (
@@ -27,7 +27,7 @@
 		)
 	</insert>
 
-	<select id="selectStockDetails" parameterType="string" resultType="com.dy.domain.StockDTO">
+	<select id="selectStockDetails" parameterType="string" resultType="StockDTO">
 		SELECT
 			<include refid="stockColumns" />
 		FROM
@@ -38,7 +38,7 @@
 			code = #{code}
 	</select>
 
-	<update id="updateStock" parameterType="com.dy.domain.StockDTO">
+	<update id="updateStock" parameterType="StockDTO">
 		UPDATE stock
 		SET
 			  update_time = NOW()
@@ -56,7 +56,7 @@
 			code = #{code}
 	</delete>
 
-	<select id="selectStockList" parameterType="string" resultType="com.dy.domain.StockDTO">
+	<select id="selectStockList" parameterType="string" resultType="StockDTO">
 		SELECT
 			<include refid="stockColumns" />
 		FROM

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- TODO => 여유가 있을 때, resultMap으로 변경하기 isXXX와 컬럼이 매핑이 되지 않음 -->
+<mapper namespace="com.dy.mapper.UserMapper">
+
+	<sql id="userColumns">
+		  idx
+		, username
+		, password
+		, nickname
+		, phone
+		, account_non_expired
+		, account_non_locked
+		, credentials_non_expired
+		, enabled
+		, delete_yn
+		, insert_user
+		, insert_time
+		, update_user
+		, update_time
+	</sql>
+
+	<insert id="insertUser" parameterType="UserDTO">
+		INSERT INTO user (
+			<include refid="userColumns" />
+		) VALUES (
+			  #{idx}
+			, #{username}
+			, #{password}
+			, #{nickname}
+			, #{phone}
+			, #{accountNonExpired}
+			, #{accountNonLocked}
+			, #{credentialsNonExpired}
+			, #{enabled}
+			, 'N'
+			, IFNULL(#{username}, 'ADMIN')
+			, NOW()
+			, NULL
+			, NULL
+		)
+	</insert>
+
+	<select id="selectUserDetails" parameterType="string" resultType="UserDTO">
+		SELECT
+			<include refid="userColumns" />
+		FROM
+			user
+		WHERE
+			delete_yn = 'N'
+		AND
+			username = #{username}
+     </select>
+
+	<update id="updateUser" parameterType="UserDTO">
+		UPDATE user
+		SET
+			  update_time = NOW()
+			, update_user = IFNULL(#{username}, 'ADMIN')
+			, nickname = #{nickname}
+			, phone = #{phone}
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( password ) == false">
+			, password = #{password}
+		</if>
+		WHERE
+			username = #{username}
+	</update>
+
+	<update id="deleteUser" parameterType="string">
+		UPDATE user
+		SET
+			delete_yn = 'Y'
+		WHERE
+			username = #{username}
+	</update>
+
+	<select id="selectUserList" resultType="UserDTO">
+		SELECT
+			<include refid="userColumns" />
+		FROM
+			user
+		WHERE
+			delete_yn = 'N'
+	</select>
+
+	<select id="selectUserTotalCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			user
+		WHERE
+			delete_yn = 'N'
+	</select>
+
+</mapper>

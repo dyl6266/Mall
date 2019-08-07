@@ -3,16 +3,36 @@ package com.dy.common;
 public class Const {
 
 	public enum Status {
-		Y("정상"), N("중지"), D("할인"), S("품절"), R("환불");
+		Y("정상", 1), N("중지", 0), D("할인", null), S("품절", null), R("환불", null);
 
-		private String status;
+		private String strValue;
+		private Integer intValue;
 
-		private Status(String status) {
-			this.status = status;
+		private Status(String strValue, Integer intValue) {
+			this.strValue = strValue;
+			this.intValue = intValue;
 		}
 
-		public String getStatus() {
-			return status;
+		public String getStrValue() {
+			return strValue;
+		}
+
+		public Integer getIntValue() {
+			return intValue;
+		}
+	}
+
+	public enum Authority {
+		USER("U"), MANAGER("M"), ADMIN("A");
+
+		private String authority;
+
+		private Authority(String authority) {
+			this.authority = authority;
+		}
+
+		public String getAuthority() {
+			return authority;
 		}
 	}
 
@@ -21,7 +41,7 @@ public class Const {
 	}
 
 	public enum TableName {
-		GOODS("상품"), STOCK("재고"), CART("장바구니");
+		MEMBER("회원"), GOODS("상품"), STOCK("재고"), CART("장바구니"), REVIEW("리뷰"), PURCHASE("구매"), ATTACH("첨부 파일");
 
 		private String tableName;
 

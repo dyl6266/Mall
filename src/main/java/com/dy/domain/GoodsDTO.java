@@ -31,7 +31,7 @@ public class GoodsDTO extends CommonDTO {
 	@Min(value = 1000, message = "상품 가격은 최소 1,000원 이상이어야 합니다.")
 	private int price;
 
-	/** 상품 상태 */
+	/** 상태 (Y : 정상 | N : 중지 | D : 할인 | S : 품절) */
 	private Status status;
 
 	/** 재고 정보 */

@@ -14,8 +14,14 @@ public class CommonDTO {
 	/** 삭제 여부 */
 	private YesNo deleteYn;
 
+	/** 등록한 사용자 */
+	private String insertUser;
+
 	/** 등록일 */
 	private Date insertTime;
+
+	/** 수정한 사용자 */
+	private String updateUser;
 
 	/** 수정일 */
 	private Date updateTime;

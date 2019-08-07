@@ -228,9 +228,10 @@ public class GoodsController {
 		return "goods/details";
 	}
 
-	@GetMapping(value = "/goods/images/{filename}")
+	@GetMapping(value = "/goods/images/{time}/{filename}")
 	@ResponseBody
-	public ResponseEntity<byte[]> printGoodsImages(@PathVariable("filename") String filename) {
+	public ResponseEntity<byte[]> printGoodsImages(@PathVariable("time") String time,
+			@PathVariable("filename") String filename) {
 
 		ResponseEntity<byte[]> entity = null;
 
@@ -246,7 +247,7 @@ public class GoodsController {
 
 		InputStream input = null;
 		try {
-			input = new FileInputStream("/upload" + File.separator + "19-08-05" + File.separator + filename);
+			input = new FileInputStream(File.separator + "upload" + File.separator + time + File.separator + filename);
 			byte[] fileBytes = IOUtils.toByteArray(input);
 
 			entity = new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);

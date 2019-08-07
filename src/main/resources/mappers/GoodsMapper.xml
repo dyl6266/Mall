@@ -15,7 +15,7 @@
 		, update_time
 	</sql>
 
-	<insert id="insertGoods" parameterType="com.dy.domain.GoodsDTO">
+	<insert id="insertGoods" parameterType="GoodsDTO">
 		INSERT INTO goods (
 			<include refid="goodsColumns" />
 		) VALUES (
@@ -31,7 +31,7 @@
 		)
 	</insert>
 
-	<select id="selectGoodsDetails" parameterType="string" resultType="com.dy.domain.GoodsDTO">
+	<select id="selectGoodsDetails" parameterType="string" resultType="GoodsDTO">
 		SELECT
 			<include refid="goodsColumns" />
 		FROM
@@ -42,7 +42,7 @@
 			code = #{code}
 	</select>
 
-	<update id="updateGoods" parameterType="com.dy.domain.GoodsDTO">
+	<update id="updateGoods" parameterType="GoodsDTO">
 		UPDATE goods
 		SET
 			  update_time = NOW()
@@ -63,7 +63,7 @@
 			</foreach>
 	</delete>
 
-	<select id="selectGoodsList" resultType="com.dy.domain.GoodsDTO">
+	<select id="selectGoodsList" resultType="GoodsDTO">
 		SELECT
 			<include refid="goodsColumns" />
 		FROM
