@@ -4,6 +4,24 @@
 <!-- TODO => 여유가 있을 때, resultMap으로 변경하기 isXXX와 컬럼이 매핑이 되지 않음 -->
 <mapper namespace="com.dy.mapper.UserMapper">
 
+	<!-- <resultMap id="userResultMap" type="UserDTO">
+		<id property="idx" column="idx" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="nickname" column="nickname" />
+		<result property="phone" column="phone" />
+		<result property="accountNonExpired" column="account_non_expired" />
+		<result property="accountNonLocked" column="account_non_locked" />
+		<result property="credentialsNonExpired" column="credentials_non_expired" />
+		<result property="enabled" column="enabled" />
+		<result property="deleteYn" column="delete_yn" />
+		<result property="insertUser" column="insert_user" />
+		<result property="insertTime" column="insert_time" />
+		<result property="updateUser" column="update_user" />
+		<result property="updateTime" column="update_time" />
+		<collection property="authorities" javaType="collection" ofType="AuthorityDTO" />
+	</resultMap> -->
+
 	<sql id="userColumns">
 		  idx
 		, username

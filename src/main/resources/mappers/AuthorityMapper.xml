@@ -20,7 +20,7 @@
 		) VALUES (
 			  #{idx}
 			, #{username}
-			, IFNULL(#{name}, 'MEMBER')
+			, IFNULL(#{name, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 'MEMBER')
 			, 'N'
 			, IFNULL(#{username}, 'ADMIN')
 			, NOW()
@@ -35,7 +35,7 @@
 			  update_time = NOW()
 			, update_user = IFNULL(#{username}, 'ADMIN')
 		<if test="@com.dy.util.MyBatisUtils@isEmpty( name ) == false">
-			, name = #{name}
+			, name = #{name, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
 		WHERE
 			username = #{username}
 		</if>
@@ -51,7 +51,7 @@
 
 	<select id="selectUserAuthorities" parameterType="string" resultType="org.springframework.security.core.authority.SimpleGrantedAuthority">
 		SELECT
-			name
+			CONCAT('ROLE_', name) AS name
 		FROM
 			authority
 		WHERE
@@ -75,7 +75,7 @@
 		</if>
 		<if test="@com.dy.util.MyBatisUtils@isEmpty( name ) == false">
 		AND
-			name = #{name}
+			name = #{name, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
 		</if>
 	</select>
 

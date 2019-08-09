@@ -70,8 +70,8 @@ public class GoodsController {
 					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
 				} else {
 					jsonObj.addProperty("message", "상품 등록이 완료되었습니다.");
-					jsonObj.addProperty("result", isInserted);
 				}
+				jsonObj.addProperty("result", isInserted);
 				// end of else
 
 			} catch (DataAccessException e) {

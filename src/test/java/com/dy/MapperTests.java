@@ -32,11 +32,11 @@ public class MapperTests {
 
 //	@Test
 //	public void 가입() {
-//		UserDTO user = new UserDTO("dyl3328", encoder.encode("dkdrlahfl1234"), "도링도링", "01033282436");
+//		UserDTO user = new UserDTO("dyl2436", encoder.encode("1231233"), "도영도영", "01033282436");
 //		try {
 //			int result = userMapper.insertUser(user);
 //			if (result > 0) {
-//				AuthorityDTO auth = new AuthorityDTO(user.getUsername(), null);
+//				AuthorityDTO auth = new AuthorityDTO(user.getUsername(), "MANAGER");
 //				authMapper.insertUserAuthority(auth);
 //			}
 //		} catch (DataAccessException e) {
@@ -44,10 +44,10 @@ public class MapperTests {
 //		}
 //	}
 //
-//	@Test
-//	public void 조회() {
-//		UserDTO user = userMapper.selectUserDetails("dyl62661");
-//	}
+	@Test
+	public void 조회() {
+		UserDTO user = userMapper.selectUserDetails("dyl2436");
+	}
 //
 //	@Test
 //	public void 수정() {

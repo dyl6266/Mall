@@ -217,13 +217,52 @@
 					</div>
 					<!-- //상세설명 -->
 
-					<div class="popup_wrap" id="reviewPop" style="display: none;">
+					<!-- 리뷰 팝업 -->
+					<div class="popup_wrap" id="reviewPop" style="display: block;">
 						<div class="popup_inner">
 							<div class="popup_header">
 								<p>리뷰쓰기</p>
+								<a href="#none" class="btn btn_close" onclick="popClose(this);">닫기</a>
 							</div>
 							<div class="popup_contents">
-
+								<div class="review_info fl_wrap">
+									<div class="img_box"><img th:src="@{/images/common/thumb.jpg}" alt="" /></div>
+									<div class="txt_box">
+										<p>도영이 신발 도영이 신발</p>
+										<strong>75,000 원</strong>
+									</div>
+								</div>
+								<div class="review_star">
+									<span class="icon ic_star_lg active"></span>
+									<span class="icon ic_star_lg active"></span>
+									<span class="icon ic_star_lg active"></span>
+									<span class="icon ic_star_lg"></span>
+									<span class="icon ic_star_lg"></span>
+								</div>
+								<div class="review_cont">
+									<textarea name="" id="" placeholder="상품리뷰를 입력해주세요."></textarea>
+									<div class="filebox">
+										<!-- <input type="text" readonly="readonly" title="File Route" id="file_route"> -->
+										<label class="btn btn_black">
+											사진 추가
+											<input type="file">
+											<!-- <input type="file" onchange="javascript:document.getElementById('file_route').value=this.value"> -->
+										</label>
+									</div>
+									<ul class="add_photo">
+										<li>
+											<img th:src="@{/images/common/thumb.jpg}" alt="" />
+											<button type="button" class="btn_delete">삭제</button>
+										</li>
+										<li>
+											<img th:src="@{/images/common/thumb.jpg}" alt="" />
+											<button type="button" class="btn_delete">삭제</button>
+										</li>
+									</ul>
+								</div>
+								<div class="btn_wrap">
+									<input type="submit" value="작성완료" class="btn btn_orange" />
+								</div>
 							</div>
 						</div>
 						<div class="popup_bg" onclick="popClose(this);"></div>
@@ -309,4 +348,5 @@
 			/* ]]> */
 		</script>
 	</th:block>
+
 </html>

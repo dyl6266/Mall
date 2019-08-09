@@ -40,4 +40,6 @@ dependencies {
 	compile group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2' // Thumbnail
 	compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.1' // File Upload
 	compile group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '2.3.0' // Thymeleaf Layout Dialect
+	compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
+	//compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity4', version: '3.0.2.RELEASE' // Thymeleaf With Securit
 }

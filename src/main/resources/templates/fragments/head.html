@@ -14,6 +14,10 @@
 		<meta property="og:description" content="설명">
 		<meta property="og:url" content="페이지 url">
 
+		<!--/* spring security csrf */-->
+		<meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+		<!--/* <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}" /> */-->
+
 		<title>do-yonug's mall</title>
 
 		<!--/* Favicon */-->

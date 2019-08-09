@@ -1,10 +1,24 @@
 $(function(){
+	// Go top
+	$(".go_top").click( function(){
+	  $("html, body").animate({ scrollTop : 0 }, 500);
+	  return false;
+	});
+
+
 	// Gnb
 	$(".gnb_wrap .depth1 > li").hover(function(){
 		$(".header_wrap").addClass("active");
 	});
 	$(".gnb").mouseleave(function(){
 		$(".header_wrap").removeClass("active");
+	});
+
+
+	// Sticky menu
+	$(window).scroll(function(){
+		var scrollTop = $(document).scrollTop();
+		scrollTop > 1 ? $(".go_top").addClass("active") : $(".go_top").removeClass("active");
 	});
 
 

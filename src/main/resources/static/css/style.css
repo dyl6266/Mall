@@ -11,7 +11,7 @@ input[type="password"] {height: 40px; padding: 0 15px;}
 input[type="file"],
 input[type="submit"],
 input[type="button"] {height: 40px; padding: 0 15px;}
-select {height: 40px; padding: 0 20px 0 10px; font-size: 14px; border-radius: 0px; -webkit-appearance: none; -moz-appearance: none; appearance: none; background: url('../../images/common/ic_arrow_down.png') right 5px center no-repeat; background-size: 10px; font-family: 'NotoSans';}
+select {height: 40px; padding: 0 20px 0 10px; font-size: 14px; border-radius: 0px; -webkit-appearance: none; -moz-appearance: none; appearance: none; background: #fff url('../../images/common/ic_arrow_down.png') right 5px center no-repeat; background-size: 10px; font-family: 'NotoSans';}
 select::-ms-expand {display: none;}
 textarea {width: calc(100% - 22px); padding: 10px; font-family: 'NotoSans';}
 
@@ -19,19 +19,19 @@ textarea {width: calc(100% - 22px); padding: 10px; font-family: 'NotoSans';}
 /* File */
 .filebox > * {display: inline-block; vertical-align: top;}
 .filebox input[type='text'] {height: 40px; font-size: 14px;}
-.filebox label {width: 60px; height: 38px; padding: 0 10px; text-align: center; line-height: 38px; overflow: hidden; cursor: pointer;}
+.filebox label {width: 70px; height: 38px; padding: 0 15px; text-align: center; line-height: 38px; overflow: hidden; cursor: pointer;}
 .filebox label input {display: none; position: absolute; right: 0; width: 0; height: 0; overflow: hidden; border: 0;}
 
 
 /* Radio, Checkbox */
-.radio_style {display: inline-block; vertical-align: middle; margin-right: 10px; height: 18px; line-height: 18px;}
+.radio_style {display: inline-block; vertical-align: middle; margin-right: 10px; min-height: 18px; line-height: 18px;}
 .radio_style input[type='radio'] {display: none;}
-.radio_style > span {display:inline-block; vertical-align: top; height: 18px; padding-left: 23px; line-height: 18px; color: #666; background: url('../../images/common/img_radio_off.png') left center no-repeat;}
+.radio_style > span {display:inline-block; vertical-align: top; min-height: 18px; padding-left: 23px; line-height: 18px; color: #666; background: url('../../images/common/img_radio_off.png') left top no-repeat;}
 .radio_style input:checked + span {color: #333; background: url('../../images/common/img_radio_on.png') left center no-repeat;}
 
-.check_style {display: inline-block; vertical-align: middle; margin-right: 10px; height: 15px; line-height: 15px;}
+.check_style {display: inline-block; vertical-align: middle; margin-right: 10px; min-height: 15px; line-height: 15px;}
 .check_style input[type='checkbox'] {display: none;}
-.check_style > span {display:inline-block; vertical-align: top; height: 15px; padding-left: 20px; line-height: 15px; color: #666; background: url('../../images/common/img_check_off.png') left center no-repeat;}
+.check_style > span {display:inline-block; vertical-align: top; min-height: 15px; padding-left: 20px; line-height: 15px; color: #666; background: url('../../images/common/img_check_off.png') left top no-repeat;}
 .check_style input:checked + span {color: #333; background: url('../../images/common/img_check_on.png') left center no-repeat;}
 
 .radio_style:last-child,
@@ -40,38 +40,13 @@ textarea {width: calc(100% - 22px); padding: 10px; font-family: 'NotoSans';}
 
 /* Layer popup */
 .popup_wrap {display: none;  position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 999;  transition: all.5s ease;}
-.popup_inner {position: relative; max-width: 1000px; max-height: calc(100% - 180px); margin: 90px auto 0; background: #fff; z-index: 2;}
-.popup_inner .btn_close {position: absolute; right: 0; top: 0; width: 55px; height: 55px; background: url('../../images/common/ic_close.png') center center no-repeat; text-indent: -9999px; z-index: 99; border: 0; cursor: pointer;}
+.popup_inner {position: relative; max-width: 1000px; max-height: calc(100% - 100px); margin: 50px auto 0; background: #fff; border-radius: 15px; z-index: 2; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);}
+.popup_inner .btn_close {position: absolute; right: 0; top: 0; width: 55px; height: 55px; background: url('../../images/common/ic_close.png') center center no-repeat; background-size: 20px; text-indent: -9999px; z-index: 99; border: 0; cursor: pointer;}
 .popup_inner .popup_header {position: relative;}
-.popup_inner .popup_header p {height: 50px; line-height: 50px; padding: 0 20px; font-size: 20px; font-weight: 500; color: #fff; background: #333;}
+.popup_inner .popup_header p {height: 55px; line-height: 55px; padding: 0 25px; font-size: 20px; letter-spacing: 0; font-weight: 500; color: #000;}
 .popup_inner .popup_contents {}
 
 .popup_bg {position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1;}
-
-
-/* Basic calendar */
-input.datepicker {padding-right: 35px; background: #fff url('../../images/common/ic_calendar.png') right 5px center no-repeat; cursor: pointer; font-size: 16px;}
-.ui-widget.ui-widget-content {padding: 10px 15px; border: 2px solid #000;}
-.ui-datepicker {z-index: 1000 !important;}
-.ui-datepicker .ui-widget.ui-widget-content {border:0; color: #23abe7; background: #fff; border: 1px solid #000;}
-.ui-datepicker .ui-widget-header {padding: 5px 0; font-size: 18px; color: #333; font-weight: 600; background: #fff; border: 0; border-radius: 0;}
-.ui-datepicker .ui-datepicker-prev,
-.ui-datepicker .ui-datepicker-next {top: 6px; width: 20px; height: 30px; cursor: pointer;}
-.ui-datepicker .ui-state-hover.ui-datepicker-prev-hover {left: 2px; top: 6px; background: #666; border: 0;}
-.ui-datepicker .ui-state-hover.ui-datepicker-next-hover {right: 2px; top: 6px; background: #666; border: 0;}
-.ui-datepicker .ui-widget-header .ui-icon.ui-icon-circle-triangle-w {position: static; width: 20px; height: 30px; margin: 0; background: #fff url('../../images/common/ic_arrow_left_calendar.png') center center no-repeat !important;}
-.ui-datepicker .ui-widget-header .ui-icon.ui-icon-circle-triangle-e {position: static; width: 20px; height: 30px; margin: 0; background: #fff url('../../images/common/ic_arrow_right_calendar.png') center center no-repeat !important;}
-.ui-datepicker {padding: 0; width: auto; border-radius: 0 !important;}
-.ui-datepicker .ui-datepicker-title {line-height: normal;}
-.ui-datepicker .ui-datepicker-title select {height: 30px; padding: 0 20px 0 10px; font-size: 15px; color: #333; background: #fff url('../../images/common/ic_arrow_down.png') right 5px center no-repeat; background-size: 10px !important;}
-.ui-datepicker .ui-datepicker-title select.ui-datepicker-month {width: 43%;}
-.ui-datepicker .ui-datepicker-title select.ui-datepicker-year {width: 53%;}
-.ui-datepicker table {margin-bottom: 0;}
-.ui-datepicker th {width: 30px; height: 30px; font-weight: 400; font-size: 15px; color: #999; border-bottom: 0;}
-.ui-datepicker td {width: 30px; height: 30px;}
-.ui-datepicker td a.ui-state-default {width: 23px; height: 23px; line-height: 16px; font-size: 15px; color: #666; text-align: center; border: 0; background: #fff; letter-spacing: -1px;}
-.ui-datepicker td a.ui-state-active {background: #08614d; border: 1px solid #08614d; color: #fff;}
-.ui-datepicker td a.ui-state-highlight {background: #fff; color: #333; border: 1px solid #08614d;}
 
 
 /* Color */
@@ -180,7 +155,7 @@ Header st.
 /************************************************************************************
 Footer st.
 *************************************************************************************/
-.footer_wrap {margin-top: 30px; padding: 10px 0 15px; color: #fff; background: #000;}
+.footer_wrap {padding: 10px 0 15px; color: #fff; background: #000;}
 
 .footer_wrap .footer_menu ul:after {display: block; visibility: hidden; clear: both; content: "";}
 .footer_wrap .footer_menu ul > li {float: left; padding: 10px 0;}
@@ -191,6 +166,9 @@ Footer st.
 .copyright .inner p {font-size: 12px; line-height: 24px;}
 .copyright .inner p > span {padding: 10px 20px 10px 0;}
 
+.go_top {position: fixed; bottom: 20px; right: 20px; display: block; width: 48px; height: 48px; text-indent: -9999px; background: url('../../images/common/btn_top.png') center center no-repeat; opacity: 0; -webkit-transition: all .2s ease; -moz-transition: all .2s ease; -o-transition: all .2s ease; -ms-transition: all .2s ease; transition: all .2s ease; z-index: 10;}
+.go_top.active {opacity: 0.6;}
+
 
 
 
@@ -199,7 +177,7 @@ Main st.
 *************************************************************************************/
 .main_visual {width: 100%;}
 .main_visual .main_slide_wrap {position: relative;}
-.main_visual .main_slide div {height: 500px; text-indent: -9999px; background-size: auto 100% !important;}
+.main_visual .main_slide div {height: 550px; text-indent: -9999px; background-size: auto 100% !important;}
 
 .main_visual .slick-dots {position: absolute; left: 0; right: 0; bottom: 30px; width: 100%; text-align: center;}
 .main_visual .slick-dots li {display: inline-block; height: 12px; margin: 0 5px; padding: 0;}
@@ -214,7 +192,7 @@ Main st.
 
 .main_goods ul:after {display: block; visibility: hidden; clear: both; content: "";}
 .main_goods ul > li {float: left; width: 23%; margin-right: 2.6%;}
-.main_goods ul > li:last-child {margin-right: 0;}
+.main_goods ul > li:nth-child(4n+4) {margin-right: 0;}
 .main_goods ul > li > a > span {display: block;}
 .main_goods .btn_more {display: block; width: 120px; margin: 30px auto 40px; font-size: 14px;}
 
@@ -236,7 +214,7 @@ html {min-width: 320px;  overflow-x: hidden;}
 /* Contents */
 .inner {width: 1200px; margin: 0 auto;}
 
-.contents {}
+#container {min-height: calc(100vh - 194px); padding-bottom: 30px; background: #f5f5f5;}
 
 .tab_cont {display: none;}
 
@@ -349,5 +327,76 @@ html {min-width: 320px;  overflow-x: hidden;}
 
 
 /* 리뷰 팝업 */
-#reviewPop .popup_inner {max-width: 600px; width: 600px;}
-#reviewPop .popup_inner {max-width: 600px; width: 600px;}
+#reviewPop .popup_inner {max-width: 500px; width: 500px;}
+#reviewPop .popup_contents {padding: 15px 25px 25px;}
+
+#reviewPop .review_info > div {display: inline-block; vertical-align: middle;}
+#reviewPop .review_info .img_box {width: 100px;}
+#reviewPop .review_info .img_box img {width: 100%;}
+#reviewPop .review_info .txt_box {width: calc(100% - 110px); padding-left: 20px;}
+#reviewPop .review_info .txt_box p {font-size: 16px; color: #333;}
+#reviewPop .review_info .txt_box strong {font-size: 16px; font-weight: 500; color: #ee782f;}
+
+#reviewPop .review_star {margin: 20px 0; text-align: center;}
+#reviewPop .review_star .ic_star_lg {width: 30px; height: 30px; margin: 0 2px; cursor: pointer; background: url('../../images/common/ic_star_off_lg.png') center center no-repeat;}
+#reviewPop .review_star .ic_star_lg.active {background: url('../../images/common/ic_star_on_lg.png') center center no-repeat;}
+
+#reviewPop .review_cont textarea {height: 100px;}
+#reviewPop .review_cont .filebox {margin-top: 20px;}
+#reviewPop .review_cont .add_photo {margin-top: 10px; font-size: 0;}
+#reviewPop .review_cont .add_photo li {position: relative; display: inline-block; margin-right: 10px; vertical-align: top; width: 70px; height: 59px; overflow: hidden; border: 1px solid #ddd;}
+#reviewPop .review_cont .add_photo li img {width: 100%;}
+#reviewPop .review_cont .add_photo li .btn_delete {position: absolute; top: 0; right: 0; width: 18px; height: 18px; text-indent: -9999px; background: #ddd url('../../images/common/ic_delete.png') center center no-repeat; background-size: 10px;}
+#reviewPop .btn_wrap {margin-top: 20px; text-align: center;}
+#reviewPop .btn_wrap .btn {width: 120px;}
+
+
+/* Form */
+.form_write table {table-layout: fixed;}
+.form_write table th {height: 50px; padding: 15px 10px; font-weight: 500; text-align: right; vertical-align: top; font-size: 14px; color: #000; -ms-word-break: keep-all; word-break: keep-all;}
+.form_write table td {height: 50px; padding: 5px 10px; font-size: 14px; color: #565656;}
+
+.form_write dl {margin-bottom: 10px;}
+.form_write dl dt {margin-bottom: 5px; padding-left: 10px; text-align: left; font-size: 14px; background: url('../../images/common/ic_bul.png') left center no-repeat;}
+
+.form_write span {display: inline-block; font-size: 12px; color: #7d7d7d;}
+.form_write span.text {padding: 0 2px;}
+.form_write span.info_text {padding-left: 5px;}
+.form_write input[type='text'],
+.form_write input[type='password'] {width: 100%; height: 35px; font-size: 13px;}
+.form_write input.type1 {width: calc(100% - 104px);}
+.form_write input.type2 {width: 30%;}
+.form_write input.type3 {width: 32%;}
+.form_write select {width: 100%; height: 35px; font-size: 13px;}
+.form_write select.type1 {width: 30%;}
+.form_write .btn {width: auto; width: 100px; height: 35px; padding: 0; text-align: center; line-height: 35px; font-size: 13px;}
+
+.form_write .text1 {margin-top: 15px; font-size: 16px; color: #565656; font-weight: 500;}
+.form_write .text1 img {margin-right: 10px;}
+
+
+/* Login */
+.login_wrap {width: 400px; margin: 0 auto; padding: 40px 0 0; text-align: center;}
+.login_wrap .page_title {margin-bottom: 20px; font-size: 26px; font-weight: 500;}
+.login_wrap .login .input_box {display: block; width: 100%; height: 50px; margin-bottom: 10px; padding: 0 30px; font-size: 16px;}
+.login_wrap .login .find_wrap {margin: 15px 0; text-align: right; font-size: 0;}
+.login_wrap .login .find_wrap a {display: inline-block; vertical-align: middle; height: 15px; padding: 0 15px; line-height: 15px; font-size: 14px; font-weight: 300; color: #565656; border-right: 1px solid #888;}
+.login_wrap .login .find_wrap a:last-child {border-right: 0;}
+.login_wrap .login .btn_wrap {font-size: 0;}
+.login_wrap .login .btn_wrap .btn {width: 100%; height: 50px; margin-bottom: 10px; padding: 0; line-height: 50px; font-size: 16px;}
+
+.login_wrap .info_box {margin-bottom: 20px; font-size: 14px; color: #666; line-height: 24px;}
+.login_wrap .find .input_box {display: block; width: 100%; height: 50px; margin-bottom: 10px; padding: 0 30px; font-size: 16px;}
+.login_wrap .find .btn_wrap {font-size: 0;}
+.login_wrap .find .btn_wrap .btn {width: 100%; height: 50px; margin-bottom: 10px; padding: 0; line-height: 50px; font-size: 16px;}
+
+.login_wrap .result_box {margin-bottom: 30px; padding: 35px; text-align: center; color: #565656; font-size: 16px; line-height: 22px; background: #fff; -ms-word-break: keep-all; word-break: keep-all;}
+
+
+
+/* Join */
+.join_box {width: 400px; margin: 0 auto; padding: 40px 0; text-align: center;}
+.join_box .page_title {margin-bottom: 20px; font-size: 26px; font-weight: 500;}
+.join_box .box {margin-bottom: 20px; text-align: left;}
+.join_box .box_title {margin-bottom: 5px; padding-left: 10px; text-align: left; font-size: 16px; background: url('../../images/common/ic_bul.png') left center no-repeat;}
+.join_box .agree_box textarea {height: 150px; margin-bottom: 5px; font-size: 13px;}

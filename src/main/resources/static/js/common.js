@@ -31,20 +31,23 @@ function charToUnicode(str) {
  * @returns 메시지
  */
 function equals(field1, field2, fieldName) {
-	if (field1.value === field2.value) {
+	if (field1.value == field2.value) {
 		return true;
 	} else {
-		/* alert 메시지 */
-		var message = "";
-		/* 종성으로 을 / 를 구분 */
-		if (charToUnicode(fieldName) > 0) {
-			message = fieldName + "이 일치하지 않습니다.";
-		} else {
-			message = fieldName + "가 일치하지 않습니다.";
+		if (isEmpty(fieldName) == false) {
+			/* alert 메시지 */
+			var message = "";
+			/* 종성으로 을 / 를 구분 */
+			if (charToUnicode(fieldName) > 0) {
+				message = fieldName + "이 서로 일치하지 않습니다.";
+			} else {
+				message = fieldName + "가 서로 일치하지 않습니다.";
+			}
+			field2.focus();
+			alert(message);
+			// Swal.fire(message);
 		}
-		field2.focus();
-		alert(message);
-		// Swal.fire(message);
+
 		return false;
 	}
 }
@@ -80,9 +83,9 @@ function isValid(field, fieldName, focusField, type) {
 	} else {
 		/* 타입을 지정해야 하는 경우 */
 		switch (type) {
-		case "email":
-			regExp = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,20}$/;
-			message = "올바르지 않은 형식의 이메일입니다.";
+		case "username":
+			regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+			message = "아이디를 이메일 형식으로 입력해 주세요.";
 			break;
 
 		case "password":
@@ -135,4 +138,29 @@ function nvl(value1, value2) {
 function makeCommas(target) {
 	var regexp = /\B(?=(\d{3})+(?!\d))/g;
 	target.value = target.value.replace(regexp, ',');
+}
+
+/**
+ * Form에 존재하는 input, textarea를 포함한 모든 입력 필드의 name, value를 오브젝트에 key, value 형태로 담아서 반환
+ * Ajax를 사용할 때, 파라미터를 하나씩 추가하지 않고, form을 인자로 넘겨서 사용
+ * 
+ * @param form - Form 객체
+ * @returns
+ */
+function makeObjectFromForm(form) {
+
+	/* 필드의 name, value를 key, value 형태로 담는 오브젝트 */
+	var obj = new Object();
+	/* Form 데이터를 배열 형태로 serialize */
+	var datas = $(form).serializeArray();
+	/* 요소 개수만큼 params에 key, value 형태로 저장 */
+	$(datas).each(function(idx, elem) {
+		if (isEmpty(elem.value) == false) {
+			obj[elem.name] = elem.value;
+		}
+	});
+
+	/* spring security csrf 토큰 제거 => header에 정보를 담아서 전송하기 때문에 문제가 되지 않음 */
+	delete obj._csrf;
+	return obj;
 }

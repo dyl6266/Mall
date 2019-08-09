@@ -1,5 +1,7 @@
 package com.dy.domain;
 
+import com.dy.common.Const.Authority;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class AuthorityDTO extends CommonDTO {
 
-	public AuthorityDTO(String username, String name) {
+	public AuthorityDTO(String username, Authority name) {
 		this.username = username;
 		this.name = name;
 	}
@@ -19,6 +21,6 @@ public class AuthorityDTO extends CommonDTO {
 	private String username;
 
 	/** 이름 */
-	private String name;
+	private Authority name;
 
 }

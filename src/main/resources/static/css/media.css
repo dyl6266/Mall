@@ -43,7 +43,13 @@
 
 	/* Layer popup */
 	.popup_inner {max-width: 96%; width: 96%; margin: 50px auto 0; max-height: calc(100% - 100px);}
-	.popup_inner .btn_close {right: 0; top: -45px; width: 40px; height: 40px; background-size: 25px}
+	.popup_inner .btn_close {width: 45px; height: 45px;}
+	.popup_inner .popup_header p {height: 45px; line-height: 45px; padding: 0 20px; font-size: 18px;}
+
+
+	/* File */
+	.filebox input[type='text'] {height: 35px;}
+	.filebox label {width: 50px; height: 35px; padding: 0 15px; line-height: 35px;}
 
 
 	/* Header st. */
@@ -63,6 +69,10 @@
 	
 	.btn_gnb {position: fixed; top: 0px; right: 1.5%; width: 50px; height: 50px; line-height: 40px; font-size: 12px; text-align: left; text-indent: -9999px; background: url('../../images/common/ic_nav.png') center center no-repeat;}
 	.gnb_bg {display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2; text-indent: -9999px;}
+
+
+	/* Footer st. */
+	.go_top {bottom: 15px; right: 15px; width: 30px; height: 30px; background-size: 100% !important;}
 	
 
 	/* Main st. */
@@ -89,6 +99,39 @@
 	.paging a.btn_arrow {width: 20px; height: 20px;}
 	.paging a.btn_previous {margin-right: 5px;}
 	.paging a.btn_next {margin-left: 5px;}
+	
+
+	/* 상세 */
+	.view {padding-top: 20px;}
+
+	.view .slide_wrap {float: none; width: 100%; padding-right: 0;}
+
+	.view .pd_info_wrap {float: none; width: 100%; margin-top: 20px;}
+
+	.view .pd_title_wrap {position: relative; padding-bottom: 10px; border-bottom: 1px solid #ddd;}
+	.view .pd_title_wrap .pd_title {font-size: 24px;}
+	.view .pd_title_wrap .pd_price {font-size: 20px;}
+	.view .pd_title_wrap .pd_review {bottom: 10px;}
+
+	.view .pd_option_wrap .pd_option {margin-top: 10px;}
+
+	.view .pd_option_wrap .pd_option.option_color {padding-right: 0;}
+
+	.view .pd_option_wrap .pd_option.option_size {padding-right: 0;}
+	.view .pd_option_wrap .pd_option.option_size .radio_size span {width: 50px; height: 35px; line-height: 35px;}
+
+	.view .option_quantity button {width: 35px; height: 35px;}
+
+	.view .pd_info_wrap .btn_wrap {margin-top: 20px;}
+	.view .pd_info_wrap .btn_wrap .btn {width: 49%; height: 45px; line-height: 45px;}
+	view .pd_info_wrap .btn_wrap .btn_black {margin-right: 2%;}
+
+	.view .pd_detail_wrap {padding-top: 30px;}
+	.view .pd_detail_wrap .pd_detail_tab {margin-bottom: 20px;}
+	.view .pd_detail_wrap .pd_detail_tab a {margin: 0 10px; font-size: 16px;}
+
+	.view .pd_detail_wrap .pd_delivery dl dt {margin: 20px 0 5px;}
+
 }
 
 @media screen and (max-width: 769px) {
@@ -118,9 +161,40 @@
 	.main_goods .txt_wrap {margin-top: 5px;}
 	.main_goods .txt_wrap .name {font-size: 13px; font-weight: 500; margin-bottom: 0;}
 	.main_goods .txt_wrap .price {font-size: 16px; font-weight: 500;}
+
+
+	/* 리뷰 팝업 */
+	#reviewPop .popup_inner {width: 94%;}
+	#reviewPop .popup_contents {padding: 10px 20px 20px;}
+
+	#reviewPop .review_info .img_box {width: 80px;}
+	#reviewPop .review_info .txt_box {width: calc(100% - 90px); padding-left: 15px;}
+	#reviewPop .review_info .txt_box p {font-size: 14px;}
+	#reviewPop .review_info .txt_box strong {font-size: 14px;}
+
+	#reviewPop .review_star {margin: 10px 0;}
+	#reviewPop .review_star .ic_star_lg {width: 25px; height: 25px; background-size: 100% !important;}
+	#reviewPop .review_star .ic_star_lg.active {background-size: 100% !important;}
+
+	#reviewPop .review_cont textarea {height: 70px;}
+	#reviewPop .review_cont .filebox {margin-top: 10px;}
+	#reviewPop .btn_wrap {margin-top: 10px;}
+	#reviewPop .btn_wrap .btn {width: 100%;}
 }
 
 @media screen and (max-width: 481px) {
+/* Login */
+.login_wrap {width: 100%; padding: 20px 3%;}
+.login_wrap .page_title {margin-bottom: 20px; font-size: 22px;}
+.login_wrap .login .input_box {height: 40px; padding: 0 20px; font-size: 14px;}
+.login_wrap .login .find_wrap a {font-size: 14px;}
+.login_wrap .login .btn_wrap .btn {height: 40px; line-height: 40px; font-size: 14px;}
+
+
+/* Join */
+.join_box {width: 100%; padding: 20px 3%;}
+.join_box .page_title {margin-bottom: 20px; font-size: 22px;}
+.join_box .agree_box textarea {height: 100px;}
 }
 
 @media screen and (max-width: 361px) {

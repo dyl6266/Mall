@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<body th:fragment="basic">
 		<div id="wrapper">
 
@@ -19,7 +19,10 @@
 						<div class="gnb">
 							<ul class="utill">
 								<li class="btn_gnb_close mobile_block" onclick="gnbClose(this);"><a href="javascript:void(0)">모바일gnb 닫기</a></li>
-								<li><a href="#">로그인</a></li>
+								<li>
+									<a th:href="@{/login}" sec:authorize="isAuthenticated() == false">로그인</a>
+									<a href="javascript: void(0)" sec:authorize="isAuthenticated()" onclick="logout(this)">로그아웃</a>
+								</li>
 								<li><a href="#">회원가입</a></li>
 							</ul>
 
@@ -77,6 +80,26 @@
 		<!--/* //#wrapper */-->
 
 		<!--/* 자바스크립트가 들어가는 영역 */-->
-		<th:block layout:fragment="script"></th:block>
+		<th:block layout:fragment="script">
+			<script th:inline="javascript">
+				/* <![CDATA[ */
+
+					function logout() {
+						var uri = /*[[ @{/logout} ]]*/;
+						var name = /*[[ ${_csrf.parameterName} ]]*/;
+						var value = /*[[ ${_csrf.token} ]]*/;
+						var html = "";
+
+						html += '<form name="logoutForm" action="'+uri+'" method="post">';
+							html += '<input type ="hidden" name="'+name+'" value="'+value+'" />';
+						html += '</form>';
+
+						$("body").append(html);
+						$("form[name='logoutForm']").submit();
+					}
+
+				/* ]]> */
+			</script>
+		</th:block>
 	</body>
 </html>
