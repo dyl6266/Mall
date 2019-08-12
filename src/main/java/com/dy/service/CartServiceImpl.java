@@ -42,10 +42,10 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public boolean removeGoodsInCart(String email, List<String> codes) {
+	public boolean removeGoodsInCart(String username, List<String> codes) {
 
 		HashMap<String, Object> params = new HashMap<>();
-		params.put("email", email);
+		params.put("username", username);
 		params.put("codes", codes);
 
 		int queryResult = cartMapper.deleteGoodsInCart(params);
@@ -57,7 +57,7 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public List<CartDTO> getListOfGoodsInCart(String email) {
+	public List<CartDTO> getListOfGoodsInCart(String username) {
 		/*
 		 *  TODO => 사용자 이메일이 존재하는지 체크하는 메소드 만들기 (UserDTO 오브젝트)
 		 *  		아니면 컨트롤러에서 Json으로 처리해야 하나...? 잘 생각해보자
@@ -70,22 +70,18 @@ public class CartServiceImpl implements CartService {
 		 * 2. 따로 메소드를 만드는 게 나을까..?
 		 */
 		HashMap<String, Object> params = new HashMap<>();
-		params.put("email", email);
+		params.put("username", username);
 
-		int goodsTotalCount = cartMapper.selectGoodsCountInCart(params);
-		if (goodsTotalCount > 0) {
-			goodsList = cartMapper.selectGoodsListInCart(email);
-		}
+//		int goodsTotalCount = cartMapper.selectGoodsCountInCart(params);
+//		if (goodsTotalCount > 0) {
+//		}
 
+		goodsList = cartMapper.selectGoodsListInCart(username);
 		return goodsList;
 	}
 
 	@Override
-	public boolean checkForDuplicateGoodsInCart(String email, String code) {
-
-		HashMap<String, Object> params = new HashMap<>();
-		params.put("email", email);
-		params.put("code", code);
+	public boolean checkForDuplicateGoodsInCart(CartDTO params) {
 
 		int queryResult = cartMapper.selectGoodsCountInCart(params);
 		if (queryResult != 0) {

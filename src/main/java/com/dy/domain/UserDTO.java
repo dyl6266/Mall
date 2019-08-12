@@ -35,7 +35,7 @@ public class UserDTO extends CommonDTO implements UserDetails {
 	private String password;
 
 	/** 별명 */
-	@Pattern(message = "닉네임을 올바른 형식으로 입력해 주세요.", regexp = "^[가-힣]{3,10}$")
+	@Pattern(message = "닉네임을 올바른 형식으로 입력해 주세요.", regexp = "^[가-힣]{2,10}$")
 	private String nickname;
 
 	/** 연락처 */

@@ -21,7 +21,7 @@
 							<dl>
 								<dt>닉네임</dt>
 								<dd>
-									<input type="text" th:field="*{nickname}" maxlength="10" placeholder="별명을 한글로 입력해 주세요." />
+									<input type="text" th:field="*{nickname}" maxlength="10" placeholder="한글 형식으로 입력해 주세요." />
 								</dd>
 							</dl>
 							<dl>
@@ -66,7 +66,7 @@
 				var regexp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 				var username = $(obj).prev();
 				if ( regexp.test(username.val()) == false ) {
-					alert("아이디를 올바른 형식으로 입력해 주세요.");
+					alert("아이디를 이메일 형식으로 입력해 주세요.");
 					username.focus();
 					return false;
 				}
@@ -101,11 +101,11 @@
 
 			function validationOfForm(form) {
 
-// 				if (form.isChecked.value != 'Y') {
-// 					alert("아이디 중복 확인을 완료해 주세요.");
-// 					form.username.focus();
-// 					return false;
-// 				}
+				if (form.isChecked.value != 'Y') {
+					alert("아이디 중복 확인을 완료해 주세요.");
+					form.username.focus();
+					return false;
+				}
 
 				var result = (
 						   isValid(form.username, "아이디", null, null)
@@ -119,7 +119,8 @@
 					return false;
 				}
 
-				var params = makeObjectFromForm(form);
+				/*[- ajax 요청에 필요한 key, value 형태의 오브젝트 생성 -]*/
+				var params = makeAjaxRequestData(form);
 				if (isEmpty(params)) {
 					alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
 					return false;
@@ -140,11 +141,13 @@
 					data : JSON.stringify(params),
 					async : false,
 					success : function(response) {
-						console.log(response);
+						alert(response.message);
+						if (response.result == true) {
+							location.href = /*[[ @{/login} ]]*/;
+						}
 					},
 					error : function(request, status, error) {
-						console.log(request);
-// 						alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
+						alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
 					}
 				});
 				/*[- end of ajax -]*/

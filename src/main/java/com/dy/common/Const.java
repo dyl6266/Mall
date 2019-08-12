@@ -67,4 +67,8 @@ public class Const {
 		}
 	}
 
+	public enum MailType {
+		TEXT, HTML, FILE
+	}
+
 }

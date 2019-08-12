@@ -16,8 +16,8 @@ public interface CartMapper {
 
 	public int deleteGoodsInCart(HashMap<String, Object> params);
 
-	public List<CartDTO> selectGoodsListInCart(String email);
+	public List<CartDTO> selectGoodsListInCart(String username);
 
-	public int selectGoodsCountInCart(HashMap<String, Object> params);
+	public int selectGoodsCountInCart(CartDTO params);
 
 }

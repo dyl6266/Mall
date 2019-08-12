@@ -4,7 +4,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +32,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private JavaMailSender javaMailSender;
+
 	/**
 	 * DB에서 사용자 정보를 가지고 온 뒤에 UserDetails 타입으로 반환
 	 */
@@ -47,6 +53,14 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	/**
+	 * 인증 사용자 정보를 반환
+	 */
+	@Override
+	public Authentication getAuthentication() {
+		return SecurityContextHolder.getContext().getAuthentication();
+	}
+
 	@Override
 	public boolean registerUser(UserDTO params) {
 
@@ -57,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
 		int queryResult;
 		if (params.getIdx() == null) {
-			/* 상품 등록 쿼리 */
+			/* 회원 등록 쿼리 */
 			queryResult = userMapper.insertUser(params);
 			if (queryResult != 1) {
 				return false;
@@ -102,7 +116,8 @@ public class UserServiceImpl implements UserService {
 			users = userMapper.selectUserList();
 
 			for (UserDTO user : users) {
-				Collection<? extends GrantedAuthority> authorities = authorityMapper.selectUserAuthorities(user.getUsername());
+				Collection<? extends GrantedAuthority> authorities = authorityMapper
+						.selectUserAuthorities(user.getUsername());
 				user.setAuthorities(authorities);
 			}
 		}

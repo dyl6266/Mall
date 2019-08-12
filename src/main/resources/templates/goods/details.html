@@ -31,7 +31,7 @@
 						<script>
 							$(document).ready(function () {
 								$('.slide').slick({
-									autoplay: true,
+									autoplay: false,
 									autoplaySpeed: 1500,
 									slidesToShow: 1,
 									slidesToScroll: 1,
@@ -108,9 +108,9 @@
 								</div>
 							</div>
 							<!-- //상세 옵션 -->
-			
+
 							<div class="btn_wrap">
-								<a href="#" class="btn btn_black">장바구니 담기</a>
+								<a href="javascript: void(0)" class="btn btn_black" th:onclick="addToCart([[ *{code} ]])">장바구니 담기</a>
 								<button type="submit" class="btn btn_orange">바로구매</button>
 							</div>
 						</form>
@@ -218,7 +218,7 @@
 					<!-- //상세설명 -->
 
 					<!-- 리뷰 팝업 -->
-					<div class="popup_wrap" id="reviewPop" style="display: block;">
+					<div class="popup_wrap" id="reviewPop" style="display: none;">
 						<div class="popup_inner">
 							<div class="popup_header">
 								<p>리뷰쓰기</p>
@@ -278,7 +278,7 @@
 
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
-			/* <![CDATA[ */
+		/* <![CDATA[ */
 
 			/*[- 사이즈 lables -]*/
 			$(function() {
@@ -307,7 +307,7 @@
 			}
 
 			function reduceQuantity(obj) {
-				
+
 				var quantity = parseInt(obj.value);
 				if (quantity <= 1) {
 					alert("수량은 최소 1개까지 설정할 수 있습니다.");
@@ -315,6 +315,60 @@
 				}
 
 				obj.value = quantity - 1;
+			}
+
+			function addToCart(code) {
+
+				if (isEmpty(code)) {
+					alert("올바르지 않은 접근입니다. 새로고침 후에 다시 시도해 주세요.");
+					return false;
+				}
+
+				/*[- spring security csrf token -]*/
+				var token = $("meta[name='_csrf']").attr("content");
+
+				$.ajax({
+					url : /*[[ @{/cart} ]]*/,
+					type : "post",
+					headers: {
+						"Content-Type" : "application/json",
+						"X-HTTP-Method-Override" : "post",
+						"X-CSRF-TOKEN" : token,
+					},
+					dataType : "json",
+					data : JSON.stringify({
+						"code" : code
+					}),
+					async : false,
+					success : function(response) {
+						/*[- 로그인이 되지 않았거나, 이미 장바구니에 존재하는 상품의 경우 -]*/
+						if (isEmpty(response.type) == false && response.result == false) {
+							/*[- type (1 : 로그인이 되지 않은 상태 | 2 : 이미 장바구니에 상품이 존재하는 상태) -]*/
+							var redirectUri = response.type == 1 ? [[ @{/login} ]] : [[ @{/goods/cart} ]];
+							if (confirm(response.message) == false) {
+								return false;
+							}
+							location.href = redirectUri;
+
+						/*[- 장바구니 추가 실패 -]*/
+						} else if (isEmpty(response.type) && response.result == false) {
+							alert(response.message);
+
+						/*[- 장바구니 추가 성공 -]*/
+						} else {
+							if (confirm(response.message) == false) {
+								return false;
+							}
+							location.href = /*[[ @{/goods/cart} ]]*/;
+						}
+					},
+					error : function(request, status, error) {
+						console.log(request);
+// 						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+					}
+				});
+
+				return false;
 			}
 			
 // 				$(function() {
@@ -346,7 +400,7 @@
 // 				});
 
 			/* ]]> */
-		</script>
+	</script>
 	</th:block>
 
 </html>

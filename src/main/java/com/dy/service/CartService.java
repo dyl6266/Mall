@@ -8,10 +8,10 @@ public interface CartService {
 
 	public boolean addGoodsToCart(CartDTO params);
 
-	public boolean removeGoodsInCart(String email, List<String> codes);
+	public boolean removeGoodsInCart(String username, List<String> codes);
 
-	public List<CartDTO> getListOfGoodsInCart(String email);
+	public List<CartDTO> getListOfGoodsInCart(String username);
 
-	public boolean checkForDuplicateGoodsInCart(String email, String code);
+	public boolean checkForDuplicateGoodsInCart(CartDTO params);
 
 }

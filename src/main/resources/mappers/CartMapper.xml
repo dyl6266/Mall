@@ -5,7 +5,7 @@
 
 	<sql id="cartColumns">
 		  idx
-		, email
+		, username
 		, code
 		, delete_yn
 		, insert_time
@@ -17,7 +17,7 @@
 			<include refid="cartColumns" />
 		) VALUES (
 			  #{idx}
-			, #{email}
+			, #{username}
 			, #{code}
 			, 'N'
 			, NOW()
@@ -28,7 +28,7 @@
 	<delete id="deleteGoodsInCart" parameterType="hashmap">
 		DELETE FROM cart
 		WHERE
-			email = #{email}
+			username = #{username}
 		AND
 			code IN
 			<foreach item="code" index="index" collection="codes" open="(" separator="," close=")">
@@ -42,18 +42,18 @@
 		FROM
 			cart
 		WHERE
-			email = #{email}
+			username = #{username}
 		ORDER BY
 			idx DESC, insert_time DESC
 	</select>
 
-	<select id="selectGoodsCountInCart" parameterType="hashmap" resultType="int">
+	<select id="selectGoodsCountInCart" parameterType="CartDTO" resultType="int">
 		SELECT
 			COUNT(*)
 		FROM
 			cart
 		WHERE
-			email = #{email}
+			username = #{username}
 		<if test="@com.dy.util.MyBatisUtils@isEmpty( code ) == false">
 			AND
 				code = #{code}

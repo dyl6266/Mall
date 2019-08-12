@@ -44,13 +44,13 @@ public class UserController {
 			jsonObj.addProperty("result", false);
 		} else {
 			try {
-//				boolean isInserted = userService.registerUser(params);
-//				if (isInserted == false) {
-//					jsonObj.addProperty("message", "회원 가입에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
-//				} else {
-//					jsonObj.addProperty("message", "회원이 되신 것을 진심으로 환영합니다!");
-//				}
-//				jsonObj.addProperty("result", isInserted);
+				boolean isInserted = userService.registerUser(params);
+				if (isInserted == false) {
+					jsonObj.addProperty("message", "회원 가입에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
+				} else {
+					jsonObj.addProperty("message", "회원이 되신 것을 진심으로 환영합니다!");
+				}
+				jsonObj.addProperty("result", isInserted);
 
 			} catch (DataAccessException e) {
 				jsonObj.addProperty("message", "DB 작업 중에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");

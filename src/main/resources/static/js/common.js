@@ -147,7 +147,7 @@ function makeCommas(target) {
  * @param form - Form 객체
  * @returns
  */
-function makeObjectFromForm(form) {
+function makeAjaxRequestData(form) {
 
 	/* 필드의 name, value를 key, value 형태로 담는 오브젝트 */
 	var obj = new Object();

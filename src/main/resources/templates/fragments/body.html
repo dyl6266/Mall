@@ -23,7 +23,11 @@
 									<a th:href="@{/login}" sec:authorize="isAuthenticated() == false">로그인</a>
 									<a href="javascript: void(0)" sec:authorize="isAuthenticated()" onclick="logout(this)">로그아웃</a>
 								</li>
-								<li><a href="#">회원가입</a></li>
+								<li>
+									<a th:href="@{/user/join}" sec:authorize="isAuthenticated() == false">회원가입</a>
+									<a sec:authorize="isAuthenticated()" th:text="|${#authentication.principal.nickname}님 환영합니다.|"></a>
+								</li>
+								<li><a sec:authorize="isAuthenticated()">나의 장바구니</a></li>
 							</ul>
 
 							<nav>

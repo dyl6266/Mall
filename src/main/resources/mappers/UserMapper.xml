@@ -48,10 +48,10 @@
 			, #{password}
 			, #{nickname}
 			, #{phone}
-			, #{accountNonExpired}
-			, #{accountNonLocked}
-			, #{credentialsNonExpired}
-			, #{enabled}
+			, 1
+			, 1
+			, 1
+			, 1
 			, 'N'
 			, IFNULL(#{username}, 'ADMIN')
 			, NOW()
