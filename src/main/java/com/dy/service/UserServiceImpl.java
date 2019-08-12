@@ -97,6 +97,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public UserDTO getUserDetails(UserDTO params) {
+		return userMapper.selectUserDetails(params);
+	}
+
+	@Override
 	public boolean deleteUser(String username) {
 
 		int queryResult = userMapper.deleteUser(username);

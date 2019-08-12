@@ -60,15 +60,23 @@
 		)
 	</insert>
 
-	<select id="selectUserDetails" parameterType="string" resultType="UserDTO">
+	<select id="selectUserDetails" resultType="UserDTO">
 		SELECT
 			<include refid="userColumns" />
 		FROM
 			user
-		WHERE
+		<where>
 			delete_yn = 'N'
-		AND
-			username = #{username}
+			<if test="@com.dy.util.MyBatisUtils@isEmpty( username ) == false">
+				AND username = #{username}
+			</if>
+			<if test="@com.dy.util.MyBatisUtils@isEmpty( nickname ) == false">
+				AND nickname = #{nickname}
+			</if>
+			<if test="@com.dy.util.MyBatisUtils@isEmpty( phone ) == false">
+				AND phone = #{phone}
+			</if>
+		</where>
      </select>
 
 	<update id="updateUser" parameterType="UserDTO">

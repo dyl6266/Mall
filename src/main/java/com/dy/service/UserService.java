@@ -16,6 +16,8 @@ public interface UserService extends UserDetailsService {
 
 	public boolean registerUser(UserDTO params);
 
+	public UserDTO getUserDetails(UserDTO params);
+
 	public boolean deleteUser(String username);
 
 	public List<UserDTO> getUserList();

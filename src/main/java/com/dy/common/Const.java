@@ -71,4 +71,7 @@ public class Const {
 		TEXT, HTML, FILE
 	}
 
+	public enum Method {
+		GET, POST, PUT, DELETE, PATCH
+	}
 }

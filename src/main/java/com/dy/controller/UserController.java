@@ -1,5 +1,10 @@
 package com.dy.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
@@ -11,16 +16,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.thymeleaf.util.StringUtils;
 
+import com.dy.common.Const.Method;
 import com.dy.domain.UserDTO;
 import com.dy.service.UserService;
+import com.dy.util.UiUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 @Controller
-public class UserController {
+public class UserController extends UiUtils {
 
 	@Autowired
 	private UserService userService;
@@ -78,6 +87,37 @@ public class UserController {
 		}
 
 		return jsonObj;
+	}
+
+	@GetMapping(value = "/user/find-username")
+	public String openFindUsername() {
+
+		return "user/find/username";
+	}
+
+	@GetMapping(value = "/user/find-password")
+	public String openFindPassword() {
+
+		return "user/find/password";
+	}
+
+	@PostMapping(value = "/user/find-result")
+	public String openFindResult(HttpServletRequest request, UserDTO params,
+			@RequestParam(value = "type", required = false) String type, Model model) {
+
+		String previousUri = request.getHeader("referer");
+
+		if (StringUtils.isEmpty(type)) {
+			return showMessageWithRedirect("올바르지 않은 접근입니다.", previousUri, Method.GET, null, model);
+		}
+
+		UserDTO user = userService.getUserDetails(params);
+		if (user == null) {
+			return showMessageWithRedirect("존재하지 않는 회원입니다.", previousUri, Method.GET, null, model);
+		}
+		model.addAttribute("user", user);
+
+		return "user/find/result";
 	}
 
 }

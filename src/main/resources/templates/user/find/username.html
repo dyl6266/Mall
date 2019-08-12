@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/basic">
+
+	<th:block layout:fragment="content">
+		<div id="container">
+			<div class="login_wrap">
+				<p class="page_title">아이디 찾기</p>
+
+				<div class="info_box">
+					본인확인 이메일 주소와 입력한 이메일 주소가 같아야,<br/> 아이디 확인이 가능합니다.
+				</div>
+
+				<div class="find">
+					<form th:action="@{/user/find-result( type=username )}" method="post" onsubmit="return validationOfForm(this)">
+						<input type="text" name="nickname" class="input_box" placeholder="별명" />
+						<input type="text" name="phone" class="input_box" placeholder="연락처" />
+
+						<div class="btn_wrap">
+							<button type="submit" class="btn btn_black">아이디 찾기</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!--/* //.login_wrap */-->
+		</div>
+		<!--/* //#container */-->
+	</th:block>
+
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+		/* <![CDATA[ */
+
+			function validationOfForm(form) {
+
+				var result = (
+						isValid(form.nickname, "아이디", null, null)
+					 && isValid(form.phone, "연락처", null, null)
+				);
+
+				return result;
+			}
+
+		/* ]]> */
+		</script>
+	</th:block>
+
+</html>

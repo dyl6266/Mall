@@ -13,6 +13,8 @@ public interface UserMapper {
 
 	public UserDTO selectUserDetails(String username);
 
+	public UserDTO selectUserDetails(UserDTO params);
+
 	public int updateUser(UserDTO params);
 
 	public int deleteUser(String username);
