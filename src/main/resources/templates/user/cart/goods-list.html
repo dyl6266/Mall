@@ -1,0 +1,28 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+	<li class="table_row" th:each="row, status : ${goodsList}">
+		<div class="col1">
+			<label class="check_style">
+				<input type="checkbox" name="" value="" id="" />
+				<span></span>
+			</label>
+		</div>
+		<div class="col2">
+			<div class="img_box"><img th:src="@{/images/common/thumb.jpg}" alt="" /></div>
+			<div class="txt_box">
+				<p class="name" th:text="${row.goods.name}">상품명</p>
+				<p class="option" th:text="|${row.goods.stock.color} / ${row.size}|">색상 / 사이즈</p>
+				<p class="quantity" th:text="|수량  : ${row.quantity}|">수량 : 개수</p>
+				<a href="javascript: void(0)" class="btn btn_border_black" th:onclick="changeOption([[ ${row.code} ]], [[ ${row.size} ]], [[ ${row.quantity} ]])">옵션 변경</a>
+			</div>
+		</div>
+		<div class="col3">
+			<span class="orange" th:text="|${#numbers.formatInteger( row.goods.price * row.quantity, 3, 'COMMA' )}원|">가격</span>
+		</div>
+		<div class="col4">
+			<button type="button" class="btn btn_black">주문하기</button>
+			<button type="button" class="btn btn_gray" th:onclick="deleteGoods([[ ${row.goods.name} ]], [[ ${row.code} ]])">삭제하기</button>
+		</div>
+	</li>
+
+</html>

@@ -1,17 +1,14 @@
 package com.dy;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.dy.common.Const.Authority;
 import com.dy.domain.AuthorityDTO;
 import com.dy.domain.UserDTO;
 import com.dy.mapper.AuthorityMapper;
@@ -30,23 +27,23 @@ public class MapperTests {
 	@Autowired
 	private PasswordEncoder encoder;
 
-//	@Test
-//	public void 가입() {
-//		UserDTO user = new UserDTO("dyl2436", encoder.encode("1231233"), "도영도영", "01033282436");
-//		try {
-//			int result = userMapper.insertUser(user);
-//			if (result > 0) {
-//				AuthorityDTO auth = new AuthorityDTO(user.getUsername(), "MANAGER");
-//				authMapper.insertUserAuthority(auth);
-//			}
-//		} catch (DataAccessException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
+	@Test
+	public void 가입() {
+		UserDTO user = new UserDTO("dyl6266@nate.com", encoder.encode("ehdud123!@#"), "도영도영", "01033282400");
+		try {
+			int result = userMapper.insertUser(user);
+			if (result > 0) {
+				AuthorityDTO auth = new AuthorityDTO(user.getUsername(), Authority.MEMBER);
+				authMapper.insertUserAuthority(auth);
+			}
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Test
 	public void 조회() {
-		UserDTO user = userMapper.selectUserDetails("dyl2436");
+		UserDTO user = userMapper.selectUserDetailsByUsername("dyl2436");
 	}
 //
 //	@Test

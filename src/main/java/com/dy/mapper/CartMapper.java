@@ -20,4 +20,6 @@ public interface CartMapper {
 
 	public int selectGoodsCountInCart(CartDTO params);
 
+	public int selectGoodsCountInCartByUsername(String username);
+
 }

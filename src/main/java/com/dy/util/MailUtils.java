@@ -7,16 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 
 import com.dy.common.Const.MailType;
 
 // TODO => 개발 마무리 하고 이메일 인증 기능도 추가하기
+@Component
 public class MailUtils {
 
 	@Autowired
 	private JavaMailSender mailSender;
 
-	public boolean sendAuthNumberByEmail(String username, String subject, String text, MailType mailType) {
+	public boolean sendMailByUsername(String username, String subject, String text, MailType mailType) {
 
 		if (mailType == MailType.TEXT) {
 			/* Text Message */

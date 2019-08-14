@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -32,9 +33,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dy.common.Const.Method;
 import com.dy.domain.GoodsDTO;
 import com.dy.service.GoodsService;
 import com.dy.util.MediaUtils;
+import com.dy.util.UiUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -42,7 +45,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 @Controller
-public class GoodsController {
+public class GoodsController extends UiUtils {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -211,6 +214,10 @@ public class GoodsController {
 
 	@GetMapping("/goods/details")
 	public String openGoodsDetails(@RequestParam(value = "code", required = false) String code, Model model) {
+
+		if (StringUtils.isEmpty(code)) {
+			return showMessageWithRedirect("올바르지 않은 접근입니다.", "/goods/list", Method.GET, null, model);
+		}
 
 		Map<String, Object> map = goodsService.getGoodsDetailsWithImages(code);
 		for (String key : map.keySet()) {

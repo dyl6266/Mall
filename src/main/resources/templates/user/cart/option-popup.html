@@ -1,0 +1,118 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+	<div class="popup_inner">
+		<div class="popup_header">
+			<p>옵션 변경</p>
+			<a href="#none" class="btn btn_close" onclick="popClose(this);">닫기</a>
+		</div>
+		<div class="popup_contents view fl_wrap">
+			<!-- 상세 정보 -->
+			<div class="pd_info_wrap">
+				<!--/* 상품 코드 hidden parameter */-->
+				<input type="hidden" name="code" th:value="${goods.code}" />
+
+				<div class="pd_title_wrap">
+					<h1 class="pd_title" th:text="${goods.name}">상품명</h1>
+					<p class="pd_price" th:text="|${goods.price}원|">가격</p>
+					<div class="pd_review">
+						<span class="ic_star ic_star3"></span>
+					</div> 
+				</div>
+
+				<div class="pd_option_wrap">
+					<div class="pd_option option_color">
+						<h2 class="tit">
+							색상
+							<span th:text="${goods.stock.color}"></span>
+						</h2>
+					</div>
+
+					<div class="pd_option option_size">
+						<h2 class="tit">사이즈</h2>
+						<div class="cont">
+							<label class="radio_size" th:if="${not #arrays.isEmpty( options )}" th:each="size, status : ${options.keySet()}" th:for="size + ${size}" th:classappend="${#strings.equals( options.get(size), '0' )} ? 'soldout'">
+								<input type="radio" name="size" id="size" th:value="${options.get(size)}" th:disabled="${#strings.equals( options.get(size), '0' )}" />
+								<span class="" th:text="${size}">사이즈</span>
+							</label>
+						</div>
+					</div>
+
+					<div class="pd_option option_quantity">
+						<h2 class="tit">수량</h2>
+						<div class="cont">
+							<input type="text" id="quantity" name="quantity" maxlength="1" onfocusout="checkQuantity(this)" />
+							<button type="button" class="btn_plus" onclick="addQuantity(document.getElementById('quantity'))">+</button>
+							<button type="button" class="btn_minus" onclick="reduceQuantity(document.getElementById('quantity'))">-</button>
+						</div>
+					</div>
+				</div>
+				<!--/* //.pd_option_wrap */-->
+
+				<div class="btn_wrap clear">
+					<a href="javascript: void(0)" class="btn btn_gray" onclick="popClose(this);">취소</a>
+					<a href="javascript: void(0)" class="btn btn_orange">변경</a>
+				</div>
+			</div>
+			<!--/* //.pd_info_wrap */-->
+		</div>
+		<!--/* //.popup_contents */-->
+	</div>
+	<!--/* //.popup_inner */-->
+	<div class="popup_bg" onclick="popClose(this);"></div>
+
+	<script th:inline="javascript">
+	/* <![CDATA[ */
+
+		/*[- 사이즈 lables -]*/
+		$(function() {
+			var lables = $(".radio_size").not(".soldout");
+
+			lables.children("span").on("click", function() {
+				lables.removeClass("active");
+				$(this).parent().addClass("active");
+				$(this).siblings("input").prop("checked", true);
+			});
+		});
+
+		/**
+		 * 상품 수량 증가
+		 */
+		function addQuantity(obj) {
+
+			var quantity = parseInt(obj.value);
+			if (quantity >= 3) {
+				alert("수량은 최대 3개까지 설정할 수 있습니다.");
+				return false;
+			}
+
+			obj.value = quantity + 1;
+		}
+
+		/**
+		 * 상품 수량 감소
+		 */
+		function reduceQuantity(obj) {
+
+			var quantity = parseInt(obj.value);
+			if (quantity <= 1) {
+				alert("수량은 최소 1개까지 설정할 수 있습니다.");
+				return false;
+			}
+
+			obj.value = quantity - 1;
+		}
+
+		/**
+		 * 수량 focusout
+		 */
+		function checkQuantity(quantity) {
+			if (quantity.value < 1 || quantity.value > 3) {
+				alert("수량은 최소 1개에서 최대 3개까지 선택할 수 있습니다.");
+				quantity.value = 0;
+				return false;
+			}
+		}
+
+	/* ]]> */
+	</script>
+</html>

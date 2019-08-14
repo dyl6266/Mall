@@ -11,9 +11,9 @@ public interface UserMapper {
 
 	public int insertUser(UserDTO params);
 
-	public UserDTO selectUserDetails(String username);
-
 	public UserDTO selectUserDetails(UserDTO params);
+
+	public UserDTO selectUserDetailsByUsername(String username);
 
 	public int updateUser(UserDTO params);
 

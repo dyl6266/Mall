@@ -72,22 +72,8 @@
 										색상
 										<span th:text="${goods.stock.color}"></span>
 									</h2>
-									<!-- <div class="cont">
-										<label for="black" class="radio_color">
-											<input type="radio" name="color" id="black" checked />
-											<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-										</label>
-										<label for="navy" class="radio_color">
-											<input type="radio" name="color" id="navy" />
-											<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-										</label>
-										<label for="blue" class="radio_color">
-											<input type="radio" name="color" id="blue" />
-											<span class="blind"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
-										</label>
-									</div> -->
 								</div>
-			
+
 								<div class="pd_option option_size">
 									<h2 class="tit">사이즈</h2>
 									<div class="cont">
@@ -97,11 +83,11 @@
 										</label>
 									</div>
 								</div>
-			
+
 								<div class="pd_option option_quantity">
 									<h2 class="tit">수량</h2>
 									<div class="cont">
-										<input type="text" id="quantity" name="quantity" value="1" />
+										<input type="text" id="quantity" name="quantity" value="1" maxlength="1" onfocusout="checkQuantity(this)" />
 										<button type="button" class="btn_plus" onclick="addQuantity(document.getElementById('quantity'))">+</button>
 										<button type="button" class="btn_minus" onclick="reduceQuantity(document.getElementById('quantity'))">-</button>
 									</div>
@@ -301,11 +287,23 @@
 				return false;
 			}
 
+			/**
+			 * 상품 수량 증가
+			 */
 			function addQuantity(obj) {
+
 				var quantity = parseInt(obj.value);
+				if (quantity >= 3) {
+					alert("수량은 최대 3개까지 설정할 수 있습니다.");
+					return false;
+				}
+
 				obj.value = quantity + 1;
 			}
 
+			/**
+			 * 상품 수량 감소
+			 */
 			function reduceQuantity(obj) {
 
 				var quantity = parseInt(obj.value);
@@ -317,28 +315,56 @@
 				obj.value = quantity - 1;
 			}
 
+			/**
+			 * 수량 focusout
+			 */
+			function checkQuantity(quantity) {
+				if (quantity.value < 1 || quantity.value > 3) {
+					alert("수량은 최소 1개에서 최대 3개까지 선택할 수 있습니다.");
+					quantity.value = 0;
+					return false;
+				}
+			}
+
+			/**
+			 * 장바구니에 상품 추가
+			 */
 			function addToCart(code) {
 
-				if (isEmpty(code)) {
-					alert("올바르지 않은 접근입니다. 새로고침 후에 다시 시도해 주세요.");
+				/*[- 상품 사이즈 -]*/
+				var size = $(".radio_size.active").children("span").text();
+				/*[- 상품 수량 -]*/
+				var quantity = $("#quantity").val();
+
+				if (isEmpty(size)) {
+					alert("사이즈를 선택해 주세요.");
+					return false;
+
+				} else if (quantity < 1 || quantity > 3) {
+					alert("수량은 최소 1개에서 최대 3개까지 선택할 수 있습니다.");
+					quantity = 0;
 					return false;
 				}
 
 				/*[- spring security csrf token -]*/
 				var token = $("meta[name='_csrf']").attr("content");
+				/*[- 서버로 전송할 데이터 -]*/
+				var params = {
+					"code" : code,
+					"size" : size,
+					"quantity" : quantity
+				};
 
 				$.ajax({
 					url : /*[[ @{/cart} ]]*/,
 					type : "post",
-					headers: {
+					headers : {
 						"Content-Type" : "application/json",
 						"X-HTTP-Method-Override" : "post",
 						"X-CSRF-TOKEN" : token,
 					},
 					dataType : "json",
-					data : JSON.stringify({
-						"code" : code
-					}),
+					data : JSON.stringify(params),
 					async : false,
 					success : function(response) {
 						/*[- 로그인이 되지 않았거나, 이미 장바구니에 존재하는 상품의 경우 -]*/

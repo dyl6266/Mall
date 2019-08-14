@@ -60,7 +60,7 @@
 		)
 	</insert>
 
-	<select id="selectUserDetails" resultType="UserDTO">
+	<select id="selectUserDetails" parameterType="UserDTO" resultType="UserDTO">
 		SELECT
 			<include refid="userColumns" />
 		FROM
@@ -79,15 +79,30 @@
 		</where>
      </select>
 
+     <select id="selectUserDetailsByUsername" parameterType="string" resultType="UserDTO">
+		SELECT
+			<include refid="userColumns" />
+		FROM
+			user
+		WHERE
+			delete_yn = 'N'
+		AND
+			username = #{username}
+     </select>
+
 	<update id="updateUser" parameterType="UserDTO">
 		UPDATE user
 		SET
 			  update_time = NOW()
 			, update_user = IFNULL(#{username}, 'ADMIN')
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( nickname ) == false">
 			, nickname = #{nickname}
-			, phone = #{phone}
+		</if>
 		<if test="@com.dy.util.MyBatisUtils@isEmpty( password ) == false">
 			, password = #{password}
+		</if>
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( phone ) == false">
+			, phone = #{phone}
 		</if>
 		WHERE
 			username = #{username}
