@@ -318,10 +318,10 @@
 			/**
 			 * 수량 focusout
 			 */
-			function checkQuantity(quantity) {
-				if (quantity.value < 1 || quantity.value > 3) {
+			function checkQuantity(obj) {
+				if (obj.value < 1 || obj.value > 3) {
 					alert("수량은 최소 1개에서 최대 3개까지 선택할 수 있습니다.");
-					quantity.value = 0;
+					obj.value = 0;
 					return false;
 				}
 			}
@@ -370,7 +370,7 @@
 						/*[- 로그인이 되지 않았거나, 이미 장바구니에 존재하는 상품의 경우 -]*/
 						if (isEmpty(response.type) == false && response.result == false) {
 							/*[- type (1 : 로그인이 되지 않은 상태 | 2 : 이미 장바구니에 상품이 존재하는 상태) -]*/
-							var redirectUri = response.type == 1 ? [[ @{/login} ]] : [[ @{/goods/cart} ]];
+							var redirectUri = response.type == 1 ? [[ @{/login} ]] : [[ @{/user/cart} ]];
 							if (confirm(response.message) == false) {
 								return false;
 							}
@@ -385,12 +385,11 @@
 							if (confirm(response.message) == false) {
 								return false;
 							}
-							location.href = /*[[ @{/goods/cart} ]]*/;
+							location.href = /*[[ @{/user/cart} ]]*/;
 						}
 					},
 					error : function(request, status, error) {
-						console.log(request);
-// 						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
 					}
 				});
 

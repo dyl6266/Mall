@@ -20,6 +20,8 @@ public interface GoodsMapper {
 
 	public List<GoodsDTO> selectGoodsList();
 
+	public List<GoodsDTO> selectGoodsListWithMainImage();
+
 	public int selectGoodsTotalCount();
 
 	public String generateGoodsCode(TableName tableName);

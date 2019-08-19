@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -166,12 +167,12 @@ public class UserController extends UiUtils {
 		return "user/find/result";
 	}
 
-	@GetMapping(value = "/user/mypage")
+	@GetMapping(value = "/mypage")
 	public String openMypage(Model model) {
 
 		String username = userService.getAuthentication().getName();
 		if ("anonymousUser".equals(username)) {
-			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", request.getContextPath() + "/login", Method.GET, null, model);
+			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
 		}
 
 		UserDTO user = (UserDTO) userService.loadUserByUsername(username);
@@ -180,16 +181,24 @@ public class UserController extends UiUtils {
 		return "user/mypage";
 	}
 
-	@GetMapping(value = "/user/cart")
+	@GetMapping(value = "/cart")
 	public String openCartPage(Model model) {
 
 		String username = userService.getAuthentication().getName();
 		if ("anonymousUser".equals(username)) {
-			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", request.getContextPath() + "/login", Method.GET, null, model);
+			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
 		}
 
+		/* 전체 상품 목록 */
 		List<CartDTO> goodsList = cartService.getListOfGoodsInCart(username);
+		if (CollectionUtils.isEmpty(goodsList)) {
+			return showMessageWithRedirect("장바구니가 비어있습니다.", request.getContextPath() + "/goods/list", Method.GET, null, model);
+		}
+		/* 전체 상품 금액 */
+		int totalAmount = cartService.getTotalAmount(username);
+
 		model.addAttribute("goodsList", goodsList);
+		model.addAttribute("totalAmount", totalAmount);
 
 		return "user/cart";
 	}

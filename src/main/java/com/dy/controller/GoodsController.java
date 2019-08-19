@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -35,7 +37,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dy.common.Const.Method;
 import com.dy.domain.GoodsDTO;
+import com.dy.domain.UserDTO;
 import com.dy.service.GoodsService;
+import com.dy.service.UserService;
 import com.dy.util.MediaUtils;
 import com.dy.util.UiUtils;
 import com.google.gson.Gson;
@@ -50,7 +54,13 @@ public class GoodsController extends UiUtils {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
+	private HttpServletRequest request;
+
+	@Autowired
 	private GoodsService goodsService;
+
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * 관리자 상품 등록
@@ -64,25 +74,23 @@ public class GoodsController extends UiUtils {
 		if (bindingResult.hasErrors()) {
 			FieldError fieldError = bindingResult.getFieldError();
 			jsonObj.addProperty("message", fieldError.getDefaultMessage());
+
 		} else {
 			try {
 				/* 상품 등록 */
 				boolean isInserted = ObjectUtils.isEmpty(files) == false ? goodsService.registerGoods(params, files)
 						: goodsService.registerGoods(params);
 				if (isInserted == false) {
-					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후 다시 시도해 주세요.");
-				} else {
-					jsonObj.addProperty("message", "상품 등록이 완료되었습니다.");
+					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");
 				}
 				jsonObj.addProperty("result", isInserted);
-				// end of else
 
 			} catch (DataAccessException e) {
-				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
+				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
 				jsonObj.addProperty("result", false);
 
 			} catch (Exception e) {
-				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후 다시 시도해 주세요.");
+				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
 				jsonObj.addProperty("result", false);
 				e.printStackTrace();
 			}
@@ -270,6 +278,43 @@ public class GoodsController extends UiUtils {
 		}
 
 		return entity;
+	}
+
+	@GetMapping(value = "/goods/checkout")
+	public String openCheckout(@RequestParam(value = "code", required = false) String code, Model model) {
+
+		String username = userService.getAuthentication().getName();
+		if ("anonymousUser".equals(username)) {
+			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
+
+		} else if (StringUtils.isEmpty(code)) {
+			return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getContextPath() + "/goods/list", Method.GET, null, model);
+		}
+
+		UserDTO user = (UserDTO) userService.loadUserByUsername(username);
+		model.addAttribute("user", user);
+
+		return "goods/checkout";
+	}
+
+	/**
+	 * 구매자 배송지 리스트 HTML (Ajax Success Response)
+	 * TODO => user/cart 매핑으로 처리하기 굳이 두 ㄱㅐ로 나누지 않아도 될 듯함
+	 * @param model
+	 * @return 페이지
+	 */
+	@GetMapping(value = "/goods/checkout/address-popup")
+	public String returAddressListOfBuyerHTML(Model model) {
+
+		String username = userService.getAuthentication().getName();
+		if ("anonymousUser".equals(username)) {
+			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
+		}
+
+		UserDTO user = (UserDTO) userService.loadUserByUsername(username);
+		model.addAttribute("user", user);
+
+		return "goods/address-popup";
 	}
 
 }

@@ -134,6 +134,7 @@ public class GoodsServiceImpl implements GoodsService {
 		return goods;
 	}
 
+	// TODO => 컨ㅌ롤러에서 goodsService, attachService를 호출하는 방식으로 바꿀지 생각해보기
 	@Override
 	public Map<String, Object> getGoodsDetailsWithImages(String code) {
 
@@ -172,7 +173,7 @@ public class GoodsServiceImpl implements GoodsService {
 
 		int goodsTotalCount = goodsMapper.selectGoodsTotalCount();
 		if (goodsTotalCount > 0) {
-			goodsList = goodsMapper.selectGoodsList();
+			goodsList = goodsMapper.selectGoodsListWithMainImage();
 		}
 
 		return goodsList;

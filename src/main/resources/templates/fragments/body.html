@@ -14,14 +14,13 @@
 			<header>
 				<div class="header_wrap fl_wrap">
 					<div class="inner">
-						<a href="#" class="logo">LOGO<img src="" alt="" /></a>
+						<a th:href="@{/index}" class="logo">DY shoes<img src="" alt="" /></a>
 
 						<div class="gnb">
 							<ul class="utill">
 								<li class="btn_gnb_close mobile_block" onclick="gnbClose(this);"><a href="javascript:void(0)">모바일gnb 닫기</a></li>
 								<li><a sec:authorize="isAuthenticated()" th:text="|${#authentication.principal.nickname}님 환영합니다.|"></a></li>
-								<li><a th:href="@{/user/cart}" sec:authorize="isAuthenticated()">장바구니</a></li>
-								<li><a th:href="@{/user/mypage}" sec:authorize="isAuthenticated()">마이 페이지</a></li>
+								<li><a th:href="@{/mypage}" sec:authorize="isAuthenticated()">마이 페이지</a></li>
 								<li>
 									<a th:href="@{/login}" sec:authorize="isAuthenticated() == false">로그인</a>
 									<a href="javascript: void(0)" sec:authorize="isAuthenticated()" onclick="logout(this)">로그아웃</a>
@@ -30,11 +29,10 @@
 							</ul>
 
 							<nav>
-								<a href="">Menu1</a>
-								<a href="">Menu2</a>
-								<a href="">Menu3</a>
-								<a href="">Menu4</a>
-								<a href="">Menu5</a>
+								<a href="">BEST SELLER</a>
+								<a href="">NEW ARRIVAL</a>
+								<a href="">SALE</a>
+								<a th:href="@{/cart}">CART</a>
 							</nav>
 						</div>
 						<!--/* //.gnb */-->
@@ -85,7 +83,7 @@
 		<!--/* 자바스크립트가 들어가는 영역 */-->
 		<th:block layout:fragment="script">
 			<script th:inline="javascript">
-				/* <![CDATA[ */
+			/* <![CDATA[ */
 
 					function logout() {
 						var uri = /*[[ @{/logout} ]]*/;
@@ -101,7 +99,7 @@
 						$("form[name='logoutForm']").submit();
 					}
 
-				/* ]]> */
+			/* ]]> */
 			</script>
 		</th:block>
 	</body>

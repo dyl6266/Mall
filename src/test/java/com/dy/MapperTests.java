@@ -1,5 +1,7 @@
 package com.dy;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +12,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.dy.common.Const.Authority;
 import com.dy.domain.AuthorityDTO;
+import com.dy.domain.GoodsDTO;
 import com.dy.domain.UserDTO;
 import com.dy.mapper.AuthorityMapper;
+import com.dy.mapper.GoodsMapper;
 import com.dy.mapper.UserMapper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MapperTests {
+	
+	@Autowired
+	private GoodsMapper goodsMapper;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -26,6 +33,14 @@ public class MapperTests {
 
 	@Autowired
 	private PasswordEncoder encoder;
+	
+	@Test
+	public void 상품_이미지() {
+		List<GoodsDTO> goodsList = goodsMapper.selectGoodsListWithMainImage();
+		for (GoodsDTO goods : goodsList) {
+			System.out.println(goods);
+		}
+	}
 
 	@Test
 	public void 가입() {

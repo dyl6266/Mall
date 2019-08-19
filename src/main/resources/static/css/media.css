@@ -139,6 +139,10 @@
 
 	.cart_wrap .cart {float: none; width: 100%;}
 	.cart_wrap .total_price {float: none; width: 100%; margin-top: 20px;}
+
+
+	/* 주문/결제 */
+	.order_wrap {padding-top: 20px;}
 }
 
 @media screen and (max-width: 769px) {
@@ -224,25 +228,47 @@
 
 	#optionPop .popup_contents {padding: 10px 20px 20px;}
 	#optionPop .popup_contents .pd_info_wrap {margin-top: 0;}
+
+
+	/* 주문/결제 */
+	.order_wrap .box {margin-bottom: 20px; padding: 10px 15px;}
+	.order_wrap .box dt .check_style {margin-left: 5px !important;}
+
+	.order_wrap .pd_box .img_box {width: 80px; vertical-align: top;}
+	.order_wrap .pd_box .txt_box {width: calc(100% - 90px); padding-left: 10px; line-height: 20px;}
+
+	.order_wrap input.type4 {width: calc(100% - 104px);}
+	.order_wrap input.type5 {width: 100%;}
+
+	.order_wrap .pay_box div button {width: 50%; margin-right: 0; font-size: 14px;}
+
+	#addressPop .popup_contents {padding: 10px 20px 20px;}
+	#addressPop .table.table_body .table_row {position: relative; padding: 10px; padding-right: 70px;}
+	#addressPop .table.table_body .table_row > * {height: auto; padding-bottom: 2px; text-align: left;}
+	#addressPop .table .table_row > .col1 {width: 100%;}
+	#addressPop .table .table_row > .col2 {}
+	#addressPop .table .table_row > .col3 {width: 100%; padding-bottom: 0;}
+	#addressPop .table .table_row > .col4 {position: absolute; right: 10px; bottom: 10px; width: auto;}
+	#addressPop .table .label_basic {display: inline-block; margin-left: 10px;}
 }
 
 @media screen and (max-width: 481px) {
-/* Contents */
-.page_title {font-size: 22px;}
+	/* Contents */
+	.page_title {font-size: 22px;}
 
 
-/* Login */
-.login_wrap {width: 100%; padding: 20px 3%;}
-.login_wrap .page_title {margin-bottom: 20px; font-size: 22px;}
-.login_wrap .login .input_box {height: 40px; padding: 0 20px; font-size: 14px;}
-.login_wrap .login .find_wrap a {font-size: 14px;}
-.login_wrap .login .btn_wrap .btn {height: 40px; line-height: 40px; font-size: 14px;}
+	/* Login */
+	.login_wrap {width: 100%; padding: 20px 3%;}
+	.login_wrap .page_title {margin-bottom: 20px; font-size: 22px;}
+	.login_wrap .login .input_box {height: 40px; padding: 0 20px; font-size: 14px;}
+	.login_wrap .login .find_wrap a {font-size: 14px;}
+	.login_wrap .login .btn_wrap .btn {height: 40px; line-height: 40px; font-size: 14px;}
 
 
-/* Join */
-.join_box {width: 100%; padding: 20px 3%;}
-.join_box .page_title {margin-bottom: 20px; font-size: 22px;}
-.join_box .agree_box textarea {height: 100px;}
+	/* Join */
+	.join_box {width: 100%; padding: 20px 3%;}
+	.join_box .page_title {margin-bottom: 20px; font-size: 22px;}
+	.join_box .agree_box textarea {height: 100px;}
 }
 
 @media screen and (max-width: 361px) {

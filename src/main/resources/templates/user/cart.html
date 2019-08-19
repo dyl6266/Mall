@@ -36,14 +36,14 @@
 									<p class="name" th:text="${row.goods.name}">상품명</p>
 									<p class="option" th:text="|${row.goods.stock.color} / ${row.size}|">색상 / 사이즈</p>
 									<p class="quantity" th:text="|수량  : ${row.quantity}|">수량 : 개수</p>
-									<a href="javascript: void(0)" class="btn btn_border_black" th:onclick="changeOption([[ ${row.code} ]], [[ ${row.size} ]], [[ ${row.quantity} ]])">옵션 변경</a>
+									<a href="javascript: void(0)" class="btn btn_border_black" th:onclick="changeOption([[ ${row.code} ]], [[ ${row.size} ]], [[ ${row.quantity} ]], [[ |${#numbers.formatInteger( row.goods.price * row.quantity, 3, 'COMMA' )}원| ]])">옵션 변경</a>
 								</div>
 							</div>
 							<div class="col3">
 								<span class="orange" th:text="|${#numbers.formatInteger( row.goods.price * row.quantity, 3, 'COMMA' )}원|">가격</span>
 							</div>
 							<div class="col4">
-								<button type="button" class="btn btn_black">주문하기</button>
+								<a th:href="@{/goods/checkout( code=${row.code} )}" class="btn btn_black">주문하기</a>
 								<button type="button" class="btn btn_gray" th:onclick="deleteGoods([[ ${row.code} ]], [[ ${row.goods.name} ]])">삭제하기</button>
 							</div>
 						</li>
@@ -58,17 +58,17 @@
 				<div class="total_price">
 					<div class="price">
 						<p>
-							<!-- TODO => 상품 리스트의 합계 어떻게 가지고 올까... 생각해보자 -->
-							<span>상품금액</span>
-							<strong>75,000 원</strong>
+							<span>상품 금액</span>
+							<strong th:text="|${#numbers.formatInteger( totalAmount, 3, 'COMMA' )}원|"></strong>
 						</p>
 						<p>
 							<span>배송비</span>
-							<strong>2,500 원</strong>
+							<strong th:text="${totalAmount < 50000 ? '2,500원' : '무료'}"></strong>
 						</p>
 						<p class="last">
 							<span>총 결제금액</span>
-							<strong class="orange">77,500 원</strong>
+							<!-- 전체 상품 금액이 50,000원 미만의 경우에는 배송비 2500원이 추가되고, 50,000원 이상의 경우에는 무료 배송 -->
+							<strong class="orange" th:text="|${totalAmount < 50000 ? #numbers.formatInteger( totalAmount + 2500, 3, 'COMMA' ) : #numbers.formatInteger( totalAmount, 3, 'COMMA' )}원|"></strong>
 						</p>
 					</div>
 
@@ -92,12 +92,10 @@
 			/**
 			 * 장바구니 상품 옵션 변경 팝업 불러오기
 			 */
-			function changeOption(code, selectedSize, quantity) {
-
-				var uri = /*[[ @{/cart/option-popup} ]]*/;
+			function changeOption(code, selectedSize, quantity, amount) {
 
 				$.ajax({
-					url : uri,
+					url : /*[[ @{/cart/option-popup} ]]*/,
 					type : "get",
 					dataType : "html",
 					data : { "code" : code },
@@ -105,6 +103,8 @@
 					success : function(response) {
 						/*[- option popup html 추가 -]*/
 						$("#optionPop").html(response);
+						/*[- 변경할 상품 금액 -]*/
+						$(".pd_price").text(amount);
 						/*[- 사이즈 lables -]*/
 						var lables = $(".radio_size").not(".soldout");
 						/*[- 사이즈 spans -]*/
@@ -147,10 +147,10 @@
 
 				$.ajax({
 					url : uri,
-					type : "patch",
+					type : "delete",
 					headers : {
 						"Content-Type" : "application/json",
-						"X-HTTP-Method-Override" : "patch",
+						"X-HTTP-Method-Override" : "delete",
 						"X-CSRF-TOKEN" : token,
 					},
 					dataType : "json",
@@ -241,21 +241,17 @@
 			 */
 			function getGoodsList() {
 
-				/*[- spring security csrf token -]*/
-				var token = $("meta[name='_csrf']").attr("content");
-
 				$.ajax({
 					url : /*[[ @{/cart/goods-list} ]]*/,
 					type : "get",
 					headers : {
 						"Content-Type" : "application/json",
 						"X-HTTP-Method-Override" : "get",
-						"X-CSRF-TOKEN" : token,
 					},
 					dataType : "html",
 					async : false,
 					success : function(response) {
-						$(".table_body").html(response);
+						$(".cart_wrap").html(response);
 					},
 					error : function(request, status, error) {
 						alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");

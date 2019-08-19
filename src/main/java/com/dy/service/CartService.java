@@ -6,11 +6,13 @@ import com.dy.domain.CartDTO;
 
 public interface CartService {
 
-	public boolean addGoodsToCart(CartDTO params);
+	public boolean registerGoodsToCart(CartDTO params);
 
 	public boolean deleteGoodsInCart(String username, List<String> codes);
 
 	public List<CartDTO> getListOfGoodsInCart(String username);
+
+	public int getTotalAmount(String username);
 
 	public boolean checkForDuplicateGoodsInCart(CartDTO params);
 

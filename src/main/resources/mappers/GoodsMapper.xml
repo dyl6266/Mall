@@ -15,6 +15,29 @@
 		, update_time
 	</sql>
 
+	<resultMap id="goodsResultMap" type="GoodsDTO">
+		<id 	property="idx" 			column="idx" />
+		<result property="code" 		column="code" />
+		<result property="name" 		column="name" />
+		<result property="description" 	column="description" />
+		<result property="price" 		column="price" />
+		<result property="status" 		column="status" />
+		<result property="deleteYn" 	column="delete_yn" />
+		<result property="insertTime" 	column="insert_time" />
+		<result property="updateTime" 	column="update_time" />
+
+		<collection property="attachList" javaType="list" ofType="AttachDTO">
+			<id 	property="idx" 			column="idx" />
+			<result property="code" 		column="code" />
+			<result property="originalName"	column="original_name" />
+			<result property="storedName"	column="stored_name" />
+			<result property="size"			column="size" />
+			<result property="deleteYn" 	column="delete_yn" />
+			<result property="insertTime" 	column="insert_time" />
+			<result property="updateTime" 	column="update_time" />
+		</collection>
+	</resultMap>
+
 	<insert id="insertGoods" parameterType="GoodsDTO">
 		INSERT INTO goods (
 			<include refid="goodsColumns" />
@@ -72,6 +95,27 @@
 			(status = 'Y' AND delete_yn = 'N')
 		ORDER BY
 			idx DESC, insert_time DESC
+	</select>
+
+	<select id="selectGoodsListWithMainImage" resultMap="goodsResultMap">
+		SELECT
+			  g.code
+			, g.name
+		    , g.price
+		    , a.stored_name
+		    , a.insert_time
+		FROM
+		    (SELECT 
+		        g.code, MIN(a.idx) AS idx
+		    FROM
+		        goods AS g
+		    INNER JOIN attach AS a ON g.code = a.code
+		    GROUP BY g.code) AS first
+		        INNER JOIN
+		    attach AS a ON first.idx = a.idx
+		        RIGHT OUTER JOIN
+		    goods AS g ON first.code = g.code
+		ORDER BY g.idx DESC , g.insert_time DESC
 	</select>
 
 	<select id="selectGoodsTotalCount" resultType="int">

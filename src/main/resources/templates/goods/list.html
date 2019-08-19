@@ -27,9 +27,11 @@
 					</div>
 
 					<ul th:if="${not #lists.isEmpty( goodsList )}"> 
-						<li th:each="row : ${goodsList}">
+						<li th:each="row, status : ${goodsList}">
 							<a th:href="@{/goods/details( code=${row.code} )}" class="img_wrap">
-								<span class="img_box"><img th:src="@{/images/common/thumb.jpg}" alt="" /></span>
+								<span class="img_box">
+									<img th:src="@{/goods/images/} + ${#calendars.format( row.attachList[0].insertTime, 'yy-MM-dd' )} + '/' + ${row.attachList[0].storedName}" th:alt="shoes + ${status.index}" />
+								</span>
 							</a>
 							<a th:href="@{/goods/details( code=${row.code} )}" class="txt_wrap">
 								<span th:text="${row.name}" class="name">상품명</span>

@@ -22,20 +22,24 @@ public class CartServiceImpl implements CartService {
 	private GoodsMapper goodsMapper;
 
 	@Override
-	public boolean addGoodsToCart(CartDTO params) {
+	public boolean registerGoodsToCart(CartDTO params) {
 
-		/*
-		 *  TODO => 사용자 이메일이 존재하는지 체크하는 메소드 만들기 (UserDTO 오브젝트)
-		 *  		아니면 컨트롤러에서 Json으로 처리해야 하나...? 잘 생각해보자
-		 */
-		GoodsDTO goods = goodsMapper.selectGoodsDetails(params.getCode());
-		if (goods == null || (goods.getStatus() == Status.N || Status.S == goods.getStatus())) {
-			return false;
-		}
+		if (params.getIdx() == null) {
+			GoodsDTO goods = goodsMapper.selectGoodsDetails(params.getCode());
+			if (goods == null || (goods.getStatus() == Status.N || Status.S == goods.getStatus())) {
+				return false;
+			}
 
-		int queryResult = cartMapper.insertGoodsToCart(params);
-		if (queryResult != 1) {
-			return false;
+			int queryResult = cartMapper.insertGoodsToCart(params);
+			if (queryResult != 1) {
+				return false;
+			}
+
+		} else {
+			int queryResult = cartMapper.updateGoodsInCart(params);
+			if (queryResult != 1) {
+				return false;
+			}
 		}
 
 		return true;
@@ -67,6 +71,12 @@ public class CartServiceImpl implements CartService {
 		}
 
 		return goodsList;
+	}
+
+	@Override
+	public int getTotalAmount(String username) {
+
+		return cartMapper.selectTotalAmount(username);
 	}
 
 	@Override

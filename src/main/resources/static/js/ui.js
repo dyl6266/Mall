@@ -65,3 +65,16 @@ function popClose (_this) {
 	var _this = $(_this);
 	_this.parents(".popup_wrap").hide();
 }
+
+
+// Active
+function addActive (_this) {
+	var _this = $(_this);
+	if(_this.hasClass("active")) {
+		_this.parent().find("> .active").removeClass("active");
+		_this.removeClass("active");
+	} else {
+		_this.parent().find("> .active").removeClass("active");
+		_this.addClass("active");
+	}
+}

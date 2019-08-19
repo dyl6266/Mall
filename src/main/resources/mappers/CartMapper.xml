@@ -62,6 +62,18 @@
 		)
 	</insert>
 
+	<update id="updateGoodsInCart" parameterType="CartDTO">
+		UPDATE cart
+		SET
+			  update_time = NOW()
+			, size = #{size}
+			, quantity = #{quantity}
+		WHERE
+			username = #{username}
+		AND
+			code = #{code}
+	</update>
+
 	<update id="deleteGoodsInCart" parameterType="hashmap">
 		UPDATE cart
 		SET
@@ -92,11 +104,7 @@
 		        INNER JOIN
 		    stock AS S ON (S.code = G.code)
 		WHERE
-			C.delete_yn = 'N'
-		AND
-			G.delete_yn = 'N'
-		AND
-			S.delete_yn = 'N'
+			(C.delete_yn = 'N' AND G.delete_yn = 'N' AND S.delete_yn = 'N')
 		AND
 		    C.username = #{username}
 	</select>
@@ -123,6 +131,19 @@
 			delete_yn = 'N'
 		AND
 			username = #{username}
+	</select>
+
+	<select id="selectTotalAmount" parameterType="string" resultType="int">
+		SELECT
+			IFNULL(SUM(C.quantity * G.price), 0) AS totalAmount
+		FROM
+			cart AS C
+				INNER JOIN
+			goods AS G ON (C.code = G.code)
+		WHERE
+			(C.delete_yn = 'N' AND G.delete_yn = 'N')
+		AND
+			C.username = #{username}
 	</select>
 
 </mapper>

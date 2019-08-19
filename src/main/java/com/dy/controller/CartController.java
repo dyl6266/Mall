@@ -1,7 +1,6 @@
 package com.dy.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,7 +52,7 @@ public class CartController extends UiUtils {
 	 * 
 	 * @param params - CartDTO 오브젝트
 	 * @param bindingResult - Bean 유효성 검사 에러 매핑 오브젝트
-	 * @return
+	 * @return message, type, result
 	 */
 	@PostMapping(value = "/cart")
 	@ResponseBody
@@ -84,7 +84,7 @@ public class CartController extends UiUtils {
 
 				} else {
 					/* 장바구니에 상품을 추가한 결과 */
-					boolean isAdded = cartService.addGoodsToCart(params);
+					boolean isAdded = cartService.registerGoodsToCart(params);
 					if (isAdded == false) {
 						jsonObj.addProperty("message", "장바구니 추가에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");
 					} else {
@@ -108,35 +108,54 @@ public class CartController extends UiUtils {
 	// end of method
 
 	/**
-	 * 옵션 변경 팝업 HTML (Ajax Success Response)
+	 * 장바구니 상품 수정
 	 * 
-	 * @param code - 상품 코드
-	 * @param model
-	 * @return 페이지
+	 * @param params - CartDTO 오브젝트
+	 * @param bindingResult - Bean 유효성 검사 에러 매핑 오브젝트
+	 * @return
 	 */
-	@GetMapping(value = "/cart/option-popup")
-	public String returnChangeOptionPopupHTML(@RequestParam(value = "code", required = false) String code,
-			Model model) {
+	@PatchMapping(value = "/cart/{code}")
+	@ResponseBody
+	public JsonObject updateGoodsInCart(@PathVariable("code") String code, @Validated @RequestBody CartDTO params,
+			BindingResult bindingResult) {
 
-		if (StringUtils.isEmpty(code)) {
-			return showMessageWithRedirect("올바르지 않은 접근입니다.", "/goods/list", Method.GET, null, model);
+		JsonObject jsonObj = new JsonObject();
+
+		String username = userService.getAuthentication().getName();
+
+		if (bindingResult.hasErrors()) {
+			FieldError fieldError = bindingResult.getFieldError();
+			jsonObj.addProperty("message", fieldError.getDefaultMessage());
+			jsonObj.addProperty("result", false);
+
+		} else if ("anonymousUser".equals(username)) {
+			jsonObj.addProperty("message", "로그인이 필요한 서비스입니다.");
+			jsonObj.addProperty("type", 1);
+			jsonObj.addProperty("result", false);
+
+		} else {
+			params.setUsername(username);
+			try {
+				/* 장바구니에 상품을 추가한 결과 */
+				boolean isUpdated = cartService.registerGoodsToCart(params);
+				if (isUpdated == false) {
+					jsonObj.addProperty("message", "옵션 변경에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				}
+				jsonObj.addProperty("result", isUpdated);
+
+			} catch (DataAccessException e) {
+				jsonObj.addProperty("message", "DB 처리 중에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+
+			} catch (Exception e) {
+				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+			}
 		}
 
-		Map<String, Object> map = goodsService.getGoodsDetailsWithImages(code);
-		for (String key : map.keySet()) {
-			model.addAttribute(key, map.get(key));
-		}
-
-		if (map.get("goods") != null) {
-			GoodsDTO goods = (GoodsDTO) map.get("goods");
-			String optionsStr = goods.getStock().getOptions();
-
-			JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
-			model.addAttribute("options", options);
-		}
-
-		return "user/cart/option-popup";
+		return jsonObj;
 	}
+	// end of method
 
 	/**
 	 * 장바구니 상품 삭제 
@@ -144,7 +163,7 @@ public class CartController extends UiUtils {
 	 * @param codes - 상품 코드 리스트
 	 * @return 메시지, 결과
 	 */
-	@PatchMapping(value = "/cart/{codes}")
+	@DeleteMapping(value = "/cart/{codes}")
 	@ResponseBody
 	public JsonObject removeGoodsFromCart(@PathVariable("codes") List<String> codes) {
 
@@ -183,8 +202,39 @@ public class CartController extends UiUtils {
 	// end of method
 
 	/**
-	 * 장바구니 상품 목록 HTML (Ajax Success Response)
+	 * 옵션 변경 팝업 HTML (Ajax Success Response)
 	 * 
+	 * @param code - 상품 코드
+	 * @param model
+	 * @return 페이지
+	 */
+	@GetMapping(value = "/cart/option-popup")
+	public String returnChangeOptionPopupHTML(@RequestParam(value = "code", required = false) String code,
+			Model model) {
+
+		String username = userService.getAuthentication().getName();
+		if ("anonymousUser".equals(username)) {
+			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
+		} else if (StringUtils.isEmpty(code)) {
+			return showMessageWithRedirect("올바르지 않은 접근입니다.", "/goods/list", Method.GET, null, model);
+		}
+
+		/* 상품 상세 정보 */
+		GoodsDTO goods = goodsService.getGoodsDetails(code);
+		/* 옵션 Json 문자열 */
+		String optionsStr = goods.getStock().getOptions();
+		/* 옵션 Json 문자열을 key, value 형태의 Json 오브젝트로 파싱 */
+		JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
+
+		model.addAttribute("goods", goods);
+		model.addAttribute("options", options);
+
+		return "user/cart/option-popup";
+	}
+
+	/**
+	 * 장바구니 상품 목록 HTML (Ajax Success Response)
+	 * TODO => user/cart 매핑으로 처리하기 굳이 두 ㄱㅐ로 나누지 않아도 될 듯함
 	 * @param model
 	 * @return 페이지
 	 */
@@ -193,11 +243,16 @@ public class CartController extends UiUtils {
 
 		String username = userService.getAuthentication().getName();
 		if ("anonymousUser".equals(username)) {
-			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", request.getContextPath() + "/login", Method.GET, null, model);
+			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
 		}
 
+		/* 전체 상품 목록 */
 		List<CartDTO> goodsList = cartService.getListOfGoodsInCart(username);
+		/* 전체 상품 금액 */
+		int totalAmount = cartService.getTotalAmount(username);
+
 		model.addAttribute("goodsList", goodsList);
+		model.addAttribute("totalAmount", totalAmount);
 
 		return "user/cart/goods-list";
 	}

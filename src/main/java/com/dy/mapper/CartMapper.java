@@ -12,7 +12,7 @@ public interface CartMapper {
 
 	public int insertGoodsToCart(CartDTO params);
 
-	public int insertGoodsToCart(HashMap<String, Object> params);
+	public int updateGoodsInCart(CartDTO params);
 
 	public int deleteGoodsInCart(HashMap<String, Object> params);
 
@@ -21,5 +21,7 @@ public interface CartMapper {
 	public int selectGoodsCountInCart(CartDTO params);
 
 	public int selectGoodsCountInCartByUsername(String username);
+
+	public int selectTotalAmount(String username);
 
 }

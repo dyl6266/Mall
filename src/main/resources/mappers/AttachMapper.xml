@@ -70,7 +70,7 @@
 		AND
 			code = #{code}
 		ORDER BY
-			idx DESC, insert_time DESC
+			idx ASC, insert_time ASC
 	</select>
 
 	<select id="selectAttachTotalCount" parameterType="string" resultType="int">

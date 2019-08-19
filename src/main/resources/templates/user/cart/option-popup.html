@@ -8,12 +8,10 @@
 		<div class="popup_contents view fl_wrap">
 			<!-- 상세 정보 -->
 			<div class="pd_info_wrap">
-				<!--/* 상품 코드 hidden parameter */-->
-				<input type="hidden" name="code" th:value="${goods.code}" />
 
 				<div class="pd_title_wrap">
 					<h1 class="pd_title" th:text="${goods.name}">상품명</h1>
-					<p class="pd_price" th:text="|${goods.price}원|">가격</p>
+					<p class="pd_price">가격</p>
 					<div class="pd_review">
 						<span class="ic_star ic_star3"></span>
 					</div> 
@@ -32,7 +30,7 @@
 						<div class="cont">
 							<label class="radio_size" th:if="${not #arrays.isEmpty( options )}" th:each="size, status : ${options.keySet()}" th:for="size + ${size}" th:classappend="${#strings.equals( options.get(size), '0' )} ? 'soldout'">
 								<input type="radio" name="size" id="size" th:value="${options.get(size)}" th:disabled="${#strings.equals( options.get(size), '0' )}" />
-								<span class="" th:text="${size}">사이즈</span>
+								<span th:text="${size}">사이즈</span>
 							</label>
 						</div>
 					</div>
@@ -40,7 +38,7 @@
 					<div class="pd_option option_quantity">
 						<h2 class="tit">수량</h2>
 						<div class="cont">
-							<input type="text" id="quantity" name="quantity" maxlength="1" onfocusout="checkQuantity(this)" />
+							<input type="text" name="quantity" id="quantity" maxlength="1" onfocusout="checkQuantity(this)" />
 							<button type="button" class="btn_plus" onclick="addQuantity(document.getElementById('quantity'))">+</button>
 							<button type="button" class="btn_minus" onclick="reduceQuantity(document.getElementById('quantity'))">-</button>
 						</div>
@@ -49,8 +47,8 @@
 				<!--/* //.pd_option_wrap */-->
 
 				<div class="btn_wrap clear">
-					<a href="javascript: void(0)" class="btn btn_gray" onclick="popClose(this);">취소</a>
-					<a href="javascript: void(0)" class="btn btn_orange">변경</a>
+					<button type="button" class="btn btn_gray" onclick="popClose(this);">취소</button>
+					<button type="button" class="btn btn_orange" th:onclick="updateOptions([[ ${goods.idx} ]], [[ ${goods.code} ]])">변경</button>
 				</div>
 			</div>
 			<!--/* //.pd_info_wrap */-->
@@ -105,13 +103,72 @@
 		/**
 		 * 수량 focusout
 		 */
-		function checkQuantity(quantity) {
-			if (quantity.value < 1 || quantity.value > 3) {
+		function checkQuantity(obj) {
+			if (obj.value < 1 || obj.value > 3) {
 				alert("수량은 최소 1개에서 최대 3개까지 선택할 수 있습니다.");
-				quantity.value = 0;
+				obj.value = 0;
 				return false;
 			}
 		}
+
+		/**
+		 * 상품 옵션 변경
+		 */
+		function updateOptions(idx, code) {
+
+			/*[- 상품 사이즈 -]*/
+			var size = $(".radio_size.active").children("span").text();
+			/*[- 상품 수량 -]*/
+			var quantity = $("#quantity").val();
+
+			if (isEmpty(size)) {
+				alert("사이즈를 선택해 주세요.");
+				return false;
+
+			} else if (quantity < 1 || quantity > 3) {
+				alert("수량은 최소 1개에서 최대 3개까지 선택할 수 있습니다.");
+				quantity = 0;
+				return false;
+			}
+
+			/*[- spring security csrf token -]*/
+			var token = $("meta[name='_csrf']").attr("content");
+			/*[- 서버로 전송할 데이터 -]*/
+			var params = {
+				"idx" : idx,
+				"code" : code,
+				"size" : size,
+				"quantity" : quantity
+			};
+
+			var uri = [[ @{/cart/} ]] + code;
+			
+			$.ajax({
+				url : uri,
+				type : "patch",
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "patch",
+					"X-CSRF-TOKEN" : token,
+				},
+				dataType : "json",
+				data : JSON.stringify(params),
+				async : false,
+				success : function(response) {
+					if (response.result == false) {
+						alert(response.message);
+						return false;
+					}
+					getGoodsList();
+					popClose(".btn_close");
+				},
+				error : function(request, status, error) {
+					alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				}
+			});
+			/*[- end of ajax -]*/
+		}
+		/*[- end of function -]*/
 
 	/* ]]> */
 	</script>

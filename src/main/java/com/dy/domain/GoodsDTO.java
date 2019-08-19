@@ -1,5 +1,7 @@
 package com.dy.domain;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -37,5 +39,8 @@ public class GoodsDTO extends CommonDTO {
 	/** 재고 정보 */
 	@Valid
 	private StockDTO stock;
+
+	/** 이미지 리스트 */
+	private List<AttachDTO> attachList;
 
 }
