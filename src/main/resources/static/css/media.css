@@ -193,6 +193,10 @@
 	#reviewPop .btn_wrap .btn {width: 100%;}
 
 
+	/* Join */
+	.join_com_box .box > img {width: 60px;}
+
+
 	/* 장바구니 */
 	.table {display: block; border-top: 1px solid #000;}
 	.table.table_head {display: none;}
@@ -250,6 +254,11 @@
 	#addressPop .table .table_row > .col3 {width: 100%; padding-bottom: 0;}
 	#addressPop .table .table_row > .col4 {position: absolute; right: 10px; bottom: 10px; width: auto;}
 	#addressPop .table .label_basic {display: inline-block; margin-left: 10px;}
+
+	.order_com_wrap .com_box > img {width: 60px;}
+	.order_com_wrap .com_box > p {font-size: 16px;}
+	.order_com_wrap .user_box {float: none; width: 100%; margin-right: 0}
+	.order_com_wrap .pay_box {float: none; width: 100%;}
 }
 
 @media screen and (max-width: 481px) {

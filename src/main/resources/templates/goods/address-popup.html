@@ -8,21 +8,26 @@
 		<div class="popup_contents">
 			<div class="table table_head">
 				<div class="table_row">
-					<div class="col1">배송지명</div>
+					<div class="col1">배송지 이름</div>
 					<div class="col2">주소</div>
-					<div class="col3">연락처</div>
-					<div class="col4">선택</div>
+					<div class="col3">선택</div>
 				</div>
 			</div>
-			<ul class="table table_body">
-				<li class="table_row">
-					<div class="col1">집 <span class="label label_basic">기본배송지</span></div>
-					<div class="col2">인천광역시 부평구 부평동</div>
-					<div class="col3">01023456789</div>
-					<div class="col4">
-						<button type="button" class="btn btn_border_black">선택</button>
-						<button type="button" class="btn btn_border_black">삭제</button>
+			<ul class="table table_body" th:if="${not #lists.isEmpty( addressBook )}">
+				<li class="table_row" th:each="row : ${addressBook}">
+					<div class="col1">집
+						<span class="label label_basic" th:if="${#strings.equals( row.defaultYn, 'Y' )}">기본 배송지</span>
 					</div>
+					<div class="col2" th:text="${row.address}"></div>
+					<div class="col3">
+						<button type="button" class="btn btn_border_black" th:onclick="choiceAddress([[ ${row.postcode} ]], [[ ${row.address} ]], [[ ${row.detailedAddress} ]])">선택</button>
+						<button type="button" class="btn btn_border_black" th:onclick="deleteAddress([[ ${row.idx} ]])">삭제</button>
+					</div>
+				</li>
+			</ul>
+			<ul class="table table_body" th:unless="${not #lists.isEmpty( addressBook )}">
+				<li class="table_row">
+					<div>배송지가 존재하지 않습니다.</div>
 				</li>
 			</ul>
 		</div>
@@ -30,5 +35,52 @@
 	</div>
 	<!--/* //.popup_inner */-->
 	<div class="popup_bg" onclick="popClose(this);"></div>
+
+	<script th:inline="javascript">
+	/* <![CDATA[ */
+
+		function choiceAddress(postcode, address, detailedAddress) {
+
+			document.getElementById("postcode").value = postcode;
+			document.getElementById("address").value = address;
+			document.getElementById("detailedAddress").value = detailedAddress;
+			popClose(".btn_close");
+		}
+
+		function deleteAddress(idx) {
+
+			/*[- spring security csrf token -]*/
+			var token = $("meta[name='_csrf']").attr("content");
+			var uri = [[ @{/address-book/} ]] + idx;
+
+			$.ajax({
+				url : uri,
+				type : "delete",
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "delete",
+					"X-CSRF-TOKEN" : token,
+				},
+				dataType : "json",
+				async : false,
+				success : function(response) {
+					if (isEmpty(response.message) == false) {
+						alert(response.message);
+						return false;
+					}
+
+					/*[- 배송지 목록 불러오기 -]*/
+					findAddressBook();
+				},
+				error : function(request, status, error) {
+					alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
+				}
+			});
+			/*[- end of ajax -]*/
+		}
+		/*[- end of function -]*/
+
+	/* ]]> */
+	</script>
 
 </html>

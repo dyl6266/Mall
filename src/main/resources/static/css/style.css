@@ -136,7 +136,7 @@ background: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
 Header st.
 *************************************************************************************/
 .header_wrap {border-bottom: 1px solid #000;}
-.header_wrap .logo {float: left; width: 200px; height: 80px; color: #000; line-height: 80px; text-align: center; font-size: 26px; font-weight: 500; letter-spacing: 2px;}
+.header_wrap .logo {float: left; width: 200px; height: 80px; color: #000; line-height: 80px; text-align: center; font-size: 26px; font-weight: 500; letter-spacing: 2px; /* background: url('../../images/common/logo.png') center bottom 10px no-repeat; background-size: 140px; text-indent: -9999px; */}
 
 .header_wrap .gnb {float: right; width: calc(100% - 200px);}
 
@@ -359,7 +359,7 @@ html {min-width: 320px;  overflow-x: hidden;}
 .form_write table td {height: 50px; padding: 5px 10px; font-size: 14px; color: #565656;}
 
 .form_write dl {margin-bottom: 10px;}
-.form_write dl dt {margin-bottom: 5px; padding-left: 10px; text-align: left; font-size: 14px; background: url('../../images/common/ic_bul.png') left top 11px no-repeat;}
+.form_write dl dt {margin-bottom: 5px; padding-left: 10px; text-align: left; font-size: 14px; color: #555; background: url('../../images/common/ic_bul.png') left top 11px no-repeat;}
 
 .form_write span {display: inline-block; font-size: 12px; color: #7d7d7d;}
 .form_write span.text {padding: 0 2px;}
@@ -404,6 +404,14 @@ html {min-width: 320px;  overflow-x: hidden;}
 .join_box .box {margin-bottom: 20px; text-align: left;}
 .join_box .box_title {margin-bottom: 5px; padding-left: 10px; text-align: left; font-size: 16px; background: url('../../images/common/ic_bul.png') left center no-repeat;}
 .join_box .agree_box textarea {height: 150px; margin-bottom: 5px; font-size: 13px;}
+
+.join_com_box .box > img {width: 80px; margin-bottom: 20px;}
+.join_com_box .box > p {font-size: 16px; line-height: 26px;}
+.join_com_box .box > table {margin: 20px 0 30px; text-align: left;}
+.join_com_box .box > table tr:first-child {border-top: 1px solid #000;}
+.join_com_box .box > table tr {border-bottom: 1px solid #ddd;}
+.join_com_box .box > table th {height: 45px; text-align: center;}
+.join_com_box .box > table td {height: 45px; padding-left: 20px;}
 
 
 /* 장바구니 */
@@ -487,3 +495,11 @@ html {min-width: 320px;  overflow-x: hidden;}
 #addressPop .table .label_basic {display: block; width: 70px; height: 20px; margin: 2px auto 0; padding: 0; line-height: 18px; text-align: center; color: #ee782f; font-size: 12px; border: 1px solid #ee782f;}
 #addressPop .table .btn {width: auto; height: 25px; margin-top: 5px; padding: 0 10px; line-height: 23px; font-size: 12px; -webkit-transition: all .2s ease; -moz-transition: all .2s ease; -o-transition: all .2s ease; -ms-transition: all .2s ease; transition: all .2s ease;}
 #addressPop .table .btn:hover {color: #fff !important; background: #000; border: 1px solid #000;}
+
+.order_com_wrap .com_box > img {width: 80px; margin-bottom: 20px;}
+.order_com_wrap .com_box > p {margin-bottom: 20px; font-size: 20px;}
+.order_com_wrap .user_box {float: left; width: 48.5%; margin-right: 3%}
+.order_com_wrap .pay_box {float: right; width: 48.5%;}
+.order_com_wrap .box > div {line-height: normal;}
+.order_com_wrap .form_write dl dt {display: inline-block; vertical-align: top; width: 95px; line-height: 26px !important; margin-bottom: 0;}
+.order_com_wrap .form_write dl dd {display: inline-block; vertical-align: top; width: calc(100% - 100px); line-height: 26px !important; font-size: 14px;}

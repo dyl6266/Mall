@@ -20,13 +20,18 @@
 							<ul class="utill">
 								<li class="btn_gnb_close mobile_block" onclick="gnbClose(this);"><a href="javascript:void(0)">모바일gnb 닫기</a></li>
 								<li><a sec:authorize="isAuthenticated()" th:text="|${#authentication.principal.nickname}님 환영합니다.|"></a></li>
-								<li><a th:href="@{/mypage}" sec:authorize="isAuthenticated()">마이 페이지</a></li>
+								<li><a th:href="@{/user/mypage}" sec:authorize="isAuthenticated()">마이 페이지</a></li>
 								<li>
 									<a th:href="@{/login}" sec:authorize="isAuthenticated() == false">로그인</a>
-									<a href="javascript: void(0)" sec:authorize="isAuthenticated()" onclick="logout(this)">로그아웃</a>
+									<a href="javascript: void(0)" sec:authorize="isAuthenticated()" onclick="document.getElementById('logoutForm').submit()">로그아웃</a>
 								</li>
 								<li><a th:href="@{/user/join}" sec:authorize="isAuthenticated() == false">회원가입</a></li>
 							</ul>
+
+							<!--/* 로그아웃 form */-->
+							<form sec:authorize="isAuthenticated()" id="logoutForm" th:action="@{/logout}" method="post">
+								<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+							</form>
 
 							<nav>
 								<a href="">BEST SELLER</a>
@@ -77,30 +82,11 @@
 				<!--/* //.footer_wrap */-->
 			</footer>
 			<!--/* //footer */-->
+
 		</div>
 		<!--/* //#wrapper */-->
 
 		<!--/* 자바스크립트가 들어가는 영역 */-->
-		<th:block layout:fragment="script">
-			<script th:inline="javascript">
-			/* <![CDATA[ */
-
-					function logout() {
-						var uri = /*[[ @{/logout} ]]*/;
-						var name = /*[[ ${_csrf.parameterName} ]]*/;
-						var value = /*[[ ${_csrf.token} ]]*/;
-						var html = "";
-
-						html += '<form name="logoutForm" action="'+uri+'" method="post">';
-							html += '<input type ="hidden" name="'+name+'" value="'+value+'" />';
-						html += '</form>';
-
-						$("body").append(html);
-						$("form[name='logoutForm']").submit();
-					}
-
-			/* ]]> */
-			</script>
-		</th:block>
+		<th:block layout:fragment="script"></th:block>
 	</body>
 </html>

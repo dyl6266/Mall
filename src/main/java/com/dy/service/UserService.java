@@ -26,4 +26,11 @@ public interface UserService extends UserDetailsService {
 
 	public List<UserDTO> getUserList();
 
+	public boolean checkPasswordMatches(String username, String password);
+
+	public boolean changeUserPassword(String username, String newPassword);
+
+	public boolean checkLoginFailureCount(String username);
+
+	public boolean initializeLoginFailureCount(String username);
 }

@@ -31,14 +31,19 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dy.common.Const.Method;
+import com.dy.domain.AddressBookDTO;
 import com.dy.domain.GoodsDTO;
+import com.dy.domain.PurchaseDTO;
 import com.dy.domain.UserDTO;
+import com.dy.service.AddressBookService;
 import com.dy.service.GoodsService;
+import com.dy.service.PurchaseService;
 import com.dy.service.UserService;
 import com.dy.util.MediaUtils;
 import com.dy.util.UiUtils;
@@ -61,6 +66,12 @@ public class GoodsController extends UiUtils {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private AddressBookService addressbookService;
+
+	@Autowired
+	private PurchaseService purchaseService;
 
 	/**
 	 * 관리자 상품 등록
@@ -288,18 +299,22 @@ public class GoodsController extends UiUtils {
 			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
 
 		} else if (StringUtils.isEmpty(code)) {
-			return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getContextPath() + "/goods/list", Method.GET, null, model);
+			return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getContextPath() + "/goods/list", Method.GET, null,
+					model);
 		}
 
+		/* 로그인 회원 정보 */
 		UserDTO user = (UserDTO) userService.loadUserByUsername(username);
 		model.addAttribute("user", user);
+
+		/* th:object로 사용할 비어있는 인스턴스 */
+		model.addAttribute("purchase", new PurchaseDTO());
 
 		return "goods/checkout";
 	}
 
 	/**
 	 * 구매자 배송지 리스트 HTML (Ajax Success Response)
-	 * TODO => user/cart 매핑으로 처리하기 굳이 두 ㄱㅐ로 나누지 않아도 될 듯함
 	 * @param model
 	 * @return 페이지
 	 */
@@ -311,10 +326,47 @@ public class GoodsController extends UiUtils {
 			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
 		}
 
-		UserDTO user = (UserDTO) userService.loadUserByUsername(username);
-		model.addAttribute("user", user);
+		List<AddressBookDTO> addressBook = addressbookService.getAddressBook(username);
+		model.addAttribute("addressBook", addressBook);
 
 		return "goods/address-popup";
+	}
+
+	@PostMapping(value = "/goods/purchase")
+	public JsonObject insertPurchase(@RequestBody @Validated PurchaseDTO params, BindingResult bindingResult) {
+
+		JsonObject jsonObj = new JsonObject();
+
+		String username = userService.getAuthentication().getName();
+		if ("anonymousUser".equals(username)) {
+			jsonObj.addProperty("message", "로그인이 필요한 서비스입니다.");
+			jsonObj.addProperty("result", false);
+
+		} else if (bindingResult.hasErrors()) {
+			FieldError fieldError = bindingResult.getFieldError();
+			jsonObj.addProperty("message", fieldError.getDefaultMessage());
+			jsonObj.addProperty("result", false);
+
+		} else {
+			// TODO => 배송지 목록에 추가하기 / 새로운 기본 배송지로 설정하기 여기서 처리하기(?)
+			try {
+				boolean isPurchased = purchaseService.purchaseGoods(params);
+				if (isPurchased == false) {
+					jsonObj.addProperty("message", "결제에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				}
+				jsonObj.addProperty("result", isPurchased);
+
+			} catch (DataAccessException e) {
+				jsonObj.addProperty("message", "DB 처리 중에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+
+			} catch (Exception e) {
+				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+			}
+		}
+
+		return jsonObj;
 	}
 
 }

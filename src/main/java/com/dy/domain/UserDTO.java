@@ -1,6 +1,7 @@
 package com.dy.domain;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.validation.constraints.Pattern;
 
@@ -43,16 +44,22 @@ public class UserDTO extends CommonDTO implements UserDetails {
 	private String phone;
 
 	/** 계정 만료 여부 */
-	private boolean accountNonExpired = true;
+	private boolean accountNonExpired;
 
 	/** 계정 잠금 여부 */
-	private boolean accountNonLocked = true;
+	private boolean accountNonLocked;
 
 	/** 비밀번호 만료 여부 */
-	private boolean credentialsNonExpired = true;
+	private boolean credentialsNonExpired;
 
 	/** 계정 활성화 여부 */
-	private boolean enabled = true;
+	private boolean enabled;
+
+	/** 로그인 실패 횟수 */
+	private int failureCount;
+
+	/** 마지막 로그인 시간 */
+	private Date lastLoginTime;
 
 	/** 권한 리스트 */
 	private Collection<? extends GrantedAuthority> authorities;

@@ -1,5 +1,6 @@
 package com.dy.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -11,12 +12,14 @@ public interface PurchaseMapper {
 
 	public int insertPurchase(PurchaseDTO params);
 
-	public PurchaseDTO selectPurchaseDetails(PurchaseDTO params);
+	public PurchaseDTO selectPurchaseDetails(HashMap<String, Object> params);
 
 	public int updatePurchase(PurchaseDTO params);
 
-	public int deletePurchase(PurchaseDTO params);
+	public int deletePurchase(HashMap<String, Object> params);
 
-	public List<PurchaseDTO> selectPurchaseList(PurchaseDTO params);
+	public List<PurchaseDTO> selectPurchaseList(String username);
+
+	public int selectPurchaseTotalCount(String username);
 
 }

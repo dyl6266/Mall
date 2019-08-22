@@ -1,6 +1,7 @@
 package com.dy.controller;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -167,11 +168,11 @@ public class UserController extends UiUtils {
 		return "user/find/result";
 	}
 
-	@GetMapping(value = "/mypage")
+	@GetMapping(value = "/user/mypage")
 	public String openMypage(Model model) {
 
 		String username = userService.getAuthentication().getName();
-		if ("anonymousUser".equals(username)) {
+		if (userService.isAnonymousUser(username)) {
 			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
 		}
 
@@ -181,8 +182,81 @@ public class UserController extends UiUtils {
 		return "user/mypage";
 	}
 
+	/**
+	 * 회원 비밀번호 변경 페이지
+	 * 
+	 * @param model
+	 * @return 페이지
+	 */
+	@GetMapping(value = "/user/change-password")
+	public String openChangePassword(Model model) {
+
+		String username = userService.getAuthentication().getName();
+		if (userService.isAnonymousUser(username)) {
+			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
+		}
+
+		model.addAttribute("username", username);
+
+		return "user/change-password";
+	}
+
+	/**
+	 * 회원 비밀번호 변경
+	 * 
+	 * @param password - 기존 비밀번호
+	 * @param newPassword - 신규 비밀번호
+	 * @return message, result
+	 */
+	@PatchMapping(value = "/users/account/{username}")
+	@ResponseBody
+	public JsonObject updateUserPassword(@RequestParam(value = "password", required = false) String password,
+			@RequestParam(value = "newPassword", required = false) String newPassword) {
+
+		JsonObject jsonObj = new JsonObject();
+
+		/* 로그인한 회원의 아이디 */
+		String username = userService.getAuthentication().getName();
+		/* 로그인한 회원의 기존 비밀번호 확인 */
+		boolean isMatch = userService.checkPasswordMatches(username, password);
+
+		/* 비밀번호 정규식 (영문, 숫자, 특수문자 조합) */
+		String regexp = "^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[~`!@#$%\\^&*()-]).{8,20}$";
+		/* 신규 비밀번호 유효성 검사 */
+		boolean isValid = Pattern.matches(regexp, newPassword);
+
+		if (isMatch == false) {
+			jsonObj.addProperty("message", "현재 비밀번호가 일치하지 않습니다. 다시 입력해 주세요.");
+			jsonObj.addProperty("result", false);
+
+		} else if (isValid == false) {
+			jsonObj.addProperty("message", "새로운 비밀번호를 올바른 형식으로 입력해 주세요.");
+			jsonObj.addProperty("result", false);
+
+		} else {
+			try {
+				boolean isUpdated = userService.changeUserPassword(username, newPassword);
+				if (isUpdated == false) {
+					jsonObj.addProperty("message", "비밀번호 변경에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				}
+				jsonObj.addProperty("result", isUpdated);
+
+			} catch (DataAccessException e) {
+				jsonObj.addProperty("message", "DB 처리 중에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+
+			} catch (Exception e) {
+				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+			}
+		}
+
+		return jsonObj;
+	}
+
+	// TODO => user/cart ? 아니면 CartController를 따로 만들어서 처리할지 생각해보기
 	@GetMapping(value = "/cart")
-	public String openCartPage(Model model) {
+	public String openCart(Model model) {
 
 		String username = userService.getAuthentication().getName();
 		if ("anonymousUser".equals(username)) {
@@ -192,7 +266,8 @@ public class UserController extends UiUtils {
 		/* 전체 상품 목록 */
 		List<CartDTO> goodsList = cartService.getListOfGoodsInCart(username);
 		if (CollectionUtils.isEmpty(goodsList)) {
-			return showMessageWithRedirect("장바구니가 비어있습니다.", request.getContextPath() + "/goods/list", Method.GET, null, model);
+			return showMessageWithRedirect("장바구니가 비어있습니다.", request.getContextPath() + "/goods/list", Method.GET, null,
+					model);
 		}
 		/* 전체 상품 금액 */
 		int totalAmount = cartService.getTotalAmount(username);

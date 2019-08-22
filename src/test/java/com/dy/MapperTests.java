@@ -1,5 +1,6 @@
 package com.dy;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,9 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.dy.common.Const.Authority;
+import com.dy.domain.AddressBookDTO;
 import com.dy.domain.AuthorityDTO;
 import com.dy.domain.GoodsDTO;
 import com.dy.domain.UserDTO;
+import com.dy.mapper.AddressBookMapper;
 import com.dy.mapper.AuthorityMapper;
 import com.dy.mapper.GoodsMapper;
 import com.dy.mapper.UserMapper;
@@ -34,6 +37,28 @@ public class MapperTests {
 	@Autowired
 	private PasswordEncoder encoder;
 	
+	@Autowired
+	private AddressBookMapper bookMapper;
+	
+	@Test
+	public void 주소_등록() {
+//		AddressBookDTO book = new AddressBookDTO("dyl6266@nate.com", "회사", "인천시 남동구 펜타코드");
+//		bookMapper.insertAddress(book);
+	}
+
+	@Test
+	public void 주소_삭제() {
+//		HashMap<String, Object> params = new HashMap<>();
+//		params.put("username", "dyl6266@nate.com");
+//		params.put("idx", 3);
+//		bookMapper.deleteAddress(params);
+	}
+	
+	@Test
+	public void 주소_리스트() {
+		bookMapper.selectAddressBook("dyl6266@nate.com");
+	}
+
 	@Test
 	public void 상품_이미지() {
 		List<GoodsDTO> goodsList = goodsMapper.selectGoodsListWithMainImage();

@@ -21,11 +21,23 @@ public class PurchaseDTO extends CommonDTO {
 	/** 상품 코드 (FK) */
 	private String code;
 
-	/** 금액 */
+	/** 결제 금액 */
 	private int amount;
 
-	/** 배송지 */
+	/** 수령인 */
+	private String recipient;
+
+	/** 수령인 연락처 */
+	private String phone;
+
+	/** 우편 번호 */
+	private String postcode;
+
+	/** 주소 */
 	private String address;
+
+	/** 상세 주소 */
+	private String detailedAddress;
 
 	/** 요청 메시지 */
 	private String requestMessage;

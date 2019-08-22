@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dy.mapper.AddressBookMapper">
+
+	<sql id="addressBookColumns">
+		  idx
+		, username
+		, name
+		, postcode
+		, address
+		, detailed_address
+		, default_yn
+		, delete_yn
+		, insert_time
+		, update_time
+	</sql>
+
+	<insert id="insertAddress" parameterType="AddressBookDTO">
+		INSERT INTO address_book (
+			<include refid="addressBookColumns" />
+		) VALUES (
+			  #{idx}
+			, #{username}
+			, #{name}
+			, #{postcode}
+			, #{address}
+			, #{detailedAddress}
+			, IFNULL(#{defaultYn}, 'N')
+			, 'N'
+			, NOW()
+			, NULL
+		)
+	</insert>
+
+	<select id="selectDefaultAddressDetails" parameterType="string" resultType="AddressBookDTO">
+		SELECT
+			<include refid="addressBookColumns" />
+		FROM
+			address_book
+		WHERE
+			(default_yn = 'Y' AND delete_yn = 'N')
+		AND
+			username = #{username}
+	</select>
+
+	<update id="deleteAddress" parameterType="hashmap">
+		UPDATE address_book
+		SET
+			delete_yn = 'Y'
+		WHERE
+			username = #{username}
+		AND
+			idx = #{idx}
+	</update>
+
+	<select id="selectAddressBook" parameterType="string" resultType="AddressBookDTO">
+		SELECT
+			<include refid="addressBookColumns" />
+		FROM
+			address_book
+		WHERE
+			delete_yn = 'N'
+		AND
+			username = #{username}
+	</select>
+
+	<select id="selectAddressBookTotalCount" parameterType="string" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			address_book
+		WHERE
+			delete_yn = 'N'
+		AND
+			username = #{username}
+	</select>
+
+</mapper>

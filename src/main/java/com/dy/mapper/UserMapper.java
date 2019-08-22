@@ -23,4 +23,11 @@ public interface UserMapper {
 
 	public int selectUserTotalCount();
 
+	public int increaseLoginFailureCount(String username);
+
+	public int initializeLoginFailureCount(String username);
+
+	public int lockUserAccount(String username);
+
+	public int unlockUserAccount(String username);
 }

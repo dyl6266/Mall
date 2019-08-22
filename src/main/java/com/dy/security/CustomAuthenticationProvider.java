@@ -3,10 +3,11 @@ package com.dy.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -35,17 +36,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		String username = authentication.getName();
 		String password = (String) authentication.getCredentials();
 
-		// TODO => 예외 처리 어떻게 할지 생각해보기
-		// TODO => 권한이 없는 경우는 어떻게 해야 할지?
+		// TODO => 1. 예외 처리 어떻게 할지 생각해보기 / 2. 권한이 없는 경우는 어떻게 해야 할지? / 3. throw new에 지정한 메시지를 MessageSource로 변경하기
 		UserDTO user = (UserDTO) userService.loadUserByUsername(username);
 		if (user == null) {
-			throw new InternalAuthenticationServiceException("account does not exist...");
-			// TODO => 어떤 것을 사용하는 것이 좋은지, 또는 다른 좋은 방법이 있는지 찾아보기
-			// throw new UsernameNotFoundException("user does not exist...");
+			// TODO => InternalAuthenticationService와 UsernameNotFound 중 어떤 것을 사용하는 것이 좋은지, 또는 다른 좋은 방법이 있는지 찾아보기
+			throw new UsernameNotFoundException("아이디 또는 비밀번호를 다시 확인해 주세요.");
+
 		} else if (passwordEncoder.matches(password, user.getPassword()) == false) {
-			throw new BadCredentialsException("passwords do not match...");
+			throw new BadCredentialsException("아이디 또는 비밀번호를 다시 확인해 주세요.");
+
+		} else if (user.isAccountNonLocked() == false) {
+			throw new LockedException("계정이 잠겨 있습니다. 관리자에게 문의해 주세요.");
 		}
-		// TODO => 계정 활성화 관련 프로퍼티 = throw new AuthenticationCredentialsNotFoundException();
+		// TODO => 인증 요구가 거부되었을 때 던지는 예외 = throw new AuthenticationCredentialsNotFoundException();
 
 		return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 	}

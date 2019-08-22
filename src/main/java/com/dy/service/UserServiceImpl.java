@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -41,15 +40,16 @@ public class UserServiceImpl implements UserService {
 	 * DB에서 사용자 정보를 가지고 온 뒤에 UserDetails 타입으로 반환
 	 */
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) {
 
 		UserDTO user = userMapper.selectUserDetailsByUsername(username);
-
-		Collection<? extends GrantedAuthority> authorities = null;
-		int authorityCount = authorityMapper.selectUserAuthorityTotalCount(new AuthorityDTO(username, null));
-		if (authorityCount > 0) {
-			authorities = authorityMapper.selectUserAuthorities(username);
-			user.setAuthorities(authorities);
+		if (user != null) {
+			Collection<? extends GrantedAuthority> authorities = null;
+			int authorityCount = authorityMapper.selectUserAuthorityTotalCount(new AuthorityDTO(username, null));
+			if (authorityCount > 0) {
+				authorities = authorityMapper.selectUserAuthorities(username);
+				user.setAuthorities(authorities);
+			}
 		}
 
 		return user;
@@ -178,6 +178,64 @@ public class UserServiceImpl implements UserService {
 		// end of if
 
 		return user;
+	}
+
+	@Override
+	public boolean checkPasswordMatches(String username, String password) {
+
+		UserDTO user = userMapper.selectUserDetailsByUsername(username);
+		if (user == null) {
+			return false;
+		}
+
+		boolean isMatch = passwordEncoder.matches(password, user.getPassword());
+		return isMatch;
+	}
+
+	@Override
+	public boolean changeUserPassword(String username, String newPassword) {
+
+		UserDTO params = new UserDTO(username, passwordEncoder.encode(newPassword), null, null);
+		int queryResult = userMapper.updateUser(params);
+		if (queryResult != 1) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean checkLoginFailureCount(String username) {
+
+		/* 로그인 실패 횟수 */
+		int failureCount = userMapper.selectUserDetailsByUsername(username).getFailureCount();
+		if (failureCount >= 5) {
+			/* 계정 잠금 */
+			int queryResult = userMapper.lockUserAccount(username);
+			if (queryResult != 1) {
+				return false;
+			}
+
+		} else {
+			/* 로그인 실패 횟수 증가 */
+			int queryResult = userMapper.increaseLoginFailureCount(username);
+			if (queryResult != 1) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean initializeLoginFailureCount(String username) {
+
+		int queryResult = userMapper.initializeLoginFailureCount(username);
+		if (queryResult != 1) {
+			return false;
+		}
+
+		return true;
 	}
 
 }

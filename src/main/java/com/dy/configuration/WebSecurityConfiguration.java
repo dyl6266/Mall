@@ -10,11 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.dy.security.CustomAuthenticationProvider;
 import com.dy.security.CustomFilter;
+import com.dy.security.LoginFailureHandler;
 import com.dy.security.LoginSuccessHandler;
 
 @Configuration
@@ -37,7 +39,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	public AuthenticationSuccessHandler successHandler() {
-		return new LoginSuccessHandler();
+		return new LoginSuccessHandler("/index");
+	}
+	
+	@Bean
+	public AuthenticationFailureHandler failureHandler() {
+		return new LoginFailureHandler("/login?fail");
 	}
 
 	@Override
@@ -54,20 +61,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 		.antMatchers("/css/**", "/font/**", "/images/**", "/jquery/**", "/js/**").permitAll()
-		.antMatchers("/user/**", "/users/**", "/goods/**").permitAll()
-        .antMatchers("/admin/**").hasAnyRole("ADMIN", "MANAGER");
+		.antMatchers("/admin/**").hasAnyRole("ADMIN", "MANAGER")
+		.antMatchers("/user/**", "/users/**", "/goods/**").hasRole("ADMIN")
+		.anyRequest().authenticated();
+//		.antMatchers("/user/**", "/users/**", "/goods/**").permitAll()
 //        .anyRequest().authenticated();
 
 		http.formLogin()
 		.loginPage("/login")
 		.loginProcessingUrl("/authentication")
 		.successHandler(successHandler())
-		.failureUrl("/login?fail")
-//		.failureHandler(null)
+		.failureHandler(failureHandler())
 		.usernameParameter("username")
 		.passwordParameter("password")
 		.permitAll();
-//		.permitAll();
 
 		http.logout()
 		.logoutUrl("/logout")

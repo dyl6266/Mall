@@ -2,9 +2,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/basic" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 	<th:block layout:fragment="add-resource">
-		<!--/* slick */-->
-		<link rel="stylesheet" type="text/css" th:href="@{/jquery/slick/slick.css}"/>
-		<script type="text/javascript" th:src="@{/jquery/slick/slick.min.js}"></script>
+		<!--/* 다음 주소 API */-->
+		<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 	</th:block>
 
 	<th:block layout:fragment="content">
@@ -13,107 +12,105 @@
 				<div class="page_title text_center clear">주문/결제</div>
 
 				<div class="order form_write">
-					<div class="box pd_box">
-						<p class="box_title">상품 정보</p>
-						<div>
-							<ul>
-								<li>
-									<div class="img_box"><img src="/images/common/thumb.jpg" alt="" /></div>
-									<div class="txt_box">
-										<p class="name"> 도영이 신발 도영이 신발</p>
-										<p class="option">블랙 / 235</p>
-										<p class="quantity">1개</p>
-										<p class="price orange">75,000원</p>
-									</div>
-								</li>
-								<li>
-									<div class="img_box"><img src="/images/common/thumb.jpg" alt="" /></div>
-									<div class="txt_box">
-										<p class="name"> 도영이 신발 도영이 신발</p>
-										<p class="option">블랙 / 235</p>
-										<p class="quantity">1개</p>
-										<p class="price orange">75,000원</p>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="box user_box">
-						<p class="box_title">주문자 정보</p>
-						<div sec:authorize="isAuthenticated()">
-							<p th:text="${#authentication.principal.nickname}"></p>
-							<p th:text="${#authentication.principal.phone}"></p>
-							<p th:text="${#authentication.principal.username}"></p>
-						</div>
-					</div>
-					<div class="box dv_box">
-						<p class="box_title">배송지 정보</p>
-						<div class="">
-							<div class="mb10 addredd_set">
-								<label class="radio_style">
-									<input type="radio" name="address" value="address1" id="address1" />
-									<span>기본 배송지</span>
-								</label>
-								<label class="radio_style">
-									<input type="radio" name="address" value="address2" id="address2" checked />
-									<span>신규 배송지</span>
-								</label>
-								<a href="javascript:void(0);" class="btn btn_black" onclick="getAddressBook()">배송지 목록</a>
-							</div>
-							<dl>
-								<dt>받으시는 분</dt>
-								<dd>
-									<input type="text" value="" placeholder="" class="type5" />
-								</dd>
-							</dl>
-							<dl>
-								<dt>연락처</dt>
-								<dd>
-									<input type="text" value="" placeholder="(-) 없이 입력해주세요." class="" />
-								</dd>
-							</dl>
-							<dl>
-								<dt>주소
-									<label class="check_style ml10 mr00">
-										<input type="checkbox" name="" value="" id="" />
-										<span>배송지목록에 추가</span>
-									</label>
-									<label class="check_style ml10 mr00">
-										<input type="checkbox" name="" value="" id="" />
-										<span>기본배송지로 설정</span>
-									</label>
-								</dt>
-								<dd>
-									<input type="text" value="" placeholder="" class="type4 mb05" />
-									<input type="button" value="우편번호 검색" class="btn btn_black mb05" />
-									<br/>
-									<input type="text" value="" placeholder="" class="mb05" />
-									<input type="text" value="" placeholder="상세주소 입력" class="" />
-								</dd>
-							</dl>
-							<dl>
-								<dt>배송 요청사항</dt>
-								<dd>
-									<input type="text" value="" placeholder="" class="" />
-								</dd>
-							</dl>
-						</div>
-					</div>
-					<div class="box pay_box ">
-						<p class="box_title">결제 정보</p>
-						<div>
-							<button type="button" class="active" onclick="addActive(this);">신용카드</button>
-							<button type="button" onclick="addActive(this);">무통장입금</button>
-							<br/>
-							<label class="check_style mt05">
-								<input type="checkbox" name="" value="" id="" />
-								<span>위 주문의 상품, 가격, 할인, 배송정보에 동의합니다.</span>
-							</label>
-							<div class="btn_wrap">
-								<a href="#" class="btn btn_orange">결제하기</a>
+					<form th:action="@{/goods/purchase}" th:object="${purchase}" method="post">
+						<div class="box pd_box">
+							<p class="box_title">상품 정보</p>
+							<div>
+								<ul>
+									<li>
+										<div class="img_box"><img src="/images/common/thumb.jpg" alt="" /></div>
+										<div class="txt_box">
+											<p class="name"> 도영이 신발 도영이 신발</p>
+											<p class="option">블랙 / 235</p>
+											<p class="quantity">1개</p>
+											<p class="price orange">75,000원</p>
+										</div>
+									</li>
+									<li>
+										<div class="img_box"><img src="/images/common/thumb.jpg" alt="" /></div>
+										<div class="txt_box">
+											<p class="name"> 도영이 신발 도영이 신발</p>
+											<p class="option">블랙 / 235</p>
+											<p class="quantity">1개</p>
+											<p class="price orange">75,000원</p>
+										</div>
+									</li>
+								</ul>
 							</div>
 						</div>
-					</div>
+						<div class="box user_box">
+							<p class="box_title">주문자 정보</p>
+							<div sec:authorize="isAuthenticated()">
+								<p th:text="${#authentication.principal.nickname}"></p>
+								<p th:text="${#authentication.principal.phone}"></p>
+								<p th:text="${#authentication.principal.username}"></p>
+							</div>
+						</div>
+						<div class="box dv_box">
+							<p class="box_title">배송지 정보</p>
+							<div class="">
+								<div class="mb10 addredd_set">
+									<a href="javascript:void(0);" class="btn btn_black" onclick="findAddressBook()">배송지 목록 찾아보기</a>
+									<a href="javascript:void(0);" class="btn btn_black" onclick="openAddressSearch()">우편번호 검색하기</a>
+								</div>
+								<dl>
+									<dt>받으시는 분</dt>
+									<dd>
+										<input type="text" th:field="*{recipient}" class="type5" maxlength="4" placeholder="받으시는 분의 성함을 입력해 주세요." />
+									</dd>
+								</dl>
+								<dl>
+									<dt>연락처</dt>
+									<dd>
+										<input type="text" th:field="*{phone}" maxlength="11" placeholder="'ㅡ' 없이 숫자만 입력해 주세요." />
+									</dd>
+								</dl>
+								<dl>
+									<dt>주소
+										<!--/* TODO => 이 부분 때문에 ajax로 처리하지 말고 폼으로 해야할지... 고민해보기 */-->
+										<!--/* 아니면 checked 시에 ajax로 처리하는 방법도... 있고 */-->
+										
+										<label class="check_style ml10 mr00">
+											<input type="checkbox" name="addAddressChecked" value="Y" />
+											<span>배송지 목록에 추가하기</span>
+										</label>
+										<label class="check_style ml10 mr00">
+											<input type="checkbox" id="defaultAddressChecked" value="Y" />
+											<span>새로운 기본 배송지로 설정하기</span>
+										</label>
+									</dt>
+									<dd>
+										<input type="text" name="postcode" id="postcode" class="type4 mb05" readonly />
+										<br />
+										<input type="text" name="address" id="address" class="mb05" readonly />
+										<br />
+										<input type="text" name="detailedAddress" id="detailedAddress" class="type4 mb05" placeholder="상세 주소를 입력해 주세요." />
+									</dd>
+								</dl>
+								<dl>
+									<dt>배송 요청 사항</dt>
+									<dd>
+										<input type="text" name="requestMessage" placeholder="배송 요청 사항을 입력해 주세요." />
+									</dd>
+								</dl>
+							</div>
+						</div>
+						<div class="box pay_box ">
+							<p class="box_title">결제 정보</p>
+							<div>
+								<button type="button" class="active" onclick="addActive(this);">신용카드</button>
+								<button type="button" onclick="addActive(this);">무통장입금</button>
+								<br/>
+								<label class="check_style mt05">
+									<input type="checkbox" name="" value="" id="" />
+									<span>위 주문의 상품, 가격, 할인, 배송정보에 동의합니다.</span>
+								</label>
+								<div class="btn_wrap">
+									<a href="#" class="btn btn_orange">결제하기</a>
+								</div>
+							</div>
+						</div>
+					</form>
 				</div>
 				<!--/* //.order */-->
 			</div>
@@ -132,7 +129,7 @@
 			/**
 			 * 상품 구매 배송지 목록 팝업 불러오기
 			 */
-			function getAddressBook() {
+			function findAddressBook() {
 
 				$.ajax({
 					url : /*[[ @{/goods/checkout/address-popup} ]]*/,
@@ -141,7 +138,6 @@
 					async : false,
 					success : function(response) {
 						$("#addressPop").html(response);
-						console.log(response);
 						popOpen("#addressPop");
 					},
 					error : function(request, status, error) {

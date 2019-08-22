@@ -3,5 +3,86 @@
 
 <mapper namespace="com.dy.mapper.PurchaseMapper">
 
+	<sql id="purchaseColumns">
+		  idx
+		, username
+		, code
+		, amount
+		, postcode
+		, address
+		, detailed_address
+		, request_message
+		, pay_method
+		, status
+		, delete_yn
+		, insert_time
+		, update_time
+	</sql>
+
+	<insert id="insertPurchase" parameterType="PurchaseDTO">
+		INSERT INTO purchase (
+			<include refid="purchaseColumns" />
+		) VALUES (
+			  #{idx}
+			, #{username}
+			, #{code}
+			, #{amount}
+			, #{postcode}
+			, #{address}
+			, #{detailedAddress}
+			, #{requestMessage}
+			, #{payMethod, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+			, IFNULL(#{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 'Y')
+			, 'N'
+			, NOW()
+			, NULL
+		)
+	</insert>
+
+	<select id="selectPurchaseDetails" parameterType="hashmap" resultType="PurchaseDTO">
+		SELECT
+			<include refid="purchaseColumns" />
+		FROM
+			purchase
+		WHERE
+			delete_yn = 'N'
+		AND
+			username = #{username}
+		AND
+			idx = #{idx}
+	</select>
+
+	<!-- TODO => 구매 내역 삭제도 필요한지 검토해보기 -->
+	<update id="deletePurchase" parameterType="hashmap">
+		UPDATE purchase
+		SET
+			delete_yn = 'Y'
+		WHERE
+			username = #{username}
+		AND
+			idx = #{idx}
+	</update>
+
+	<select id="selectPurchaseList" parameterType="string" resultType="PurchaseDTO">
+		SELECT
+			<include refid="purchaseColumns" />
+		FROM
+			purchase
+		WHERE
+			delete_yn = 'N'
+		AND
+			username = #{username}
+	</select>
+
+	<select id="selectPurchaseTotalCount" parameterType="string" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			purchase
+		WHERE
+			delete_yn = 'N'
+		AND
+			username = #{username}
+	</select>
 
 </mapper>

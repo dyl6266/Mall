@@ -4,24 +4,6 @@
 <!-- TODO => 여유가 있을 때, resultMap으로 변경하기 isXXX와 컬럼이 매핑이 되지 않음 -->
 <mapper namespace="com.dy.mapper.UserMapper">
 
-	<!-- <resultMap id="userResultMap" type="UserDTO">
-		<id property="idx" column="idx" />
-		<result property="username" column="username" />
-		<result property="password" column="password" />
-		<result property="nickname" column="nickname" />
-		<result property="phone" column="phone" />
-		<result property="accountNonExpired" column="account_non_expired" />
-		<result property="accountNonLocked" column="account_non_locked" />
-		<result property="credentialsNonExpired" column="credentials_non_expired" />
-		<result property="enabled" column="enabled" />
-		<result property="deleteYn" column="delete_yn" />
-		<result property="insertUser" column="insert_user" />
-		<result property="insertTime" column="insert_time" />
-		<result property="updateUser" column="update_user" />
-		<result property="updateTime" column="update_time" />
-		<collection property="authorities" javaType="collection" ofType="AuthorityDTO" />
-	</resultMap> -->
-
 	<sql id="userColumns">
 		  idx
 		, username
@@ -32,11 +14,12 @@
 		, account_non_locked
 		, credentials_non_expired
 		, enabled
-		, delete_yn
+		, failure_count
 		, insert_user
 		, insert_time
 		, update_user
 		, update_time
+		, last_login_time
 	</sql>
 
 	<insert id="insertUser" parameterType="UserDTO">
@@ -52,9 +35,10 @@
 			, 1
 			, 1
 			, 1
-			, 'N'
+			, 0
 			, IFNULL(#{username}, 'ADMIN')
 			, NOW()
+			, NULL
 			, NULL
 			, NULL
 		)
@@ -66,7 +50,7 @@
 		FROM
 			user
 		<where>
-			delete_yn = 'N'
+			enabled = 1
 			<if test="@com.dy.util.MyBatisUtils@isEmpty( username ) == false">
 				AND username = #{username}
 			</if>
@@ -85,7 +69,7 @@
 		FROM
 			user
 		WHERE
-			delete_yn = 'N'
+			enabled = 1
 		AND
 			username = #{username}
      </select>
@@ -111,7 +95,7 @@
 	<update id="deleteUser" parameterType="string">
 		UPDATE user
 		SET
-			delete_yn = 'Y'
+			enabled = 0
 		WHERE
 			username = #{username}
 	</update>
@@ -122,7 +106,7 @@
 		FROM
 			user
 		WHERE
-			delete_yn = 'N'
+			enabled = 1
 	</select>
 
 	<select id="selectUserTotalCount" resultType="int">
@@ -131,7 +115,39 @@
 		FROM
 			user
 		WHERE
-			delete_yn = 'N'
+			enabled = 1
 	</select>
+
+	<update id="increaseLoginFailureCount" parameterType="string">
+		UPDATE user
+		SET
+			failure_count = failure_count + 1
+		WHERE
+			username = #{username}
+	</update>
+
+	<update id="initializeLoginFailureCount" parameterType="string">
+		UPDATE user
+		SET
+			failure_count = 0
+		WHERE
+			username = #{username}
+	</update>
+
+	<update id="lockUserAccount" parameterType="string">
+		UPDATE user
+		SET
+			account_non_locked = 0
+		WHERE
+			username = #{username}
+	</update>
+
+	<update id="unlockUserAccount" parameterType="string">
+		UPDATE user
+		SET
+			account_non_locked = 1
+		WHERE
+			username = #{username}
+	</update>
 
 </mapper>
