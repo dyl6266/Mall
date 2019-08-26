@@ -10,10 +10,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import com.dy.security.CustomAccessDeniedHandler;
 import com.dy.security.CustomAuthenticationProvider;
 import com.dy.security.CustomFilter;
 import com.dy.security.LoginFailureHandler;
@@ -46,6 +48,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public AuthenticationFailureHandler failureHandler() {
 		return new LoginFailureHandler("/login?fail");
 	}
+	
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler("/access-denied");
+	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -62,8 +69,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 		.antMatchers("/css/**", "/font/**", "/images/**", "/jquery/**", "/js/**").permitAll()
 		.antMatchers("/admin/**").hasAnyRole("ADMIN", "MANAGER")
-		.antMatchers("/user/**", "/users/**", "/goods/**").hasRole("ADMIN")
-		.anyRequest().authenticated();
+		.antMatchers("/**").permitAll();
+//		.antMatchers("/user/**", "/users/**").hasAnyRole("ADMIN", "MANAGER", "MEMBER")
+//		.antMatchers("/index", "")
+		
 //		.antMatchers("/user/**", "/users/**", "/goods/**").permitAll()
 //        .anyRequest().authenticated();
 
@@ -75,6 +84,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.usernameParameter("username")
 		.passwordParameter("password")
 		.permitAll();
+		
 
 		http.logout()
 		.logoutUrl("/logout")
@@ -84,6 +94,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //		.logoutSuccessHandler()
 //		.logoutRequestMatcher() TODO => 이건 뭔지 찾아보자
 		
+		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
 		http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
 	}
 

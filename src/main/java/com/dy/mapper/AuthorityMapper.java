@@ -16,7 +16,7 @@ public interface AuthorityMapper {
 
 	public int deleteUserAuthority(AuthorityDTO params);
 
-	public Collection<? extends SimpleGrantedAuthority> selectUserAuthorities(String username);
+	public Collection<? extends SimpleGrantedAuthority> selectUserGrantedAuthorities(String username);
 
 	public int selectUserAuthorityTotalCount(AuthorityDTO params);
 

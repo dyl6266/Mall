@@ -45,6 +45,13 @@ public class UserController extends UiUtils {
 	@Autowired
 	private CartService cartService;
 
+	@GetMapping(value = "/access-denied")
+	public String openAccessDenied(Model model) {
+
+		String previousPage = request.getHeader("referer");
+		return showMessageWithRedirect("접근이 허용되지 않은 계정입니다.", previousPage, Method.GET, null, model);
+	}
+
 	@GetMapping(value = "/user/join")
 	public String openJoinPage(Model model) {
 

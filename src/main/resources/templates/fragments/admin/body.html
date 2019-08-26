@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<body th:fragment="basic">
+		<div id="wrapper">
+
+			<div class="shortcut">
+				<ul>
+					<li><a href="#container">본문 바로가기</a></li>
+					<li><a href="#menu">메뉴 바로가기</a></li>
+				</ul>
+			</div>
+			<!--/* //.shortcut */-->
+
+			<header>
+				<div class="header_wrap">
+					<!--/* 관리자 정보 */-->
+					<div class="utill fl_wrap">
+						<a href="#" class="logo">LOGO</a>
+						<p class="user_info">
+							<span class="user">관리자님</span>
+							<a href="#" class="btn btn_bd_black" title="로그아웃">로그아웃</a>
+						</p>
+					</div>
+
+					<!--/* 주 메뉴 */-->
+					<div class="gnb_wrap">
+						<div class="gnb">
+							<ul class="depth1 dpib_wrap">
+								<li class="active">
+									<a href="#" title="회원관리">회원관리</a>
+									<ul class="depth2">
+										<li class="active"><a href="#" title="회원관리">회원관리</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="#" title="상품관리">상품관리</a>
+									<ul class="depth2">
+										<li><a href="#" title="상품관리">상품관리</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!--/* //.gnb_wrap */-->
+				</div>
+				<!--/* //.header_wrap */-->
+			</header>
+			<!--/* //header */-->
+
+			<div id="container">
+				<!--/* left menu */-->
+				<div class="lnb_wrap">
+					<div class="lnb">
+						<ul class="depth1">
+							<li class="active on">
+								<a href="#none" title="회원 관리" onclick="menuOpen(this);">회원 관리</a>
+								<ul class="depth2">
+									<li class="active"><a href="#" title="회원 목록">회원 목록</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!--/* //.lnb_wrap */-->
+
+			<!--/* 실제 Content가 들어가는 영역 */-->
+			<th:block layout:fragment="content"></th:block>
+
+				<footer>
+					<div class="footer_wrap">
+						<p class="copy">Copyright 2019 do-yonug's mall All Rights reserved.</p>
+					</div>
+				</footer>
+				<!--/* //footer */-->
+			</div>
+			<!--/* //#container */-->
+
+		</div>
+		<!--/* //#wrapper */-->
+
+		<!--/* 자바스크립트가 들어가는 영역 */-->
+		<th:block layout:fragment="script"></th:block>
+	</body>
+</html>

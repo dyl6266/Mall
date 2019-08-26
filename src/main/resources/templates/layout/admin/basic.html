@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+	<!--/* replace 속성을 사용하여 정의된 html 파일로 치환 (JSP의 include와 유사한 속성) */-->
+	<!--/* "::" 뒤에는 해당 파일의 fragment 속성에 정의된 이름이 들어감  */-->
+	<head th:replace="fragments/admin/head :: basic"></head>
+	<body th:replace="fragments/admin/body :: basic"></body>
+</html>

@@ -49,7 +49,7 @@
 			name = #{name}
 	</delete>
 
-	<select id="selectUserAuthorities" parameterType="string" resultType="org.springframework.security.core.authority.SimpleGrantedAuthority">
+	<select id="selectUserGrantedAuthorities" parameterType="string" resultType="org.springframework.security.core.authority.SimpleGrantedAuthority">
 		SELECT
 			CONCAT('ROLE_', name) AS name
 		FROM

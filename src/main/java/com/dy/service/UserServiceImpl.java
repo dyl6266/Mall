@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 			Collection<? extends GrantedAuthority> authorities = null;
 			int authorityCount = authorityMapper.selectUserAuthorityTotalCount(new AuthorityDTO(username, null));
 			if (authorityCount > 0) {
-				authorities = authorityMapper.selectUserAuthorities(username);
+				authorities = authorityMapper.selectUserGrantedAuthorities(username);
 				user.setAuthorities(authorities);
 			}
 		}
@@ -131,8 +131,7 @@ public class UserServiceImpl implements UserService {
 			users = userMapper.selectUserList();
 
 			for (UserDTO user : users) {
-				Collection<? extends GrantedAuthority> authorities = authorityMapper
-						.selectUserAuthorities(user.getUsername());
+				Collection<? extends GrantedAuthority> authorities = authorityMapper.selectUserGrantedAuthorities(user.getUsername());
 				user.setAuthorities(authorities);
 			}
 		}
