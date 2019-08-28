@@ -1,6 +1,5 @@
 package com.dy.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,7 @@ public interface GoodsService {
 
 	public boolean registerGoods(GoodsDTO params);
 
-	public boolean registerGoods(GoodsDTO params, MultipartFile[] files) throws IOException;
+	public boolean registerGoods(GoodsDTO params, MultipartFile[] files);
 
 	public GoodsDTO getGoodsDetails(String code);
 

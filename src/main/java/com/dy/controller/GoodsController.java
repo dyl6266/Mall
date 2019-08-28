@@ -73,44 +73,6 @@ public class GoodsController extends UiUtils {
 	@Autowired
 	private PurchaseService purchaseService;
 
-	/**
-	 * 관리자 상품 등록
-	 */
-	@PostMapping(value = "/goods")
-	@ResponseBody
-	public JsonObject insertGoods(@Validated GoodsDTO params, BindingResult bindingResult, MultipartFile[] files) {
-
-		JsonObject jsonObj = new JsonObject();
-
-		if (bindingResult.hasErrors()) {
-			FieldError fieldError = bindingResult.getFieldError();
-			jsonObj.addProperty("message", fieldError.getDefaultMessage());
-
-		} else {
-			try {
-				/* 상품 등록 */
-				boolean isInserted = ObjectUtils.isEmpty(files) == false ? goodsService.registerGoods(params, files)
-						: goodsService.registerGoods(params);
-				if (isInserted == false) {
-					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");
-				}
-				jsonObj.addProperty("result", isInserted);
-
-			} catch (DataAccessException e) {
-				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
-				jsonObj.addProperty("result", false);
-
-			} catch (Exception e) {
-				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
-				jsonObj.addProperty("result", false);
-				e.printStackTrace();
-			}
-		}
-
-		return jsonObj;
-	}
-	// end of method
-
 //	@PatchMapping(value = "/goods/{code}")
 //	@ResponseBody
 //	public JsonObject updateGoods(@PathVariable("code") String code, @Validated @RequestBody GoodsDTO params,

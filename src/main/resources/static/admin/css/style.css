@@ -325,3 +325,17 @@ html {min-width: 1024px;}
 .pd_regi .file_list li {padding-left: 10px; color: #666; font-size: 13px; background: url('../../admin/images/common/ic_bul.png') left top 10px no-repeat; cursor: pointer;}
 .pd_regi .file_list li p {display: inline-block; vertical-align: middle; line-height: 15px;}
 .pd_regi .file_list li .btn_delete {display: inline-block; vertical-align: middle; width: 15px; height: 15px; margin-top: 4px; margin-left: 2px; border: 1px solid #bbb; background: url('../../admin/images/common/ic_delete.png') center center no-repeat; text-indent: -9999px; background-size: 8px;}
+
+.pd_regi .table_wrap {width: 100%;}
+.pd_regi .table_wrap ul {width: 100%;}
+.pd_regi .table_wrap ul:after {display: block; visibility: hidden; clear: both; content: "";}
+.pd_regi .table_wrap ul > li {float: left; width: 25%; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd;}
+.pd_regi .table_wrap ul > li:nth-child(4n+4) {border-right: 0;}
+.pd_regi .table_wrap ul > li:after {display: block; visibility: hidden; clear: both; content: "";}
+.pd_regi .table_wrap ul > li > * {float: left; width: 25%; text-align: center;}
+.pd_regi .table_wrap ul > li > span {width: 70px; height: 40px; line-height: 40px; text-align: center; border-right: 1px solid #ddd;}
+.pd_regi .table_wrap ul > li > input {width: calc(100% - 90px); height: 40px; border: 0;}
+
+
+.pd_regi .table_wrap ul.thead {border-top: 2px solid #333;}
+.pd_regi .table_wrap ul.thead li span.type1 {width: calc(100% - 70px); border-right: 0;}

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/admin/basic">
+
+	<th:block layout:fragment="add-resource">
+		<!--/* CKEditor CDN */-->
+		<script src="https://cdn.ckeditor.com/4.12.1/standard/ckeditor.js"></script>
+	</th:block>
+
+	<th:block layout:fragment="content">
+		<div class="contents">
+			<div class="page_route">
+				<a href="#" class="home" title="Home">Home</a>
+				<a href="#" title="상품 관리">상품 관리</a>
+				<a href="#" title="상품 등록">상품 등록</a>
+			</div>
+
+			<div class="inner">
+				<h1 class="page_title">상품 등록</h1>
+
+				<div class="form_write pd_regi">
+					<form th:action="@{/admin/goods}" th:object="${goods}" method="post" onsubmit="return validationOfForm(this)">
+						<table>
+							<caption></caption>
+							<colgroup>
+								<col style="width: 180px;" />
+								<col style="*" />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>상품명</th>
+									<td>
+										<input type="text" th:field="*{name}" class="type2" />
+									</td>
+								</tr>
+								<tr>
+									<th>가격</th>
+									<td>
+										<input type="text" th:field="*{price}" class="type2" />
+									</td>
+								</tr>
+								<tr>
+									<th>색상</th>
+									<td>
+										<input type="text" th:field="*{stock.color}" class="type2" />
+									</td>
+								</tr>
+								<tr>
+									<th>사이즈</th>
+									<td>
+										<div class="table_wrap">
+											<ul class="thead">
+												<li th:each="seq : ${#numbers.sequence( 1, 4, 1 )}">
+													<span>사이즈</span>
+													<span class="type1">재고</span>
+												</li>
+											</ul>
+											<ul class="tbody">
+												<li th:each="size : ${#numbers.sequence( 220, 315, 5 )}">
+													<span th:text="${size}"></span>
+													<input type="text" name="quantity" value="0" />
+												</li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>설명</th>
+									<td>
+										<div class="pd30 bg_lightgray">
+											<textarea th:field="*{description}"></textarea>
+							                <script>
+												CKEDITOR.replace('description', {
+													filebrowserImageUploadUrl: '/undefined',
+													removeDialogTabs: 'link:target;link:advanced;image:advanced;image:Link'
+										        });
+							                </script>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>이미지 (Drag and Drop)</th>
+									<td>
+										<ul class="file_list">
+											<!--/* drag & drop 이벤트 발생 시, 추가되는 li 엘러먼트 */-->
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+	
+						<div class="btn_wrap text_right">
+							<a th:href="@{/admin/goods/list}" class="btn btn_lightgray">취소</a>
+							<input type="submit" value="등록" class="btn btn_navy" />
+						</div>
+					</form>
+				</div>
+				<!--/* //.form_write */-->
+			</div>
+			<!--/* //.inner */-->
+		</div>
+		<!--/* //.contents */-->
+	</th:block>
+
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+		/* <![CDATA[ */
+
+			/*[- 마우스 이벤트를 무시 -]*/
+			$(".file_list").on("dragenter dragover", function(e) {
+				e.preventDefault();
+			});
+
+			/*[- 이미지를 처리하는 FormData 오브젝트 -]*/
+			var imgData = new FormData();
+
+			/*[- 파일 drag & drop 처리 -]*/
+			$(".file_list").on("drop", function(e) {
+				e.preventDefault();
+
+				/*[- 이벤트와 같이 전달받은 파일 데이터 조회 -]*/
+				var files = e.originalEvent.dataTransfer.files;
+				var file = files[0];
+
+				/*[- 확장자가 이미지 타입인지 검사 -]*/
+				if (isImageExtension(file.name) == false) {
+					alert("이미지 파일만 업로드해 주세요.");
+					return false;
+				}
+
+				/*[- ul 엘러먼트에 list 태그 추가 -]*/
+				var html = "";
+				html += '<li>';
+					html += '<p>'+ file.name +'</p>';
+					html += '<button type="button" class="btn_delete" onclick="removeFile(\'' + file + '\', this)">삭제</button>';
+// 					html += '<button type="button" class="btn_delete" onclick="$(this).parent().remove()">삭제</button>';
+				html += '</li>';
+				$(this).append(html);
+
+				/*[- 이미지 FormData에 이미지 추가 -]*/
+				imgData.append("files", file);
+				return false;
+			});
+
+			/**
+			 * 첨부 이미지 삭제
+			 */
+			function removeFile(file, obj) {
+				for (var key of imgData.keys()) {
+				  console.log(key);
+				}
+				console.log("================");
+				console.log("================");
+				console.log("================");
+				for (var value of imgData.values()) {
+					  console.log(value);
+				}
+				console.log("================");
+				console.log("================");
+				console.log("================");
+				for (var value of imgData.values()) {
+					  console.log(value.name);
+				}
+				console.log(imgData.getAll("files"));
+				imgData.delete("file");
+				console.log("================");
+				console.log(imgData.getAll("files")[0].name);
+				console.log(imgData.getAll("files")[1].name);
+				imgData.delete(imgData.getAll("files"[0].name));
+				imgData.delete(imgData.getAll("files"[1].name));
+// 				imgData.delete("files");
+				console.log(imgdata.getAll("files")[0]);
+// 				console.log(imgData.getAll("files"));
+			}
+
+			/**
+			 * 상품 등록 폼 유효성 검사
+			 */
+			function validationOfForm(form) {
+
+				/*[- 사이즈, 수량을 key : value 형태로 담는 오브젝트 -]*/
+				var options = new Object();
+				$(".tbody > li").each(function(idx, obj) {
+					var size = $(obj).children("span").text();
+					var quantity = $(obj).children("input").val();
+					options[String(size)] = parseInt(quantity);
+				});
+
+				/*[- 서버로 전달할 FormData -]*/
+				var formData = new FormData(form);
+				formData.append("stock.options", JSON.stringify(options));
+
+				/*[- 서버로 전달할 Drag & Drop으로 추가한 이미지 -]*/
+				var images = imgData.getAll("files");
+// 				if (isEmpty(images)) {
+// 					alert("이미지를 최소 한 개 이상 추가해 주세요.");
+// 					return false;
+// 				}
+				console.log(images);
+				return false;
+
+				/*[- 추가한 이미지 개수만큼 FormData에 추가 -]*/
+				$(images).each(function(idx, image) {
+					formData.append("files", image);
+				});
+
+				/*[- spring security csrf token -]*/
+				var token = $("meta[name='_csrf']").attr("content");
+
+				$.ajax({
+					url : form.action,
+					type : "post",
+					headers : {
+						"X-HTTP-Method-Override" : "post",
+						"X-CSRF-TOKEN" : token,
+					},
+					dataType : "json",
+					data : formData,
+					contentType : false,
+					processData : false, /*[- 데이터를 일반적인 Query String으로 변환할 것인지를 결정하는 속성으로 기본값으로 true를 가짐 -]*/
+					async : false, /*[- 데이터를 일반적인 Query String으로 변환할 것인지를 결정하는 속성으로 기본값으로 true를 가짐 -]*/
+					success : function(response) {
+						if (isEmpty(response.message) == false) {
+							alert(response.message);
+						}
+						alert("상품 등록이 완료되었습니다.");
+						location.href = /*[[ @{/admin/goods} ]]*/;
+					},
+					error : function(request, status, error) {
+						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+					}
+				});
+
+				return false;
+			}
+
+		/* ]]> */
+		</script>
+	</th:block>
+
+</html>

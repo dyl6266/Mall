@@ -18,9 +18,14 @@
 						<a href="#" class="logo">LOGO</a>
 						<p class="user_info">
 							<span class="user">관리자님</span>
-							<a href="#" class="btn btn_bd_black" title="로그아웃">로그아웃</a>
+							<a href="javascript: void(0)" class="btn btn_bd_black" title="로그아웃" onclick="document.getElementById('logoutForm').submit()">로그아웃</a>
 						</p>
 					</div>
+
+					<!--/* 로그아웃 form */-->
+					<form sec:authorize="isAuthenticated()" id="logoutForm" th:action="@{/logout}" method="post">
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+					</form>
 
 					<!--/* 주 메뉴 */-->
 					<div class="gnb_wrap">
@@ -29,7 +34,7 @@
 								<li class="active">
 									<a href="#" title="회원관리">회원관리</a>
 									<ul class="depth2">
-										<li class="active"><a href="#" title="회원관리">회원관리</a></li>
+										<li class="active"><a href="#" title="회원 관리">회원 관리</a></li>
 									</ul>
 								</li>
 								<li>

@@ -73,7 +73,7 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 
 	@Override
-	public boolean registerGoods(GoodsDTO params, MultipartFile[] files) throws IOException {
+	public boolean registerGoods(GoodsDTO params, MultipartFile[] files) {
 
 		int queryResult;
 
@@ -103,6 +103,9 @@ public class GoodsServiceImpl implements GoodsService {
 
 			/* 이미지 리스트 등록 */
 			List<AttachDTO> attachList = AttachFileUtils.uploadFiles(files, params.getCode());
+			if (CollectionUtils.isEmpty(attachList)) {
+				return false;
+			}
 			for (AttachDTO attach : attachList) {
 				/* 이미지 등록 쿼리 */
 				queryResult += attachMapper.insertAttach(attach);
