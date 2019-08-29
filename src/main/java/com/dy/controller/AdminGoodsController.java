@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -50,6 +51,7 @@ public class AdminGoodsController extends UiUtils {
 
 		JsonObject jsonObj = new JsonObject();
 
+		/* Bean 유효성 검사에 실패한 경우 */
 		if (bindingResult.hasErrors()) {
 			if (bindingResult.getErrorCount() > 1) {
 				jsonObj.addProperty("message", "모든 필드에 값을 입력해 주세요.");
@@ -59,7 +61,8 @@ public class AdminGoodsController extends UiUtils {
 			}
 			jsonObj.addProperty("result", false);
 
-		} else if (ObjectUtils.isEmpty(files)) {
+		/* 이미지가 넘어오지 않은 경우 (ObjectUtils의 isEmpty() 메소드로는 체크 불가능) */
+		} else if (StringUtils.isEmpty(files[0].getName()) || files[0].getSize() < 1) {
 			jsonObj.addProperty("message", "상품 이미지를 하나 이상 등록해 주세요.");
 			jsonObj.addProperty("result", false);
 
