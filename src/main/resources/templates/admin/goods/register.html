@@ -68,12 +68,12 @@
 									<td>
 										<div class="pd30 bg_lightgray">
 											<textarea th:field="*{description}"></textarea>
-							                <script>
+							                <!-- <script>
 												CKEDITOR.replace('description', {
 													filebrowserImageUploadUrl: '/undefined',
 													removeDialogTabs: 'link:target;link:advanced;image:advanced;image:Link'
 										        });
-							                </script>
+							                </script> -->
 										</div>
 									</td>
 								</tr>
@@ -112,6 +112,8 @@
 
 			/*[- 이미지를 처리하는 FormData 오브젝트 -]*/
 			var imgData = new FormData();
+			/*[- 파일의 인덱스를 removeFile()의 인자로 넘기기 위한 변수 -]*/
+			var fileIdx = 0;
 
 			/*[- 파일 drag & drop 처리 -]*/
 			$(".file_list").on("drop", function(e) {
@@ -131,45 +133,64 @@
 				var html = "";
 				html += '<li>';
 					html += '<p>'+ file.name +'</p>';
-					html += '<button type="button" class="btn_delete" onclick="removeFile(\'' + file + '\', this)">삭제</button>';
+					html += '<button type="button" class="btn_delete" onclick="removeFile(\'' + file + '\', '+ fileIdx +', this)">삭제</button>';
 // 					html += '<button type="button" class="btn_delete" onclick="$(this).parent().remove()">삭제</button>';
 				html += '</li>';
 				$(this).append(html);
 
 				/*[- 이미지 FormData에 이미지 추가 -]*/
 				imgData.append("files", file);
+				/*[- 파일 인덱스 증가 -]*/
+				fileIdx++;
+
 				return false;
 			});
 
 			/**
 			 * 첨부 이미지 삭제
 			 */
-			function removeFile(file, obj) {
-				for (var key of imgData.keys()) {
-				  console.log(key);
-				}
-				console.log("================");
-				console.log("================");
-				console.log("================");
-				for (var value of imgData.values()) {
-					  console.log(value);
-				}
-				console.log("================");
-				console.log("================");
-				console.log("================");
-				for (var value of imgData.values()) {
-					  console.log(value.name);
-				}
-				console.log(imgData.getAll("files"));
-				imgData.delete("file");
-				console.log("================");
-				console.log(imgData.getAll("files")[0].name);
-				console.log(imgData.getAll("files")[1].name);
-				imgData.delete(imgData.getAll("files"[0].name));
-				imgData.delete(imgData.getAll("files"[1].name));
-// 				imgData.delete("files");
-				console.log(imgdata.getAll("files")[0]);
-// 				console.log(imgData.getAll("files"));
+			function removeFile(file, fileIdx, obj) {
+				
+// 				var files = imgData.getAll("files")[fileIdx];
+				var files = imgData.getAll("files");
+				
+				console.log("삭제 전 : " + imgData.getAll("files"));
+				delete files[fileIdx];
+				
+				var temp = new FormData();
+				files.forEach(function(file, idx) {
+					temp.append("files", file);
+				});
+				imgData.set("files", temp.getAll("files"));
+				console.log("삭제 후 : " + imgData.getAll("files"));
+				return false;
+				
+// 				for (var value of imgData.values()) {
+// 					  console.log(value);
+// 				}
+// 				$(files).each(function() {
+// 					console.log(this);
+// 				});
+
+				// TODO => splice를 실행하면 인덱스가 자동으로 앞에서부터 채우게 됨.. html을 다시 그려야하나 생각해보기.
+// 				console.log("삭제 전 : " + files);
+// 				console.log("=============");
+// 				files.splice(fileIdx, 1);
+// 				console.log("삭제 후 : " + files);
+				
+				
+// 				if (isEmpty(files)) {
+// 					imgData = new FormData();
+// 				} else {
+// 					imgData.set("files", files);
+// 				}
+
+// 				for (var key of imgData.keys()) {
+// 				  console.log(key);
+// 				}
+// 				for (var value of imgData.values()) {
+// 					  console.log(value);
+// 				}
 			}
 
 			/**
@@ -177,6 +198,8 @@
 			 */
 			function validationOfForm(form) {
 
+				console.log("not empty : " + imgData.getAll("files"));
+				return false;
 				/*[- 사이즈, 수량을 key : value 형태로 담는 오브젝트 -]*/
 				var options = new Object();
 				$(".tbody > li").each(function(idx, obj) {
