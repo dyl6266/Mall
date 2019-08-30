@@ -1,6 +1,5 @@
 package com.dy.service;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,8 +146,9 @@ public class GoodsServiceImpl implements GoodsService {
 		if (goods != null) {
 			StockDTO stock = stockMapper.selectStockDetails(code);
 			goods.setStock(stock);
+
+			map.put("goods", goods);
 		}
-		map.put("goods", goods);
 
 		List<AttachDTO> attachList = attachMapper.selectAttachList(code);
 		if (CollectionUtils.isEmpty(attachList) == false) {

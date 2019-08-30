@@ -1,5 +1,6 @@
 package com.dy.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -133,7 +134,20 @@ public class UserServiceImpl implements UserService {
 			for (UserDTO user : users) {
 				Collection<? extends GrantedAuthority> authorities = authorityMapper.selectUserGrantedAuthorities(user.getUsername());
 				user.setAuthorities(authorities);
+
+				List<String> authorityNames = new ArrayList<>();
+				for (GrantedAuthority authority : authorities) {
+					for (Authority name : Authority.values()) {
+						if (String.valueOf(authority).contains(String.valueOf(name))) {
+							authorityNames.add(name.getAuthority());
+						}
+					}
+				}
+				// end of GrantedAuthority foreach
+
+				user.setAuthorityNames(authorityNames);
 			}
+			// end of UserDTO foreach
 		}
 
 		return users;

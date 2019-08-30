@@ -33,7 +33,7 @@
 									<img th:src="@{/goods/images/} + ${#calendars.format( row.attachList[0].insertTime, 'yy-MM-dd' )} + '/' + ${row.attachList[0].storedName}" th:alt="shoes + ${status.index}" />
 								</span>
 							</a>
-							<a th:href="@{/goods/details( code=${row.code} )}" class="txt_wrap">
+							<a th:href="@{/admin/goods/register( code=${row.code} )}" class="txt_wrap">
 								<span th:text="${row.name}" class="name">상품명</span>
 								<span th:text="${#numbers.formatInteger( row.price, 3, 'COMMA' )}" class="price">가격</span>
 							</a>

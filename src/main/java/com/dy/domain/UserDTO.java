@@ -2,6 +2,7 @@ package com.dy.domain;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.Pattern;
 
@@ -46,7 +47,7 @@ public class UserDTO extends CommonDTO implements UserDetails {
 	/** 계정 만료 여부 */
 	private boolean accountNonExpired;
 
-	/** 계정 잠금 여부 */
+	/** 계정 잠김 여부 */
 	private boolean accountNonLocked;
 
 	/** 비밀번호 만료 여부 */
@@ -64,7 +65,7 @@ public class UserDTO extends CommonDTO implements UserDetails {
 	/** 권한 리스트 */
 	private Collection<? extends GrantedAuthority> authorities;
 
-	/** 권한 정보 */
-	private AuthorityDTO authority;
+	/** 권한 이름 리스트 */
+	private List<String> authorityNames;
 
 }

@@ -20,7 +20,7 @@ public class AuthorityDTO extends CommonDTO {
 	/** 이메일 (FK) */
 	private String username;
 
-	/** 이름 */
+	/** 권한 이름 */
 	private Authority name;
 
 }

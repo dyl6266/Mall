@@ -105,8 +105,6 @@
 			<include refid="userColumns" />
 		FROM
 			user
-		WHERE
-			enabled = 1
 	</select>
 
 	<select id="selectUserTotalCount" resultType="int">

@@ -55,9 +55,15 @@
 												</li>
 											</ul>
 											<ul class="tbody">
-												<li th:each="size : ${#numbers.sequence( 220, 315, 5 )}">
+												<!--/* 상품 등록의 경우 */-->
+												<li th:if="${#arrays.isEmpty( options )}" th:each="size : ${#numbers.sequence( 220, 315, 5 )}">
 													<span th:text="${size}"></span>
 													<input type="text" name="quantity" value="0" />
+												</li>
+												<!--/* 상품 수정의 경우 */-->
+												<li th:unless="${#arrays.isEmpty( options )}" th:each="size : ${options.keySet()}">
+													<span th:text="${size}"></span>
+													<input type="text" name="quantity" th:value="${options.get(size)}" />
 												</li>
 											</ul>
 										</div>
@@ -79,20 +85,32 @@
 								</tr>
 								<tr>
 									<th>이미지</th>
-									<td>
+									<td th:if="${#arrays.isEmpty( files )}">
 										<div class="file_box">
 											<input type="text" id="file0" class="wd300" readonly />
 											<label class="btn">
 												파일 선택
 												<input type="file" name="files" onchange="document.getElementById('file0').value = this.value" />
 											</label>
+											<button type="button" class="btn btn_navy" onclick="addFiles(this)">+ 추가</button>
 										</div>
-										<button type="button" class="btn btn_navy" onclick="addFiles(this)">+ 추가</button><br />
+										<br />
+									</td>
+									<td th:unless="${#arrays.isEmpty( files )}">
+										<div class="file_box" th:each="row, status : ${files}">
+											<input type="text" id="file0" class="wd300" th:value="${row.originalName}" readonly />
+											<label class="btn">
+												파일 선택
+												<input type="file" name="files" onchange="document.getElementById('file0').value = this.value" />
+											</label>
+											<button type="button" class="btn btn_navy" onclick="addFiles(this)">+ 추가</button>
+										</div>
+										<br />
 									</td>
 								</tr>
 							</tbody>
 						</table>
-	
+
 						<div class="btn_wrap text_right">
 							<a th:href="@{/admin/goods/list}" class="btn btn_lightgray">취소</a>
 							<input type="submit" value="등록" class="btn btn_navy" />
@@ -124,15 +142,22 @@
 						html += '파일 선택';
 						html += '<input type="file" name="files" onchange="document.getElementById(\'file'+ idx +'\').value = this.value" />';
 					html += '</label>';
+					html += '<button type="button" class="btn btn_navy" onclick="removeFile(this)">- 삭제</button>';
 				html += '</div>';
+				html += '<br />';
 
-				$(obj).parent().last().append(html);
-				$(obj).parent().last().append("<br />");
+				$(obj).parent().next().after(html);
 			}
 
 			/**
 			 * 첨부 이미지 삭제
 			 */
+			function removeFile(obj) {
+
+				/*[- <br /> 태그를 먼저 삭제해야 remove 함수가 정상적으로 작동 -]*/
+				$(obj).parent().next().remove();
+				$(obj).parent().remove();
+			}
 
 			/**
 			 * 상품 등록 폼 유효성 검사

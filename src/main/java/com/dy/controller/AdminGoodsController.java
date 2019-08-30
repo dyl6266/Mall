@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -16,12 +15,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dy.domain.AttachDTO;
 import com.dy.domain.GoodsDTO;
+import com.dy.service.AttachService;
 import com.dy.service.GoodsService;
 import com.dy.util.UiUtils;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 @Controller
@@ -33,6 +36,9 @@ public class AdminGoodsController extends UiUtils {
 
 	@Autowired
 	private GoodsService goodsService;
+
+	@Autowired
+	private AttachService attachService;
 
 	/**
 	 * 상품 등록
@@ -61,7 +67,7 @@ public class AdminGoodsController extends UiUtils {
 			}
 			jsonObj.addProperty("result", false);
 
-		/* 이미지가 넘어오지 않은 경우 (ObjectUtils의 isEmpty() 메소드로는 체크 불가능) */
+			/* 이미지가 넘어오지 않은 경우 (ObjectUtils의 isEmpty() 메소드로는 체크 불가능) */
 		} else if (StringUtils.isEmpty(files[0].getName()) || files[0].getSize() < 1) {
 			jsonObj.addProperty("message", "상품 이미지를 하나 이상 등록해 주세요.");
 			jsonObj.addProperty("result", false);
@@ -112,9 +118,26 @@ public class AdminGoodsController extends UiUtils {
 	 * @return 페이지
 	 */
 	@GetMapping(value = "/goods/register")
-	public String openAdminGoodsRegister(Model model) {
+	public String openAdminGoodsRegister(@RequestParam(value = "code", required = false) String code, Model model) {
 
-		model.addAttribute("goods", new GoodsDTO());
+		if (StringUtils.isEmpty(code)) {
+			model.addAttribute("goods", new GoodsDTO());
+
+		} else {
+			GoodsDTO goods = goodsService.getGoodsDetails(code);
+			if (goods != null) {
+				/* 사이즈, 수량을 key : value 형태로 담은 문자열 */
+				String optionsStr = goods.getStock().getOptions();
+
+				/* optionsStr을 JsonObject로 변환 */
+				JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
+				model.addAttribute("options", options);
+			}
+			model.addAttribute("goods", goods);
+
+			List<AttachDTO> files = attachService.getAttachList(code);
+			model.addAttribute("files", files);
+		}
 
 		return "admin/goods/register";
 	}
