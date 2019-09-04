@@ -12,7 +12,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,6 +58,14 @@ public class AdminGoodsController extends UiUtils {
 //		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 //		String violations = validator.validate(params, MyGroupSequence.class).toString();
 
+//		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+//		Iterator<String> iter = multiRequest.getFileNames();
+//		while (iter.hasNext()) {
+//			MultipartFile file = multiRequest.getFile(iter.next());
+//			System.out.println(file.getName());
+//			System.out.println(file.getOriginalFilename());
+//		}
+
 		JsonObject jsonObj = new JsonObject();
 
 		/* Bean 유효성 검사에 실패한 경우 */
@@ -95,6 +106,45 @@ public class AdminGoodsController extends UiUtils {
 		return jsonObj;
 	}
 	// end of method
+
+	@PatchMapping(value = "/goods/{code}")
+	@ResponseBody
+	public JsonObject updateGoods(@PathVariable("code") String code, @Validated GoodsDTO params,
+			BindingResult bindingResult, MultipartFile[] files) {
+
+		JsonObject jsonObj = new JsonObject();
+
+		/* Bean 유효성 검사에 실패한 경우 */
+		if (bindingResult.hasErrors()) {
+			if (bindingResult.getErrorCount() > 1) {
+				jsonObj.addProperty("message", "모든 필드에 값을 입력해 주세요.");
+			} else {
+				FieldError fieldError = bindingResult.getFieldError();
+				jsonObj.addProperty("message", fieldError.getDefaultMessage());
+			}
+			jsonObj.addProperty("result", false);
+
+		} else {
+			try {
+				/* 상품 등록 */
+				boolean isInserted = goodsService.registerGoods(params, files);
+				if (isInserted == false) {
+					jsonObj.addProperty("message", "상품 등록에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				}
+				jsonObj.addProperty("result", isInserted);
+
+			} catch (DataAccessException e) {
+				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+
+			} catch (Exception e) {
+				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+			}
+		}
+
+		return jsonObj;
+	}
 
 	/**
 	 * 관리자 상품 목록
@@ -140,6 +190,36 @@ public class AdminGoodsController extends UiUtils {
 		}
 
 		return "admin/goods/register";
+	}
+
+	@DeleteMapping(value = "/goods/{code}")
+	@ResponseBody
+	public JsonObject deleteGoods(@PathVariable("code") String code, @RequestParam(value = "idx", required = false) Integer idx) {
+
+		JsonObject jsonObj = new JsonObject();
+		if (idx == null) {
+			jsonObj.addProperty("message", "올바르지 않은 접근입니다.");
+			jsonObj.addProperty("result", false);
+
+		} else {
+			try {
+				boolean isDeleted = attachService.deleteAttach(code, idx);
+				if (isDeleted == false) {
+					jsonObj.addProperty("message", "파일 삭제에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				}
+				jsonObj.addProperty("result", isDeleted);
+
+			} catch (DataAccessException e) {
+				jsonObj.addProperty("message", "데이터베이스에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+
+			} catch (Exception e) {
+				jsonObj.addProperty("message", "시스템에 문제가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+				jsonObj.addProperty("result", false);
+			}
+		}
+
+		return jsonObj;
 	}
 
 }

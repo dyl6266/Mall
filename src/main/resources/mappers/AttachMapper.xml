@@ -52,13 +52,15 @@
 			code = #{code}
 	</update>
 
-	<delete id="deleteAttach" parameterType="integer">
-		DELETE FROM attach
-		WHERE
+	<update id="deleteAttach" parameterType="hashmap">
+		UPDATE attach
+		SET
 			delete_yn = 'Y'
+		WHERE
+			code = #{code}
 		AND
 			idx = #{idx}
-	</delete>
+	</update>
 
 	<select id="selectAttachList" parameterType="string" resultType="AttachDTO">
 		SELECT

@@ -92,20 +92,26 @@
 												파일 선택
 												<input type="file" name="files" onchange="document.getElementById('file0').value = this.value" />
 											</label>
-											<button type="button" class="btn btn_navy" onclick="addFiles(this)">+ 추가</button>
+											<button type="button" class="btn btn_navy" onclick="addFile(this)">+ 추가</button>
 										</div>
 										<br />
 									</td>
 									<td th:unless="${#arrays.isEmpty( files )}">
-										<div class="file_box" th:each="row, status : ${files}">
-											<input type="text" id="file0" class="wd300" th:value="${row.originalName}" readonly />
+										<div class="file_box">
+											<input type="text" readonly="readonly" title="File Route1" id="file_route1" placeholder="선택된 파일이 없습니다." class="wd300"/>
 											<label class="btn">
 												파일 선택
-												<input type="file" name="files" onchange="document.getElementById('file0').value = this.value" />
+												<input type="file" onchange="javascript:document.getElementById('file_route1').value=this.value" />
 											</label>
-											<button type="button" class="btn btn_navy" onclick="addFiles(this)">+ 추가</button>
+											<button type="button" class="btn btn_navy" onclick="addFile(this)">+ 추가</button>
 										</div>
 										<br />
+										<ul class="file_list">
+											<li th:each="row, status : ${files}">
+												<p th:text="${row.originalName}"></p>
+												<button type="button" class="btn_delete" th:onclick="deleteFile([[ ${row.idx} ]], [[ ${row.originalName} ]], this)">삭제</button>
+											</li>
+										</ul>
 									</td>
 								</tr>
 							</tbody>
@@ -133,7 +139,7 @@
 			 */
 			/*[- files의 id에 파읾명을 지정하기 위한 인덱스 -]*/
 			var idx = 0;
-			function addFiles(obj) {
+			function addFile(obj) {
 
 				var html = "";
 				html += '<div class="file_box">';
@@ -147,6 +153,7 @@
 				html += '<br />';
 
 				$(obj).parent().next().after(html);
+				console.log( $(obj).parent().next() );
 			}
 
 			/**
@@ -157,6 +164,43 @@
 				/*[- <br /> 태그를 먼저 삭제해야 remove 함수가 정상적으로 작동 -]*/
 				$(obj).parent().next().remove();
 				$(obj).parent().remove();
+			}
+
+			/**
+			 * 첨부 이미지 삭제
+			 */
+			function deleteFile(idx, originalName, obj) {
+
+				var message = originalName + " 파일을 삭제하시겠어요?";
+				if (confirm(message) == false) {
+					return false;
+				}
+
+				/*[- spring security csrf token -]*/
+				var token = $("meta[name='_csrf']").attr("content");
+				var uri = /*[[ @{/admin/goods/} + ${goods.code} ]]*/;
+
+				$.ajax({
+					url : uri,
+					type : "delete",
+					headers : {
+						"X-HTTP-Method-Override" : "delete",
+						"X-CSRF-TOKEN" : token,
+					},
+					dataType : "json",
+					data : { "idx" : idx },
+					async : false,
+					success : function(response) {
+						if (isEmpty(response.message) == false) {
+							alert(response.message);
+							return false;
+						}
+						$(obj).parent().remove();
+					},
+					error : function(request, status, error) {
+						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+					}
+				});
 			}
 
 			/**
@@ -190,7 +234,7 @@
 					data : formData,
 					contentType : false,
 					processData : false, /*[- 데이터를 일반적인 Query String으로 변환할 것인지를 결정하는 속성으로 기본값으로 true를 가짐 -]*/
-					async : false, /*[- 데이터를 일반적인 Query String으로 변환할 것인지를 결정하는 속성으로 기본값으로 true를 가짐 -]*/
+					async : false,
 					success : function(response) {
 						if (isEmpty(response.message) == false) {
 							alert(response.message);

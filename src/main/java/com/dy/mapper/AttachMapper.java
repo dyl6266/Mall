@@ -1,5 +1,6 @@
 package com.dy.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -15,7 +16,7 @@ public interface AttachMapper {
 
 	public int updateAttach(AttachDTO params);
 
-	public int deleteAttach(List<Integer> idxs);
+	public int deleteAttach(HashMap<String, Object> params);
 
 	public List<AttachDTO> selectAttachList(String code);
 

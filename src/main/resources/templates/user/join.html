@@ -101,23 +101,23 @@
 
 			function validationOfForm(form) {
 
-				if (form.isChecked.value != 'Y') {
-					alert("아이디 중복 확인을 완료해 주세요.");
-					form.username.focus();
-					return false;
-				}
+// 				if (form.isChecked.value != 'Y') {
+// 					alert("아이디 중복 확인을 완료해 주세요.");
+// 					form.username.focus();
+// 					return false;
+// 				}
 
-				var result = (
-						   isValid(form.username, "아이디", null, null)
-						&& isValid(form.nickname, "닉네임", null, null)
-						&& isValid(form.password, "비밀번호", null, null)
-						&& equals(form.password, form.passwordCheck, "비밀번호")
-						&& isValid(form.phone, "연락처", null, null)
-				);
+// 				var result = (
+// 						   isValid(form.username, "아이디", null, null)
+// 						&& isValid(form.nickname, "닉네임", null, null)
+// 						&& isValid(form.password, "비밀번호", null, null)
+// 						&& equals(form.password, form.passwordCheck, "비밀번호")
+// 						&& isValid(form.phone, "연락처", null, null)
+// 				);
 
-				if (result == false) {
-					return false;
-				}
+// 				if (result == false) {
+// 					return false;
+// 				}
 
 				/*[- ajax 요청에 필요한 key, value 형태의 오브젝트 생성 -]*/
 				var params = makeAjaxRequestData(form);

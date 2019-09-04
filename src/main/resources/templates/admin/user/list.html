@@ -68,23 +68,23 @@
 								<td th:text="${row.phone}"></td>
 								<td>
 									<select name="authorities">
-										<option th:each="authority,status : ${row.authorities}" th:value="${authority}" th:text="${ row.authorityNames[status.index] }"></option>
+										<option th:each="authority,status : ${row.authorities}" th:value="${authority}" th:text="${row.authorityNames[status.index]}"></option>
 									</select>
 								</td>
 								<td>
-									<select name="accountNonLocked">
+									<select name="accountNonLocked" th:onchange="changeAccountStatus([[ ${row.idx} ]], this.name, this.value)">
 										<option value="true" th:checked="${row.accountNonLocked == true}">N</option>
 										<option value="false" th:checked="${row.accountNonLocked == false}">Y</option>
 									</select>
 								</td>
 								<td>
-									<select name="enabled">
+									<select name="enabled" th:onchange="changeAccountStatus([[ ${row.idx} ]], this.name, this.value">
 										<option value="true" th:checked="${row.enabled == true}">N</option>
 										<option value="false" th:checked="${row.enabled == false}">Y</option>
 									</select>
 								</td>
 								<td>
-									<input type="button" value="삭제" class="btn btn_gray" />
+									<input type="button" class="btn btn_gray" value="삭제" th:onclick="deleteUser([[ ${row.username} ]])" />
 								</td>
 							</tr>
 						</tbody>
@@ -107,6 +107,49 @@
 			<!--/* //.inner */-->
 		</div>
 		<!--/* //.contents */-->
+	</th:block>
+
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+		/* <![CDATA[ */
+
+// 			function changeAccountStatus(idx, name, value) {
+
+// 			var test = name;
+// 			console.log(name);
+// 			console.log(value);
+// 			return false;
+// 				var data = {
+// 					name : value
+// 				};
+// 				console.log(data);
+// 				return false;
+			
+// 				/*[- spring security csrf token -]*/
+// 				var token = $("meta[name='_csrf']").attr("content");
+// 				var uri = [[ @{/users/} ]] + idx;
+
+// 				$.ajax({
+// 					url : uri,
+// 					type : "patch",
+// 					headers : {
+// 						"X-HTTP-Method-Override" : "patch",
+// 						"X-CSRF-TOKEN" : token,
+// 					},
+// 					dataType : "json",
+// // 					data : data,
+// 					async : false,
+// 					success : function(response) {
+// 						console.log(response)
+// 					},
+// 					error : function(request, status, error) {
+// 						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
+// 					}
+// 				});
+// 			}
+
+		/* ]]> */
+		</script>
 	</th:block>
 
 </html>
