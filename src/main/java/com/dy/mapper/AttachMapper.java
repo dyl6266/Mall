@@ -14,9 +14,9 @@ public interface AttachMapper {
 
 	public AttachDTO selectAttachDetails(Integer idx);
 
-	public int updateAttach(AttachDTO params);
-
 	public int deleteAttach(HashMap<String, Object> params);
+
+	public int deleteAllAttachByCode(String code);
 
 	public List<AttachDTO> selectAttachList(String code);
 

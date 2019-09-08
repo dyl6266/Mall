@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.dy.domain.AttachDTO;
 import com.dy.mapper.AttachMapper;
+import com.dy.util.AttachFileUtils;
+import com.dy.util.CommonUtils;
 
 @Service
 public class AttachServiceImpl implements AttachService {
@@ -17,6 +19,20 @@ public class AttachServiceImpl implements AttachService {
 
 	@Override
 	public boolean deleteAttach(String code, Integer idx) {
+
+		/* 파일 조회 */
+		AttachDTO attach = attachMapper.selectAttachDetails(idx);
+		if (attach == null) {
+			return false;
+		}
+
+		/* 업로드된 날짜 */
+		String uploadedDate = CommonUtils.formatDate(attach.getInsertTime(), "yy-MM-dd");
+		/* 디스크에서 파일 삭제 */
+		boolean isDeleted = AttachFileUtils.deleteFile(attach.getStoredName(), uploadedDate);
+		if (isDeleted == false) {
+			return false;
+		}
 
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("code", code);
@@ -31,6 +47,17 @@ public class AttachServiceImpl implements AttachService {
 	}
 
 	@Override
+	public boolean deleteAllAttachByCode(String code) {
+
+		int queryResult = attachMapper.deleteAllAttachByCode(code);
+		if (queryResult != 1) {
+			return false;
+		}
+
+		return false;
+	}
+
+	@Override
 	public List<AttachDTO> getAttachList(String code) {
 
 		List<AttachDTO> attachList = null;
@@ -41,6 +68,13 @@ public class AttachServiceImpl implements AttachService {
 		}
 
 		return attachList;
+	}
+
+	@Override
+	public int getAttachTotalCount(String code) {
+
+		int totalCount = attachMapper.selectAttachTotalCount(code);
+		return totalCount;
 	}
 
 }

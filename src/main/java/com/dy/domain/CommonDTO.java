@@ -1,6 +1,6 @@
 package com.dy.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.dy.common.Const.YesNo;
 
@@ -18,12 +18,12 @@ public class CommonDTO {
 	private String insertUser;
 
 	/** 등록일 */
-	private Date insertTime;
+	private LocalDateTime insertTime;
 
 	/** 수정한 사용자 */
 	private String updateUser;
 
 	/** 수정일 */
-	private Date updateTime;
+	private LocalDateTime updateTime;
 
 }

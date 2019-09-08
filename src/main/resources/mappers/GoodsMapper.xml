@@ -69,10 +69,18 @@
 		UPDATE goods
 		SET
 			  update_time = NOW()
-			, name = #{name}
+		  <if test="@com.dy.util.MyBatisUtils@isEmpty( name ) == false">
+		  	, name = #{name}
+		  </if>
+		  <if test="@com.dy.util.MyBatisUtils@isEmpty( description ) == false">
 			, description = #{description}
+		  </if>
+		  <if test="@com.dy.util.MyBatisUtils@isEmpty( price ) == false">
 			, price = #{price}
-			, status = #{status}
+		  </if>
+		  <if test="@com.dy.util.MyBatisUtils@isEmpty( status ) == false">
+			, status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}}
+		  </if>
 		WHERE
 			code = #{code}
 	</update>
@@ -141,6 +149,13 @@
 			goods
 		WHERE
 			code = #{code}
+	</select>
+
+	<select id="generateMaxGoodsCode" resultType="string">
+		SELECT
+			CONCAT(#{tableName, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, '-', LPAD(MAX(idx) + 1, 5, 0))
+		FROM
+			goods
 	</select>
 
 </mapper>

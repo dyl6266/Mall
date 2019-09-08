@@ -40,26 +40,21 @@
 			idx = #{idx}
 	</select>
 
-	<update id="updateAttach" parameterType="AttachDTO">
-		UPDATE attach
-		SET
-			  update_time = NOW()
-			, original_name = #{originalName}
-			, stored_name = #{storedName}
-			, size = IFNULL(#{size}, 0)
-			, options= #{options, typeHandler=com.dy.handler.JsonTypeHandler}
-		WHERE
-			code = #{code}
-	</update>
-
-	<update id="deleteAttach" parameterType="hashmap">
-		UPDATE attach
-		SET
-			delete_yn = 'Y'
+	<delete id="deleteAttach" parameterType="hashmap">
+		DELETE FROM attach
 		WHERE
 			code = #{code}
 		AND
 			idx = #{idx}
+	</delete>
+
+	<update id="deleteAllAttachByCode" parameterType="string">
+		UPDATE attach
+		SET
+			  update_time = NOW()
+			, delete_yn = 'Y'
+		WHERE
+			code = #{code}
 	</update>
 
 	<select id="selectAttachList" parameterType="string" resultType="AttachDTO">

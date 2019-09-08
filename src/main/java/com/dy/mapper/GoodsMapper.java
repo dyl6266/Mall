@@ -28,4 +28,6 @@ public interface GoodsMapper {
 
 	public int checkForDuplicateGoodsCode(String code);
 
+	public String generateMaxGoodsCode(TableName tableName);
+
 }

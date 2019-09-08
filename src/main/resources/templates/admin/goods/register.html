@@ -19,6 +19,8 @@
 
 				<div class="form_write pd_regi">
 					<form th:action="@{/admin/goods}" th:object="${goods}" method="post" onsubmit="return validationOfForm(this)">
+						<!--/* 상품 정보 수정에 사용되는 파라미터 */-->
+						<input type="hidden" th:field="*{code}" />
 						<table>
 							<caption></caption>
 							<colgroup>
@@ -54,14 +56,16 @@
 													<span class="type1">재고</span>
 												</li>
 											</ul>
-											<ul class="tbody">
-												<!--/* 상품 등록의 경우 */-->
-												<li th:if="${#arrays.isEmpty( options )}" th:each="size : ${#numbers.sequence( 220, 315, 5 )}">
+											<!--/* 상품 등록의 경우 */-->
+											<ul th:if="${#arrays.isEmpty( options )}" class="tbody">
+												<li th:each="size : ${#numbers.sequence( 220, 315, 5 )}">
 													<span th:text="${size}"></span>
 													<input type="text" name="quantity" value="0" />
 												</li>
-												<!--/* 상품 수정의 경우 */-->
-												<li th:unless="${#arrays.isEmpty( options )}" th:each="size : ${options.keySet()}">
+											</ul>
+											<!--/* 상품 수정의 경우 */-->
+											<ul th:unless="${#arrays.isEmpty( options )}" class="tbody">
+												<li th:each="size : ${options.keySet()}">
 													<span th:text="${size}"></span>
 													<input type="text" name="quantity" th:value="${options.get(size)}" />
 												</li>
@@ -98,10 +102,10 @@
 									</td>
 									<td th:unless="${#arrays.isEmpty( files )}">
 										<div class="file_box">
-											<input type="text" readonly="readonly" title="File Route1" id="file_route1" placeholder="선택된 파일이 없습니다." class="wd300"/>
+											<input type="text" id="file0" class="wd300" readonly />
 											<label class="btn">
 												파일 선택
-												<input type="file" onchange="javascript:document.getElementById('file_route1').value=this.value" />
+												<input type="file" name="files" onchange="document.getElementById('file0').value = this.value" />
 											</label>
 											<button type="button" class="btn btn_navy" onclick="addFile(this)">+ 추가</button>
 										</div>
@@ -118,7 +122,7 @@
 						</table>
 
 						<div class="btn_wrap text_right">
-							<a th:href="@{/admin/goods/list}" class="btn btn_lightgray">취소</a>
+							<a th:href="@{/admin/goods}" class="btn btn_lightgray">취소</a>
 							<input type="submit" value="등록" class="btn btn_navy" />
 						</div>
 					</form>
@@ -141,6 +145,12 @@
 			var idx = 0;
 			function addFile(obj) {
 
+				var filename = $(".file_box").last().children("input").val();
+				if (isEmpty(filename)) {
+					alert("기존 필드에 이미지를 추가해 주세요.");
+					return false;
+				}
+
 				var html = "";
 				html += '<div class="file_box">';
 					html += '<input type="text" id="file'+ (++idx) +'" class="wd300" readonly />';
@@ -152,8 +162,8 @@
 				html += '</div>';
 				html += '<br />';
 
-				$(obj).parent().next().after(html);
-				console.log( $(obj).parent().next() );
+				$(".file_box").last().next().after(html);
+// 				$(obj).parent().next().after(html);
 			}
 
 			/**
@@ -195,7 +205,13 @@
 							alert(response.message);
 							return false;
 						}
+
+						/*[- li 엘러먼트 제거 -]*/
 						$(obj).parent().remove();
+						/*[- 삭제 이후에 파일이 존재하지 않는 경우 ul 엘러먼트 제거 -]*/
+						if (response.totalCount < 1) {
+							$(".file_list").remove();
+						}
 					},
 					error : function(request, status, error) {
 						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
@@ -219,16 +235,21 @@
 				/*[- 서버로 전달할 FormData -]*/
 				var formData = new FormData(form);
 				formData.append("stock.options", JSON.stringify(options));
-
+				
 				/*[- spring security csrf token -]*/
 				var token = $("meta[name='_csrf']").attr("content");
 
+				/*[- 상품 초기 등록과 수정의 경우 달라지는 uri와 type 처리 -]*/
+				var uri = isEmpty(form.code.value) ? form.action : form.action + "/" + form.code.value;
+
+				/*[- formData.append("_method", type); => form에 hidden으로 추가해도 됨 -]*/
+
 				$.ajax({
-					url : form.action,
+					url : uri,
 					type : "post",
 					headers : {
 						"X-HTTP-Method-Override" : "post",
-						"X-CSRF-TOKEN" : token,
+						"X-CSRF-TOKEN" : token
 					},
 					dataType : "json",
 					data : formData,

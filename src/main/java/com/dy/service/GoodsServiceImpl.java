@@ -83,7 +83,7 @@ public class GoodsServiceImpl implements GoodsService {
 			/* 상품 코드 중복 검사 (재고 테이블에는 FK 제약조건을 걸어두었기 때문에 존재하지 않는 상품 코드가 레코드에 들어갈 수 없음) */
 			int codeCount = goodsMapper.checkForDuplicateGoodsCode(code);
 			if (codeCount != 0) {
-				return false;
+				code = goodsMapper.generateMaxGoodsCode(TableName.GOODS);
 			}
 
 			/* 상품 등록 쿼리 */
@@ -100,7 +100,23 @@ public class GoodsServiceImpl implements GoodsService {
 				return false;
 			}
 
-			/* 이미지 리스트 등록 */
+		} else {
+			/* 상품 수정 쿼리 */
+			queryResult = goodsMapper.updateGoods(params);
+			if (queryResult != 1) {
+				return false;
+			}
+
+			/* 재고 수정 */
+			params.getStock().setCode(params.getCode());
+			queryResult = stockMapper.updateStock(params.getStock());
+			if (queryResult != 1) {
+				return false;
+			}
+		}
+
+		/* 이미지 리스트 등록 */
+		if (StringUtils.isEmpty(files[0].getName()) == false && files[0].getSize() > 0) {
 			List<AttachDTO> attachList = AttachFileUtils.uploadFiles(files, params.getCode());
 			if (CollectionUtils.isEmpty(attachList)) {
 				return false;
@@ -110,13 +126,6 @@ public class GoodsServiceImpl implements GoodsService {
 				queryResult += attachMapper.insertAttach(attach);
 			}
 			if (queryResult < 1) {
-				return false;
-			}
-
-		} else {
-			/* 상품 수정 쿼리 */
-			queryResult = goodsMapper.updateGoods(params);
-			if (queryResult != 1) {
 				return false;
 			}
 		}

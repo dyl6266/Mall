@@ -1,6 +1,8 @@
 package com.dy.util;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -44,15 +46,25 @@ public class CommonUtils {
 //	}
 
 	/**
-	 * 현재 시간을 문자열 형태로 반환
+	 * 현재 날짜, 시간을 문자열 형태로 반환
 	 * 
-	 * @return 현재 시간
+	 * @return 현재 날짜, 시간
 	 */
 	public static String getCurrentTime() {
 
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return (String) sdf.format(calendar.getTime());
+		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	}
+
+	/**
+	 * 패턴에 일치하는 형태의 날짜를 문자열 형태로 반환
+	 * @param dateTime - 시간
+	 * @param pattern - 패턴
+	 * 
+	 * @return 문자열 형태의 날짜
+	 */
+	public static String formatDate(LocalDateTime dateTime, String pattern) {
+
+		return dateTime.format(DateTimeFormatter.ofPattern(pattern));
 	}
 
 }

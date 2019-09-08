@@ -28,7 +28,7 @@
 						<li th:each="row, status : ${goods}">
 							<a th:href="@{/admin/goods/register( code=${row.code} )}" class="img_wrap">
 								<span class="img_box">
-									<img th:src="@{/goods/images/} + ${#calendars.format( row.attachList[0].insertTime, 'yy-MM-dd' )} + '/' + ${row.attachList[0].storedName}" th:alt="shoes + ${status.index}" />
+									<img th:src="@{/goods/images/} + ${#temporals.format(row.attachList[0].insertTime, 'yy-MM-dd')} + '/' + ${row.attachList[0].storedName}" th:alt="shoes + ${status.index}" />
 								</span>
 							</a>
 							<a href="" class="txt_wrap">

@@ -110,6 +110,32 @@ public class AttachFileUtils {
 	}
 	// end of method
 
+	/**
+	 * 첨부 이미지 삭제
+	 * 
+	 * @param storedFilename - 저장 파일명
+	 * @param uploadedDate - 업로드 날짜
+	 * @return
+	 */
+	public static boolean deleteFile(String storedFilename, String uploadedDate) {
+
+		/* 삭제할 파일 경로 */
+		String path = "C:" + File.separator + "upload" + File.separator + uploadedDate + File.separator;
+		/* 원본 이미지 */
+		File original = new File(path + storedFilename);
+		/* 썸네일 이미지 */
+		File thumbnail = new File(path + "t_" + storedFilename);
+
+		if (original.exists() == false || thumbnail.exists() == false) {
+			return false;
+		}
+
+		original.delete();
+		thumbnail.delete();
+
+		return true;
+	}
+
 	/*
 	 * 나중에 쓸 일이 있을지도 모르는 원본보다 큰 썸네일 이미지 (px만 적고, 사이즈는 큼)
 	 */

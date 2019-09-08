@@ -18,14 +18,14 @@
 							<div class="" th:if="${not #arrays.isEmpty(images)}" th:each="image, status : ${images}">
 								<div class="img_wrap">
 									<span class="img_box">
-										<img th:src="@{/goods/images/} + ${#calendars.format( image.insertTime, 'yy-MM-dd' )} + '/' + ${image.storedName}" th:alt="shoes + ${status.index}" />
+										<img th:src="@{/goods/images/} + ${#temporals.format( image.insertTime, 'yy-MM-dd' )} + '/' + ${image.storedName}" th:alt="shoes + ${status.index}" />
 									</span>
 								</div>
 							</div>
 						</div>
 						<div class="slide_pager">
 							<div class="" th:if="${not #arrays.isEmpty(images)}" th:each="image, status : ${images}">
-								<img th:src="@{/goods/images/} + ${#calendars.format( image.insertTime, 'yy-MM-dd' )} + '/' + ${image.storedName}" th:alt="shoes + ${status.index}" />
+								<img th:src="@{/goods/images/} + ${#temporals.format( image.insertTime, 'yy-MM-dd' )} + '/' + ${image.storedName}" th:alt="shoes + ${status.index}" />
 							</div>
 						</div>
 						<script>

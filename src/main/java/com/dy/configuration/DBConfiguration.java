@@ -1,5 +1,7 @@
 package com.dy.configuration;
 
+import java.util.Properties;
+
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -21,6 +23,12 @@ public class DBConfiguration {
 
 	@Autowired
 	private ApplicationContext applicationContext;
+
+//	@Bean
+//	@ConfigurationProperties(prefix = "spring.jpa")
+//	public Properties hibernateConfig() {
+//		return new Properties();
+//	}
 
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource.hikari")

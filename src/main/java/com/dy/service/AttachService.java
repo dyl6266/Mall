@@ -8,6 +8,10 @@ public interface AttachService {
 
 	public boolean deleteAttach(String code, Integer idx);
 
+	public boolean deleteAllAttachByCode(String code);
+
 	public List<AttachDTO> getAttachList(String code);
+
+	public int getAttachTotalCount(String code);
 
 }

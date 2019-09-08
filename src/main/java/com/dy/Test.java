@@ -1,4 +1,4 @@
-package com.dy.controller;
+package com.dy;
 
 import java.util.regex.Pattern;
 

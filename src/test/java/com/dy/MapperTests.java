@@ -1,6 +1,7 @@
 package com.dy;
 
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Test;
@@ -12,19 +13,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.dy.common.Const.Authority;
-import com.dy.domain.AddressBookDTO;
+import com.dy.domain.AttachDTO;
 import com.dy.domain.AuthorityDTO;
 import com.dy.domain.GoodsDTO;
 import com.dy.domain.UserDTO;
 import com.dy.mapper.AddressBookMapper;
+import com.dy.mapper.AttachMapper;
 import com.dy.mapper.AuthorityMapper;
 import com.dy.mapper.GoodsMapper;
 import com.dy.mapper.UserMapper;
+import com.dy.util.AttachFileUtils;
+import com.dy.util.CommonUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MapperTests {
-	
+
 	@Autowired
 	private GoodsMapper goodsMapper;
 
@@ -36,10 +40,21 @@ public class MapperTests {
 
 	@Autowired
 	private PasswordEncoder encoder;
-	
+
 	@Autowired
 	private AddressBookMapper bookMapper;
-	
+
+	@Autowired
+	private AttachMapper attachMapper;
+
+	@Test
+	public void 파일_삭제() {
+		AttachDTO file = attachMapper.selectAttachDetails(25);
+
+		String uploadedDate = CommonUtils.formatDate(file.getInsertTime(), "yy-MM-dd");
+		boolean isDeleted = AttachFileUtils.deleteFile(file.getStoredName(), uploadedDate);
+	}
+
 	@Test
 	public void 주소_등록() {
 //		AddressBookDTO book = new AddressBookDTO("dyl6266@nate.com", "회사", "인천시 남동구 펜타코드");
@@ -53,7 +68,7 @@ public class MapperTests {
 //		params.put("idx", 3);
 //		bookMapper.deleteAddress(params);
 	}
-	
+
 	@Test
 	public void 주소_리스트() {
 		bookMapper.selectAddressBook("dyl6266@nate.com");
