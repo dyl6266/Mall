@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dy.common.Const.TableName;
+import com.dy.common.paging.PaginationInfo;
 import com.dy.domain.AttachDTO;
 import com.dy.domain.GoodsDTO;
 import com.dy.domain.StockDTO;
@@ -179,13 +180,22 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 
 	@Override
-	public List<GoodsDTO> getGoodsList() {
+	public List<GoodsDTO> getGoodsList(GoodsDTO params) {
 
 		List<GoodsDTO> goodsList = null;
 
-		int goodsTotalCount = goodsMapper.selectGoodsTotalCount();
+		/* 전체 상품 수 */
+		int goodsTotalCount = goodsMapper.selectGoodsTotalCount(params);
 		if (goodsTotalCount > 0) {
-			goodsList = goodsMapper.selectGoodsListWithMainImage();
+			/* 페이징 계산에 필요한 전체 상품 수 저장 */
+			params.setTotalRecordCount(goodsTotalCount);
+
+			/* 페이징 정보 저장 */
+			PaginationInfo paginationInfo = new PaginationInfo(params);
+			params.setPaginationInfo(paginationInfo);
+
+			/* 상품 리스트 */
+			goodsList = goodsMapper.selectGoodsListWithMainImage(params);
 		}
 
 		return goodsList;

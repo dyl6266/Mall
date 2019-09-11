@@ -159,6 +159,11 @@ function makeAjaxRequestData(form) {
 			obj[elem.name] = elem.value;
 		}
 	});
+//	data.forEach(function(value, key) {
+//		if (isEmpty(value) == false) {
+//			obj[key] = value;
+//		}
+//	});
 
 	/* spring security csrf 토큰 제거 => header에 정보를 담아서 전송하기 때문에 문제가 되지 않음 */
 	delete obj._csrf;

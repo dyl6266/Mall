@@ -18,11 +18,11 @@ public interface GoodsMapper {
 
 	public int deleteGoods(List<String> codes);
 
-	public List<GoodsDTO> selectGoodsList();
+	public List<GoodsDTO> selectGoodsList(GoodsDTO params);
 
-	public List<GoodsDTO> selectGoodsListWithMainImage();
+	public List<GoodsDTO> selectGoodsListWithMainImage(GoodsDTO params);
 
-	public int selectGoodsTotalCount();
+	public int selectGoodsTotalCount(GoodsDTO params);
 
 	public String generateGoodsCode(TableName tableName);
 

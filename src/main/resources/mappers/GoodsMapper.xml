@@ -94,7 +94,7 @@
 			</foreach>
 	</delete>
 
-	<select id="selectGoodsList" resultType="GoodsDTO">
+	<select id="selectGoodsList" parameterType="GoodsDTO" resultType="GoodsDTO">
 		SELECT
 			<include refid="goodsColumns" />
 		FROM
@@ -103,9 +103,10 @@
 			(status = 'Y' AND delete_yn = 'N')
 		ORDER BY
 			idx DESC, insert_time DESC
+		<include refid="CommonMapper.paging" />
 	</select>
 
-	<select id="selectGoodsListWithMainImage" resultMap="goodsResultMap">
+	<select id="selectGoodsListWithMainImage" parameterType="GoodsDTO" resultMap="goodsResultMap">
 		SELECT
 			  g.code
 			, g.name
@@ -123,16 +124,24 @@
 		    attach AS a ON first.idx = a.idx
 		        RIGHT OUTER JOIN
 		    goods AS g ON first.code = g.code
-		ORDER BY g.idx DESC , g.insert_time DESC
+		<where>
+			g.delete_yn = 'N'
+			<include refid="CommonMapper.search" />
+		</where>
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( searchOrder )">
+			ORDER BY g.idx DESC , g.insert_time DESC
+		</if>
+		<include refid="CommonMapper.paging" />
 	</select>
 
-	<select id="selectGoodsTotalCount" resultType="int">
+	<select id="selectGoodsTotalCount" parameterType="GoodsDTO" resultType="int">
 		SELECT
 			COUNT(*)
 		FROM
 			goods
 		WHERE
-			(status = 'Y' AND delete_yn = 'N')
+			delete_yn = 'N'
+		<include refid="CommonMapper.search" />
 	</select>
 
 	<select id="generateGoodsCode" resultType="string">

@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,7 +72,7 @@ public class AdminGoodsController extends UiUtils {
 			jsonObj.addProperty("result", false);
 
 			/* 이미지가 넘어오지 않은 경우 (ObjectUtils의 isEmpty() 메소드로는 체크 불가능) */
-		} else if (StringUtils.isEmpty(files[0].getName()) || files[0].getSize() < 1) {
+		} else if (files[0].getSize() < 1) {
 			jsonObj.addProperty("message", "상품 이미지를 하나 이상 등록해 주세요.");
 			jsonObj.addProperty("result", false);
 
@@ -124,6 +126,14 @@ public class AdminGoodsController extends UiUtils {
 			}
 			jsonObj.addProperty("result", false);
 
+			/* 해당 상품에 이미지가 하나도 존재하지 않는 경우 */
+		} else if (files[0].getSize() < 1) {
+			List<AttachDTO> attachList = attachService.getAttachList(code);
+			if (CollectionUtils.isEmpty(attachList)) {
+				jsonObj.addProperty("message", "상품 이미지를 하나 이상 등록해 주세요.");
+				jsonObj.addProperty("result", false);
+			}
+
 		} else {
 			try {
 				/* 상품 정보 수정 */
@@ -153,9 +163,9 @@ public class AdminGoodsController extends UiUtils {
 	 * @return 페이지
 	 */
 	@GetMapping(value = "/goods")
-	public String openAdminGoodsList(Model model) {
+	public String openAdminGoodsList(@ModelAttribute("params") GoodsDTO params, Model model) {
 
-		List<GoodsDTO> goods = goodsService.getGoodsList();
+		List<GoodsDTO> goods = goodsService.getGoodsList(params);
 		model.addAttribute("goods", goods);
 
 		return "admin/goods/list";

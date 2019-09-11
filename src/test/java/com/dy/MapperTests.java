@@ -1,7 +1,5 @@
 package com.dy;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Test;
@@ -76,7 +74,7 @@ public class MapperTests {
 
 	@Test
 	public void 상품_이미지() {
-		List<GoodsDTO> goodsList = goodsMapper.selectGoodsListWithMainImage();
+		List<GoodsDTO> goodsList = goodsMapper.selectGoodsListWithMainImage(new GoodsDTO());
 		for (GoodsDTO goods : goodsList) {
 			System.out.println(goods);
 		}

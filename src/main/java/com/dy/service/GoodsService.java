@@ -19,6 +19,6 @@ public interface GoodsService {
 
 	public boolean deleteGoods(List<String> codes);
 
-	public List<GoodsDTO> getGoodsList();
+	public List<GoodsDTO> getGoodsList(GoodsDTO params);
 
 }

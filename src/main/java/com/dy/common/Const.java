@@ -107,4 +107,26 @@ public class Const {
 	public enum Method {
 		GET, POST, PUT, DELETE, PATCH
 	}
+
+	/**
+	 * 검색 정렬 기준
+	 */
+	public enum SearchOrder {
+		/* 상품 */
+		  BEST("인기 상품")
+		, NEW("최신 상품")
+		, LOW("낮은 가격")
+		, HIGH("높은 가격")
+		, GRADE("평점");
+
+		private String searchOrder;
+
+		private SearchOrder(String searchOrder) {
+			this.searchOrder = searchOrder;
+		}
+
+		public String getSearchOrder() {
+			return searchOrder;
+		}
+	}
 }

@@ -3,13 +3,15 @@ package com.dy.domain;
 import java.time.LocalDateTime;
 
 import com.dy.common.Const.YesNo;
+import com.dy.common.paging.Criteria;
+import com.dy.common.paging.PaginationInfo;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CommonDTO {
+public class CommonDTO extends Criteria {
 
 	/** 삭제 여부 */
 	private YesNo deleteYn;
@@ -25,5 +27,8 @@ public class CommonDTO {
 
 	/** 수정일 */
 	private LocalDateTime updateTime;
+
+	/** 페이징 정보 */
+	private PaginationInfo paginationInfo;
 
 }
