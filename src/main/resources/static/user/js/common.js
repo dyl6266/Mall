@@ -169,3 +169,12 @@ function makeAjaxRequestData(form) {
 	delete obj._csrf;
 	return obj;
 }
+
+/**
+ * PushState를 지원하는 브라우저인지 확인
+ * 
+ * @returns boolean
+ */
+function isPushStateAvailable() {
+	return (typeof(history.pushState) == "function");
+}

@@ -127,12 +127,9 @@ public class AdminGoodsController extends UiUtils {
 			jsonObj.addProperty("result", false);
 
 			/* 해당 상품에 이미지가 하나도 존재하지 않는 경우 */
-		} else if (files[0].getSize() < 1) {
-			List<AttachDTO> attachList = attachService.getAttachList(code);
-			if (CollectionUtils.isEmpty(attachList)) {
-				jsonObj.addProperty("message", "상품 이미지를 하나 이상 등록해 주세요.");
-				jsonObj.addProperty("result", false);
-			}
+		} else if (files[0].getSize() < 1 && CollectionUtils.isEmpty(attachService.getAttachList(code))) {
+			jsonObj.addProperty("message", "상품 이미지를 하나 이상 등록해 주세요.");
+			jsonObj.addProperty("result", false);
 
 		} else {
 			try {

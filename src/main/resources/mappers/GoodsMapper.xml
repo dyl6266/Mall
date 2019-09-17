@@ -128,9 +128,25 @@
 			g.delete_yn = 'N'
 			<include refid="CommonMapper.search" />
 		</where>
-		<if test="@com.dy.util.MyBatisUtils@isEmpty( searchOrder )">
-			ORDER BY g.idx DESC , g.insert_time DESC
-		</if>
+		<choose>
+			<!-- 검색 조건이 존재하는 경우 -->
+			<when test="@com.dy.util.MyBatisUtils@isEmpty( searchOrder ) == false">
+				<choose>
+					<when test='searchOrder.name() == "NEW"'>
+						ORDER BY g.idx DESC , g.insert_time DESC 
+					</when>
+					<when test='searchOrder.name() == "LOW"'>
+						ORDER BY g.price ASC 
+					</when>
+					<when test='searchOrder.name() == "HIGH"'>
+						ORDER BY g.price DESC 
+					</when>
+				</choose>
+			</when>
+			<otherwise>
+				ORDER BY g.idx DESC , g.insert_time DESC
+			</otherwise>
+		</choose>
 		<include refid="CommonMapper.paging" />
 	</select>
 

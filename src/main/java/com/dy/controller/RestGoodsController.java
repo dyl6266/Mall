@@ -21,25 +21,25 @@ public class RestGoodsController {
 	@Autowired
 	private GoodsService goodsService;
 
-	@GetMapping(value = "/goods")
-	public JsonObject getGoodsList(GoodsDTO params) {
-
-		JsonObject jsonObj = new JsonObject();
-
-		List<GoodsDTO> goodsList = goodsService.getGoodsList(params);
-		if (CollectionUtils.isEmpty(goodsList)) {
-			jsonObj.add("goodsList", null);
-
-		} else {
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			JsonElement jsonElem = gson.toJsonTree(goodsList);
-			JsonArray jsonArr = jsonElem.getAsJsonArray();
-
-			jsonObj.add("goodsList", jsonArr);
-		}
-
-		return jsonObj;
-	}
+//	@GetMapping(value = "/goods")
+//	public JsonObject getGoodsList(GoodsDTO params) {
+//
+//		JsonObject jsonObj = new JsonObject();
+//
+//		List<GoodsDTO> goodsList = goodsService.getGoodsList(params);
+//		if (CollectionUtils.isEmpty(goodsList)) {
+//			jsonObj.add("goodsList", null);
+//
+//		} else {
+//			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//			JsonElement jsonElem = gson.toJsonTree(goodsList);
+//			JsonArray jsonArr = jsonElem.getAsJsonArray();
+//
+//			jsonObj.add("goodsList", jsonArr);
+//		}
+//
+//		return jsonObj;
+//	}
 
 //	@PatchMapping(value = "/goods/{code}")
 //	@ResponseBody

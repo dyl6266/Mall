@@ -11,37 +11,38 @@
 							<div class="sort">
 								<!--/* Enum 키, 값 출력 (Java에서 따로 처리하지 않아도 됨) */-->
 								<select name="searchOrder" id="searchOrder">
-									<option th:each="order : ${T(com.dy.common.Const.SearchOrder).values()}" th:value="${order}" th:text="${order.searchOrder}"></option>
+									<option th:each="order : ${T(com.dy.common.Const.SearchOrder).values()}" th:value="${order}" th:text="${order.searchOrder}" th:selected="${#strings.equals(order, params.searchOrder)}"></option>
 								</select>
 							</div>
 							<div class="search">
-								<form th:action="@{/goods}" method="get" onsubmit="return searchGoods(this)">
-									<input type="search" name="searchKeyword" placeholder="상품을 검색해 보세요." />
+								<form th:action="@{/goods/list}" method="get" onsubmit="return searchGoods(this)">
+									<input type="search" name="searchKeyword" th:value="${params.searchKeyword}" placeholder="상품을 검색해 보세요." />
 									<button type="submit" class="btn_search">검색하기</button>
 								</form>
 							</div>
 						</div>
 					</div>
 
-					<ul th:if="${not #lists.isEmpty( goodsList )}"> 
+					<ul th:if="${not #lists.isEmpty( goodsList )}" th:object="${params.paginationInfo}"> 
 						<li th:each="row, status : ${goodsList}">
 							<a th:href="@{/goods/details( code=${row.code} )}" class="img_wrap">
 								<span class="img_box">
 									<img th:src="@{/goods/images/} + ${#temporals.format(row.attachList[0].insertTime, 'yy-MM-dd')} + '/' + ${row.attachList[0].storedName}" th:alt="shoes + ${status.index}" />
 								</span>
 							</a>
-							<a th:href="@{/admin/goods/register( code=${row.code} )}" class="txt_wrap">
+							<a th:href="@{/goods/details( code=${row.code} )}" class="txt_wrap">
 								<span th:text="${row.name}" class="name">상품명</span>
 								<span th:text="${#numbers.formatInteger( row.price, 3, 'COMMA' )}" class="price">가격</span>
 							</a>
 						</li>
 					</ul>
+					<!--/* 상품이 존재하지 않을 때 css 처리하기 */-->
 
 					<div class="paging" th:if="${not #lists.isEmpty( goodsList ) and params.paginationInfo != null}" th:object="${params.paginationInfo}">
 						<!--/* <a href="" class="btn_arrow btn_first">처음</a> */-->
-						<a href="" class="btn_arrow btn_previous">이전</a>
-						<a href="javascript: void(0)" th:each="pageNo : *{#numbers.sequence( firstPage, lastPage )}" th:text="${pageNo}" th:class="${pageNo == params.currentPageNo ? 'active' : ''}" th:onclick="movePage([[ ${pageNo} ]], [[ ${params.recordCountPerPage} ]], [[ ${params.pageSize} ]])"></a>
-						<a href="" class="btn_arrow btn_next">다음</a>
+						<a href="javascript: void(0)" th:if="*{previousPage == true}" class="btn_arrow btn_previous">이전</a>
+						<a href="javascript: void(0)" th:each="pageNo : *{#numbers.sequence( firstPage, lastPage )}" th:text="${pageNo}" th:class="${pageNo == params.currentPageNo ? 'active' : ''}" th:onclick="movePage([[ ${pageNo} ]], [[ ${params.paginationInfo.makeSearchQueryString(pageNo)} ]])"></a>
+						<a href="javascript: void(0)" th:if="*{nextPage == true}" class="btn_arrow btn_next">다음</a>
 						<!--/* <a href="" class="btn_arrow btn_last">마지막</a> */-->
 					</div>
 				</div>
@@ -59,27 +60,33 @@
 			 */
 			function searchGoods(form) {
 
-				/*[- 검색 정렬 기준 -]*/
-				var searchOrder = document.getElementById("searchOrder");
+				if (isEmpty(form.searchKeyword.value)) {
+					alert("검색어를 입력해 주세요.");
+					return false;
+				}
+
 				/*[- 검색 키워드 -]*/
 				var searchKeyword = form.searchKeyword;
-				/*[- 서버에 전달할 데이터를 담는 오브젝트 -]*/
-				var params = new Object();
-				params["searchOrder"] = searchOrder.value;
-				params["searchKeyword"] = searchKeyword.value;
+				/*[- 검색 정렬 기준 -]*/
+				var searchOrder = document.getElementById("searchOrder");
+				/*[- 검색 파라미터 쿼리 스트링 -]*/
+				var queryString = null;
+				if (isEmpty(/*[[ ${goodsList} ]]*/) == false) {
+					queryString = /*[[ ${params.paginationInfo.makeQueryString(1)} ]]*/;
+					queryString += "&searchOrder=" + searchOrder.value;
+					queryString += "&searchKeyword=" + searchKeyword.value;
+				}
 
 				$.ajax({
-					url : form.action,
+					url : form.action + queryString + "&isAjax=true",
 					type : form.method,
-					headers: {
-						"Content-Type" : "application/json",
-						"X-HTTP-Method-Override" : form.method
-					},
-					dataType : "json",
-					data : params,
+					dataType : "html",
 					async : false,
 					success : function(response) {
-						console.log(response);
+						$(".favorite").html(response); /*[- html 함수를 사용할 때, 상위 요소를 셀렉터로 사용하기 -]*/
+						if (isPushStateAvailable() == true) {
+							history.pushState(null, null, "/goods/list" + queryString); /*[- state, title, uri -]*/ 
+						}
 					},
 					error : function(request, status ,error) {
 						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
@@ -94,23 +101,18 @@
 			/**
 			 * 페이지 이동
 			 */
-			function movePage(pageNo, recordCountPerPage, pageSize) {
-
-				/*[- 서버에 전달할 데이터를 담는 오브젝트 -]*/
-				var params = new Object();
-				params["currentPageNo"] = pageNo;
-				params["recordCountPerPage"] = recordCountPerPage;
-				params["pageSize"] = pageSize;
-				params["isAjax"] = true;
+			function movePage(pageNo, queryString) {
 
 				$.ajax({
-					url : /*[[ @{/goods/list} ]]*/,
+					url : [[ @{/goods/list} ]] + queryString + "&isAjax=true",
 					type : "get",
 					dataType : "html",
-					data : params,
 					async : false,
 					success : function(response) {
 						$(".favorite").html(response); /*[- html 함수를 사용할 때, 상위 요소를 셀렉터로 사용하기 -]*/
+						if (isPushStateAvailable() == true) {
+							history.pushState(null, null, "/goods/list" + queryString); /*[- state, title, uri -]*/
+						}
 					},
 					error : function(request, status ,error) {
 						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");

@@ -33,17 +33,39 @@ public class PaginationInfo {
 	/**
 	 * 페이징과 관련된 파라미터들을 쿼리 스트링 형태로 반환
 	 * 
-	 * @param currentPageNo
+	 * @param pageNo - 페이지 번호
 	 * @return 쿼리 스트링 (Parameters)
 	 */
-	public String makeQueryString(int currentPageNo) {
+	public String makeQueryString(int pageNo) {
+
 		UriComponents uriComponents = UriComponentsBuilder.newInstance()
-		.queryParam("currentPageNo", currentPageNo)
+		.queryParam("currentPageNo", pageNo)
+		.queryParam("recordCountPerPage", criteria.getRecordCountPerPage())
+		.queryParam("pageSize", criteria.getPageSize())
+		.build()
+		.encode();
+
+		return uriComponents.toUriString();
+	}
+
+	/**
+	 * 검색 + 페이징과 관련된 파라미터들을 쿼리 스트링 형태로 반환
+	 * 
+	 * @param pageNo - 페이지 번호
+	 * @param isAjax - Ajax 요청 여부
+	 * @return 쿼리 스트링 (Parameters)
+	 */
+	public String makeSearchQueryString(int pageNo) {
+
+		UriComponents uriComponents = UriComponentsBuilder.newInstance()
+		.queryParam("currentPageNo", pageNo)
 		.queryParam("recordCountPerPage", criteria.getRecordCountPerPage())
 		.queryParam("pageSize", criteria.getPageSize())
 		.queryParam("searchType", criteria.getSearchType())
+		.queryParam("searchOrder", criteria.getSearchOrder())
 		.queryParam("searchKeyword", criteria.getSearchKeyword())
-		.build().encode();
+		.build()
+		.encode();
 
 		return uriComponents.toUriString();
 	}

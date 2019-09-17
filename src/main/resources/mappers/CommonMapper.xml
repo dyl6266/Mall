@@ -13,24 +13,16 @@
 	<sql id="search">
 		<!-- 검색 키워드가 존재하는 경우 -->
 		<if test="@com.dy.util.MyBatisUtils@isEmpty( searchKeyword ) == false">
+			AND
+				(
+					REPLACE(name, ' ', '') LIKE CONCAT('%', REPLACE(#{searchKeyword}, ' ', ''), '%')
+					OR REPLACE(description, ' ', '') LIKE CONCAT('%', REPLACE(#{searchKeyword}, ' ', ''), '%')
+				)
 			<choose>
-				<!-- 타입이 존재하지 않는 경우 -->
-				<when test="@com.dy.util.MyBatisUtils@isEmpty( searchType )">
-					AND
-						(
-							REPLACE(name, ' ', '') LIKE CONCAT('%', REPLACE(#{searchKeyword}, ' ', ''), '%')
-							OR REPLACE(description, ' ', '') LIKE CONCAT('%', REPLACE(#{searchKeyword}, ' ', ''), '%')
-						)
-				</when>
 				<!-- 타입이 존재하는 경우 -->
 				<when test="@com.dy.util.MyBatisUtils@isEmpty( searchType ) == false">
 					AND
 						#{searchType} LIKE CONCAT('%', REPLACE(#{searchKeyword}, ' ', ''), '%')
-				</when>
-				<!-- 정렬 순서가 존재하는 경우 -->
-				<when test="@com.dy.util.MyBatisUtils@isEmpty( searchOrder ) == false">
-					ORDER BY
-						#{searchOrder, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
 				</when>
 			</choose>
 		</if>
