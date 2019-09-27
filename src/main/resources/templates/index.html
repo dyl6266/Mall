@@ -75,94 +75,43 @@
 					<a href="#" class="btn btn_border_black btn_more clear">+ 더보기</a>
 				</div>
 			</div>
-		
+
+			<!--/* 새로운 상품 */-->
 			<div class="new main_goods clear">
 				<div class="inner">
 					<p class="title">NEW ARRIVAL</p>
-					<ul>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
+					<ul th:if="${not #lists.isEmpty(newGoods)}">
+						<li th:each="row, status : ${newGoods}">
+							<a th:href="@{/goods/details( code=${row.code} )}" class="img_wrap">
+								<span class="img_box">
+									<img th:src="@{/goods/images/} + ${#temporals.format(row.attachList[0].insertTime, 'yy-MM-dd')} + '/' + ${row.attachList[0].storedName}" th:alt="shoes + ${status.index}" />
+								</span>
 							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<span class="price">100,700</span>
+							<a th:href="@{/goods/details( code=${row.code} )}" class="txt_wrap">
+								<span class="name" th:text="${row.name}"></span>
+								<span class="price" th:text="${#numbers.formatInteger( row.price, 3, 'COMMA' )}"></span>
 							</a>
 						</li>
 					</ul>
 					<a href="#" class="btn btn_border_black btn_more clear">+ 더보기</a>
 				</div>
 			</div>
-		
+
+			<!--/* 할인 상품 */-->
 			<div class="discount main_goods clear">
 				<div class="inner">
 					<p class="title">SALE</p>
-					<ul>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
+					<ul th:if="${not #lists.isEmpty( saleGoods )}">
+						<li th:each="row, status : ${saleGoods}">
+							<a th:href="@{/goods/details( code=${row.code} )}" class="img_wrap">
+								<span class="img_box">
+									<img th:src="@{/goods/images/} + ${#temporals.format(row.attachList[0].insertTime, 'yy-MM-dd')} + '/' + ${row.attachList[0].storedName}" th:alt="shoes + ${status.index}" />
+								</span>
 							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<del>130,000</del>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<del>130,000</del>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<del>130,000</del>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<del>130,000</del>
-								<span class="price">100,700</span>
+							<a th:href="@{/goods/details( code=${row.code} )}" class="txt_wrap">
+								<span class="name" th:text="${row.name}"></span>
+								<del th:text="${#numbers.formatInteger( row.price, 3, 'COMMA' )}"></del>
+								<span class="price" th:text="${ #numbers.formatInteger((row.price * (1 - row.rate / 100.0)), 3, 'COMMA')}"></span>
 							</a>
 						</li>
 					</ul>

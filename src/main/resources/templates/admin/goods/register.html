@@ -29,6 +29,15 @@
 							</colgroup>
 							<tbody>
 								<tr>
+									<th>상태</th>
+									<td>
+										<!--/* Enum 키, 값 출력 (Java에서 따로 처리하지 않아도 됨) */-->
+										<select name="Status" id="Status" style="min-width: 120px;">
+											<option th:each="row : ${T(com.dy.common.Const.Status).values()}" th:value="${row}" th:text="${row.strValue}" th:selected="${#strings.equals( goods.status, row )}"></option>
+										</select>
+									</td>
+								</tr>
+								<tr>
 									<th>상품명</th>
 									<td>
 										<input type="text" th:field="*{name}" class="type2" />
@@ -38,6 +47,12 @@
 									<th>가격</th>
 									<td>
 										<input type="text" th:field="*{price}" class="type2" />
+									</td>
+								</tr>
+								<tr>
+									<th>할인률 (% 단위)</th>
+									<td>
+										<input type="text" th:field="*{rate}" class="type2" maxlength="4" />
 									</td>
 								</tr>
 								<tr>

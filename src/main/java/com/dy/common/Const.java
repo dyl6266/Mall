@@ -9,8 +9,8 @@ public class Const {
 		  Y("정상", 1)
 		, N("중지", 0)
 		, D("할인", null)
-		, S("품절", null)
-		, R("환불", null);
+		, S("품절", null);
+		// , R("환불", null)
 
 		private String strValue;
 		private Integer intValue;

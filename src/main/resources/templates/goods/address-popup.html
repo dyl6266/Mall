@@ -20,7 +20,7 @@
 					</div>
 					<div class="col2" th:text="${row.address}"></div>
 					<div class="col3">
-						<button type="button" class="btn btn_border_black" th:onclick="choiceAddress([[ ${row.postcode} ]], [[ ${row.address} ]], [[ ${row.detailedAddress} ]])">선택</button>
+						<button type="button" class="btn btn_border_black" th:onclick="choiceAddress([[ ${row.postcode} ]], [[ ${row.address} ]], [[ ${row.detailAddress} ]])">선택</button>
 						<button type="button" class="btn btn_border_black" th:onclick="deleteAddress([[ ${row.idx} ]])">삭제</button>
 					</div>
 				</li>
@@ -39,11 +39,11 @@
 	<script th:inline="javascript">
 	/* <![CDATA[ */
 
-		function choiceAddress(postcode, address, detailedAddress) {
+		function choiceAddress(postcode, address, detailAddress) {
 
 			document.getElementById("postcode").value = postcode;
 			document.getElementById("address").value = address;
-			document.getElementById("detailedAddress").value = detailedAddress;
+			document.getElementById("detailAddress").value = detailAddress;
 			popClose(".btn_close");
 		}
 

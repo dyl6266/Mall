@@ -9,7 +9,7 @@
 		, name
 		, postcode
 		, address
-		, detailed_address
+		, detail_address
 		, default_yn
 		, delete_yn
 		, insert_time
@@ -25,7 +25,7 @@
 			, #{name}
 			, #{postcode}
 			, #{address}
-			, #{detailedAddress}
+			, #{detailAddress}
 			, IFNULL(#{defaultYn}, 'N')
 			, 'N'
 			, NOW()
@@ -43,6 +43,17 @@
 		AND
 			username = #{username}
 	</select>
+
+	<update id="updateAddress" parameterType="hashmap">
+		UPDATE address_book
+		SET
+			  update_time = NOW()
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( defaultYn ) == false">
+			, default_yn = #{defaultYn}
+		</if>
+		WHERE
+			username = #{username}
+	</update>
 
 	<update id="deleteAddress" parameterType="hashmap">
 		UPDATE address_book

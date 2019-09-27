@@ -46,9 +46,9 @@ function openAddressSearch() {
             document.getElementById("postcode").value = data.zonecode;
             document.getElementById("address").value = addr;
             // 상세주소 필드의 값을 초기화한다.
-            document.getElementById("detailedAddress").value = '';
+            document.getElementById("detailAddress").value = '';
             // 커서를 상세주소 필드로 이동한다.
-            document.getElementById("detailedAddress").focus();
+            document.getElementById("detailAddress").focus();
         }
     }).open();
 }

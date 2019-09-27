@@ -1,7 +1,5 @@
 package com.dy.controller;
 
-import static org.junit.Assert.assertFalse;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -79,8 +77,7 @@ public class GoodsController extends UiUtils {
 
 	@GetMapping("/goods/list")
 	public String openGoodsList(@ModelAttribute("params") GoodsDTO params,
-								@RequestParam(value = "isAjax", required = false) boolean isAjax,
-								Model model) {
+			@RequestParam(value = "isAjax", required = false) boolean isAjax, Model model) {
 
 		List<GoodsDTO> goodsList = goodsService.getGoodsList(params);
 		model.addAttribute("goodsList", goodsList);
@@ -150,23 +147,61 @@ public class GoodsController extends UiUtils {
 	}
 
 	@GetMapping(value = "/goods/checkout")
-	public String openCheckout(@RequestParam(value = "code", required = false) String code, Model model) {
+	public String openCheckout(@RequestParam(value = "code", required = false) String code,
+			@RequestParam(value = "size", required = false) Integer size,
+			@RequestParam(value = "quantity", required = false) Integer quantity, Model model) {
 
-		String username = userService.getAuthentication().getName();
-		if ("anonymousUser".equals(username)) {
-			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
-
-		} else if (StringUtils.isEmpty(code)) {
+		if (StringUtils.isEmpty(code)) {
 			return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getContextPath() + "/goods/list", Method.GET, null,
+					model);
+
+		} else if (StringUtils.isEmpty(size) || StringUtils.isEmpty(quantity)) {
+			return showMessageWithRedirect("사이즈 또는 수량을 확인해 주세요.", request.getHeader("referer"), Method.GET, null,
 					model);
 		}
 
-		/* 로그인 회원 정보 */
-		UserDTO user = (UserDTO) userService.loadUserByUsername(username);
-		model.addAttribute("user", user);
+		try {
+			Map<String, Object> map = goodsService.getGoodsDetailsWithImages(code);
+			for (String key : map.keySet()) {
+				model.addAttribute(key, map.get(key));
+			}
 
-		/* th:object로 사용할 비어있는 인스턴스 */
-		model.addAttribute("purchase", new PurchaseDTO());
+			if (map.get("goods") != null) {
+				GoodsDTO goods = (GoodsDTO) map.get("goods");
+
+				/* 상품의 사이즈와 수량을 key, value 형태로 가지는 Json 문자열 */
+				String optionsStr = goods.getStock().getOptions();
+				/* Json 문자열을 JsonObject로 변환 */
+				JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
+				/* DB에 저장된 실제 수량 */
+				int actualQuantity = Integer.parseInt(String.valueOf(options.get(String.valueOf(size))));
+
+				if (quantity > actualQuantity) {
+					return showMessageWithRedirect("선택된 수량이 재고 수량보다 많습니다.", request.getHeader("referer"), Method.GET, null, model);
+				}
+
+				/* 해당 사이즈의 수량을 업데이트한 JSON 프로퍼티 추가 (결제 로직에서 사용하기 위해 뷰로 전달) */
+				options.addProperty(String.valueOf(size), (actualQuantity - quantity));
+				model.addAttribute("options", new Gson().toJson(options));
+
+				model.addAttribute("size", size);
+				model.addAttribute("quantity", quantity);
+			}
+
+			/* 로그인 회원 정보 */
+			String username = userService.getAuthentication().getName();
+			UserDTO user = (UserDTO) userService.loadUserByUsername(username);
+			model.addAttribute("user", user);
+
+			/* th:object로 사용할 비어있는 인스턴스 */
+			model.addAttribute("purchase", new PurchaseDTO());
+
+		} catch (NullPointerException e) {
+			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
+
+		} catch (Exception e) {
+			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
+		}
 
 		return "goods/checkout";
 	}
@@ -191,23 +226,22 @@ public class GoodsController extends UiUtils {
 	}
 
 	@PostMapping(value = "/goods/purchase")
+	@ResponseBody
 	public JsonObject insertPurchase(@RequestBody @Validated PurchaseDTO params, BindingResult bindingResult) {
 
 		JsonObject jsonObj = new JsonObject();
 
-		String username = userService.getAuthentication().getName();
-		if ("anonymousUser".equals(username)) {
-			jsonObj.addProperty("message", "로그인이 필요한 서비스입니다.");
-			jsonObj.addProperty("result", false);
-
-		} else if (bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			FieldError fieldError = bindingResult.getFieldError();
 			jsonObj.addProperty("message", fieldError.getDefaultMessage());
 			jsonObj.addProperty("result", false);
 
 		} else {
-			// TODO => 배송지 목록에 추가하기 / 새로운 기본 배송지로 설정하기 여기서 처리하기(?)
 			try {
+				String username = userService.getAuthentication().getName();
+				params.setUsername(username);
+				params.getAddressBook().setUsername(username);
+
 				boolean isPurchased = purchaseService.purchaseGoods(params);
 				if (isPurchased == false) {
 					jsonObj.addProperty("message", "결제에 실패하였습니다. 새로고침 후에 다시 시도해 주세요.");

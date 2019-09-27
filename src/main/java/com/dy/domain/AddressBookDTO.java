@@ -9,14 +9,6 @@ import lombok.Setter;
 @Setter
 public class AddressBookDTO extends CommonDTO {
 
-	public AddressBookDTO(String username, String name, String postcode, String address, String detailedAddress) {
-		this.username = username;
-		this.name = name;
-		this.postcode = postcode;
-		this.address = address;
-		this.detailedAddress = detailedAddress;
-	}
-
 	/** 번호 (PK) */
 	private Integer idx;
 
@@ -33,7 +25,7 @@ public class AddressBookDTO extends CommonDTO {
 	private String address;
 
 	/** 상세 주소 */
-	private String detailedAddress;
+	private String detailAddress;
 
 	/** 기본 배송지 여부 */
 	private YesNo defaultYn;

@@ -29,7 +29,7 @@ public class AddressBookServiceImpl implements AddressBookService {
 	@Override
 	public AddressBookDTO getDefaultAddressDetails(String username) {
 
-		return addressBookMapper.selectDefaultAddressDetails(username);
+		return addressBookMapper.selectAddressDetails(username);
 	}
 
 	@Override

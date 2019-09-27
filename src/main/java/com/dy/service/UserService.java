@@ -14,6 +14,8 @@ public interface UserService extends UserDetailsService {
 
 	public Authentication getAuthentication();
 
+	public boolean isAnonymousUser();
+
 	public boolean isAnonymousUser(String username);
 
 	public boolean registerUser(UserDTO params);

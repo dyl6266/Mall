@@ -12,29 +12,26 @@
 				<div class="page_title text_center clear">주문/결제</div>
 
 				<div class="order form_write">
-					<form th:action="@{/goods/purchase}" th:object="${purchase}" method="post">
+					<form th:action="@{/goods/purchase}" th:object="${purchase}" method="post" onsubmit="return validationOfForm(this)">
+						<!--/* 상품 코드 hidden 파라미터 */-->
+						<input type="hidden" name="code" th:value="${goods.code}" />
+
 						<div class="box pd_box">
 							<p class="box_title">상품 정보</p>
 							<div>
 								<ul>
 									<li>
-										<div class="img_box"><img src="/images/common/thumb.jpg" alt="" /></div>
+										<div class="img_box">
+											<img th:src="@{/goods/images/} + ${#temporals.format( images[0].insertTime, 'yy-MM-dd' )} + '/' + ${images[0].storedName}" th:alt="${images[0].originalName}" />
+										</div>
 										<div class="txt_box">
-											<p class="name"> 도영이 신발 도영이 신발</p>
-											<p class="option">블랙 / 235</p>
-											<p class="quantity">1개</p>
-											<p class="price orange">75,000원</p>
+											<p class="name" th:text="${goods.name}"></p>
+											<p class="option" th:text="|${goods.stock.color} / ${size}|"></p>
+											<p class="quantity" th:text="|${quantity}개|"></p>
+											<p class="price orange" th:text="|${#numbers.formatInteger(goods.price, 3, 'COMMA')}원|"></p>
 										</div>
 									</li>
-									<li>
-										<div class="img_box"><img src="/images/common/thumb.jpg" alt="" /></div>
-										<div class="txt_box">
-											<p class="name"> 도영이 신발 도영이 신발</p>
-											<p class="option">블랙 / 235</p>
-											<p class="quantity">1개</p>
-											<p class="price orange">75,000원</p>
-										</div>
-									</li>
+									<!--/* repeat */-->
 								</ul>
 							</div>
 						</div>
@@ -67,46 +64,44 @@
 								</dl>
 								<dl>
 									<dt>주소
-										<!--/* TODO => 이 부분 때문에 ajax로 처리하지 말고 폼으로 해야할지... 고민해보기 */-->
-										<!--/* 아니면 checked 시에 ajax로 처리하는 방법도... 있고 */-->
-										
 										<label class="check_style ml10 mr00">
-											<input type="checkbox" name="addAddressChecked" value="Y" />
+											<input type="checkbox" id="addToAddrChecked" />
 											<span>배송지 목록에 추가하기</span>
 										</label>
 										<label class="check_style ml10 mr00">
-											<input type="checkbox" id="defaultAddressChecked" value="Y" />
-											<span>새로운 기본 배송지로 설정하기</span>
+										<!--/* 기본 배송지로 설정하기 hidden 파라미터 */-->
+										<input type="hidden" id="defaultYn" name="defaultYn" value="N" />
+											<input type="checkbox" id="defaultYnChecked" />
+											<span>기본 배송지로 설정하기</span>
 										</label>
 									</dt>
 									<dd>
-										<input type="text" name="postcode" id="postcode" class="type4 mb05" readonly />
+										<input type="text" th:field="*{postcode}" class="type4 mb05" readonly />
 										<br />
-										<input type="text" name="address" id="address" class="mb05" readonly />
+										<input type="text" th:field="*{address}" class="mb05" readonly />
 										<br />
-										<input type="text" name="detailedAddress" id="detailedAddress" class="type4 mb05" placeholder="상세 주소를 입력해 주세요." />
+										<input type="text" th:field="*{detailAddress}" class="type4 mb05" placeholder="상세 주소를 입력해 주세요." />
 									</dd>
 								</dl>
 								<dl>
 									<dt>배송 요청 사항</dt>
 									<dd>
-										<input type="text" name="requestMessage" placeholder="배송 요청 사항을 입력해 주세요." />
+										<input type="text" th:field="*{requestMessage}" placeholder="배송 요청 사항을 입력해 주세요." />
 									</dd>
 								</dl>
 							</div>
 						</div>
-						<div class="box pay_box ">
+						<div class="box pay_box">
 							<p class="box_title">결제 정보</p>
 							<div>
-								<button type="button" class="active" onclick="addActive(this);">신용카드</button>
-								<button type="button" onclick="addActive(this);">무통장입금</button>
-								<br/>
-								<label class="check_style mt05">
-									<input type="checkbox" name="" value="" id="" />
-									<span>위 주문의 상품, 가격, 할인, 배송정보에 동의합니다.</span>
-								</label>
+								<!--/* 결제 수단 hidden value */-->
+								<input type="hidden" name="payMethod" />
+								<!--/* Enum 키, 값 출력 (Java에서 따로 처리하지 않아도 됨) */-->
+								<button type="button" th:each="row : ${T(com.dy.common.Const.PayMethod).values()}" th:attr="data-pay-method=${row}" th:text="${row.payMethod}" onclick="addActive(this);"></button>
+								<br />
+								<!--/* <label class="check_style mt05"><input type="checkbox" name="" value="" id="" /><span>위 주문의 상품, 가격, 할인, 배송정보에 동의합니다.</span></label> */-->
 								<div class="btn_wrap">
-									<a href="#" class="btn btn_orange">결제하기</a>
+									<input type="submit" class="btn btn_orange" value="결제하기" />
 								</div>
 							</div>
 						</div>
@@ -127,6 +122,41 @@
 		/* <![CDATA[ */
 
 			/**
+			 * 배송지 목록에 추가하기
+			 */
+			$("#addToAddrChecked").on("click", function() {
+
+				var html = "";
+				if (this.checked == true) {
+					/*[- 배송지 이름, br 엘러먼트 추가 -]*/
+					html += '<input type="text" class="type5" id="name" name="name" placeholder="배송지 이름을 입력해 주세요.">';
+					html += '<br />';
+					$("#postcode").before(html);
+
+				} else {
+					/*[- 배송지 이름, br 엘러먼트 삭제 -]*/
+					$("#name").remove();
+					$("#postcode").prev().remove();
+				}
+			});
+			/*[- end of function -]*/
+
+
+			/**
+			 * 기본 배송지로 설정하기
+			 */
+			$("#defaultYnChecked").on("click", function() {
+
+				if (this.checked == true) {
+					$("#defaultYn").val("Y");
+
+				} else {
+					$("#defaultYn").val("N");
+				}
+			});
+
+
+			/**
 			 * 상품 구매 배송지 목록 팝업 불러오기
 			 */
 			function findAddressBook() {
@@ -145,6 +175,85 @@
 					}
 				});
 				/*[- end of ajax -]*/
+			}
+			/*[- end of function -]*/
+
+
+			/**
+			 * 결제하기
+			 */
+			function validationOfForm(form) {
+
+				/*[- 결제 수단 버튼 -]*/
+				var payMethod = $(".pay_box div").children("button.active").data("pay-method");
+				if (isEmpty(payMethod) == false) {
+					form.payMethod.value = payMethod;
+				}
+
+				var result = (
+					   isValid(form.recipient, "받으시는 분", null, null)
+					&& isValid(form.phone, "연락처", null, null)
+					&& isValid(form.postcode, "우편번호", null, null)
+					&& isValid(form.address, "주소", null, null)
+					&& isValid(form.detailAddress, "상세 주소", null, null)
+					&& isValid(form.payMethod, "결제 수단", null, null)
+				);
+
+				if (result == false) {
+					return false;
+				}
+				if (document.getElementById("addToAddrChecked").checked == true) {
+					result = isValid(form.name, "배송지 이름", null, null);
+					if (result == false) {
+						return false;
+					}
+				}
+
+				/*[- ajax 요청에 필요한 key, value 형태의 오브젝트 생성 -]*/
+				var params = makeAjaxRequestData(form);
+
+				/*[- addressBook 인스턴스 (배송지 이름, 기본 배송지 설정 여부) -]*/
+				var addrName = nvl(form.name.value, "");
+				params["addressBook"] = {
+					"name" : addrName,
+					"defaultYn" : form.defaultYn.value
+				};
+
+				/*[- 사이즈와 수량을 key, value 형태로 갖는 JSON 문자열 (재고 업데이트에 사용되는 파라미터) -]*/
+				var options = /*[[ ${options} ]]*/;
+				params["goods"] = {
+					"stock" : { "options" : options }
+				};
+
+				/*[- spring security csrf token -]*/
+				var token = $("meta[name='_csrf']").attr("content");
+
+				$.ajax({
+					url : /*[[ @{/goods/purchase} ]]*/,
+					type : form.method,
+					headers : {
+						"Content-Type" : "application/json",
+						"X-HTTP-Method-Override" : form.method,
+						"X-CSRF-TOKEN" : token
+					},
+					dataType : "json",
+					data : JSON.stringify(params),
+					async : false,
+					success : function(response) {
+						if (isEmpty(response.message) == false) {
+							alert(response.message);
+							return false;
+						}
+						alert("상품 구매가 완료되었습니다.");
+						location.href = /*[[ @{/goods/list} ]]*/;
+					},
+					error : function(request, status, error) {
+						alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
+					}
+				});
+				/*[- end of ajax -]*/
+
+				return false;
 			}
 			/*[- end of function -]*/
 

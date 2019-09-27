@@ -3,6 +3,7 @@ package com.dy.domain;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
@@ -32,6 +33,11 @@ public class GoodsDTO extends CommonDTO {
 	/** 상품 가격 */
 	@Min(value = 1000, message = "상품 가격은 최소 1,000원 이상이어야 합니다.")
 	private int price;
+
+	/** 할인율 */
+	@Min(value = 0, message = "할인율은 0보다 작을 수 없습니다.")
+	@Max(value = 99, message = "할인율은 99보다 클 수 없습니다.")
+	private float rate;
 
 	/** 상태 (Y : 정상 | N : 중지 | D : 할인 | S : 품절) */
 	private Status status;

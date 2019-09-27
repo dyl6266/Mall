@@ -5,7 +5,7 @@
  * @returns true or false
  */
 function isEmpty(value) {
-	if (value == null || value == "" || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+	if (value == null || value == "" || value == undefined || value.length == 0 || (value != null && typeof value == "object" && !Object.keys(value).length)) {
 		return true;
 	}
 

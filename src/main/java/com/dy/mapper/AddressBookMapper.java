@@ -12,7 +12,9 @@ public interface AddressBookMapper {
 
 	public int insertAddress(AddressBookDTO params);
 
-	public AddressBookDTO selectDefaultAddressDetails(String username);
+	public AddressBookDTO selectAddressDetails(String username);
+
+	public int updateAddress(HashMap<String, Object> params);
 
 	public int deleteAddress(HashMap<String, Object> params);
 

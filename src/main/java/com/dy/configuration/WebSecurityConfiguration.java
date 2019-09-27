@@ -68,12 +68,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 		.antMatchers("/css/**", "/font/**", "/images/**", "/jquery/**", "/js/**").permitAll()
-		.antMatchers("/admin/**").hasAnyRole("ADMIN", "MANAGER")
+		.antMatchers("/admin/**").hasAnyRole("ADMIN", "MANAGER") // 관리자 전체
+		.antMatchers("/goods/checkout").authenticated() // 상품 주문
 		.antMatchers("/**").permitAll();
 //		.antMatchers("/user/**", "/users/**").hasAnyRole("ADMIN", "MANAGER", "MEMBER")
-//		.antMatchers("/index", "")
-		
-//		.antMatchers("/user/**", "/users/**", "/goods/**").permitAll()
 //        .anyRequest().authenticated();
 
 		http.formLogin()

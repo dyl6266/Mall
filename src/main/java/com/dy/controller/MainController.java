@@ -44,8 +44,8 @@ public class MainController {
 
 		/* 할인 상품 */
 		params.setStatus(Status.D);
-		List<GoodsDTO> discountGoods = goodsService.getGoodsList(params);
-		model.addAttribute("discountGoods", discountGoods);
+		List<GoodsDTO> saleGoods = goodsService.getGoodsList(params);
+		model.addAttribute("saleGoods", saleGoods);
 
 		return "index";
 	}

@@ -8,9 +8,11 @@
 		, username
 		, code
 		, amount
+		, recipient
+		, phone
 		, postcode
 		, address
-		, detailed_address
+		, detail_address
 		, request_message
 		, pay_method
 		, status
@@ -27,12 +29,14 @@
 			, #{username}
 			, #{code}
 			, #{amount}
+			, #{recipient}
+			, #{phone}
 			, #{postcode}
 			, #{address}
-			, #{detailedAddress}
+			, #{detailAddress}
 			, #{requestMessage}
-			, #{payMethod, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
-			, IFNULL(#{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 'Y')
+			, #{payMethod}
+			, IFNULL(#{status}, 'Y')
 			, 'N'
 			, NOW()
 			, NULL

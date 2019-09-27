@@ -43,7 +43,8 @@
 								<span class="orange" th:text="|${#numbers.formatInteger( row.goods.price * row.quantity, 3, 'COMMA' )}원|">가격</span>
 							</div>
 							<div class="col4">
-								<a th:href="@{/goods/checkout( code=${row.code} )}" class="btn btn_black">주문하기</a>
+								<!-- <a th:href="@{/goods/checkout( code=${row.code} )}" class="btn btn_black">주문하기</a> -->
+								<button type="button" class="btn btn_black" th:onclick="goPurchase([[ ${row.code} ]])">주문하기</button>
 								<button type="button" class="btn btn_gray" th:onclick="deleteGoods([[ ${row.code} ]], [[ ${row.goods.name} ]])">삭제하기</button>
 							</div>
 						</li>
@@ -129,6 +130,13 @@
 				/*[- end of ajax -]*/
 			}
 			/*[- end of function -]*/
+
+			/**
+			 * 주문하기
+			 */
+			function goPurchase(code) {
+				location.href = [[ @{/goods/checkout} ]] + "?code=" + code;
+			}
 
 			/**
 			 * 장바구니 상품 삭제

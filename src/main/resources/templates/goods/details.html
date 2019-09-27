@@ -78,7 +78,7 @@
 									<h2 class="tit">사이즈</h2>
 									<div class="cont">
 										<label class="radio_size" th:if="${not #arrays.isEmpty( options )}" th:each="size : ${options.keySet()}" th:for="size + ${size}" th:classappend="${#strings.equals( options.get(size), '0' )} ? 'soldout'">
-											<input type="radio" name="size" id="size" th:value="${options.get(size)}" th:disabled="${#strings.equals( options.get(size), '0' )}" />
+											<input type="radio" name="size" th:id="size + ${size}" th:value="${size}" th:attr="data-actual-quantity=${options.get(size)}" th:disabled="${#strings.equals( options.get(size), '0' )}" />
 											<span class="" th:text="${size}">사이즈</span>
 										</label>
 									</div>
@@ -97,7 +97,7 @@
 
 							<div class="btn_wrap">
 								<a href="javascript: void(0)" class="btn btn_black" th:onclick="addToCart([[ *{code} ]])">장바구니 담기</a>
-								<button type="submit" class="btn btn_orange">바로구매</button>
+								<a href="javascript: void(0)" class="btn btn_orange" th:onclick="goPurchase([[ *{code} ]])">바로 구매</a>
 							</div>
 						</form>
 					</div>
@@ -327,7 +327,7 @@
 			}
 
 			/**
-			 * 장바구니에 상품 추가
+			 * 장바구니 담기
 			 */
 			function addToCart(code) {
 
@@ -370,7 +370,7 @@
 						/*[- 로그인이 되지 않았거나, 이미 장바구니에 존재하는 상품의 경우 -]*/
 						if (isEmpty(response.type) == false && response.result == false) {
 							/*[- type (1 : 로그인이 되지 않은 상태 | 2 : 이미 장바구니에 상품이 존재하는 상태) -]*/
-							var redirectUri = response.type == 1 ? [[ @{/login} ]] : [[ @{/user/cart} ]];
+							var redirectUri = response.type == 1 ? [[ @{/login} ]] : [[ @{/cart} ]];
 							if (confirm(response.message) == false) {
 								return false;
 							}
@@ -385,7 +385,7 @@
 							if (confirm(response.message) == false) {
 								return false;
 							}
-							location.href = /*[[ @{/user/cart} ]]*/;
+							location.href = /*[[ @{/cart} ]]*/;
 						}
 					},
 					error : function(request, status, error) {
@@ -395,7 +395,29 @@
 
 				return false;
 			}
-			
+
+			/**
+			 * 바로 구매
+			 */
+			function goPurchase(code) {
+
+				var size = $(".radio_size.active").children("input"); /*[- active가 적용된 label 요소의 자식 input -]*/
+				var quantity = document.getElementById("quantity"); /*[- 수량 -]*/
+				var actualQuantity = size.data("actual-quantity"); /*[- 실제 수량 -]*/
+
+				if ( isEmpty(size.val()) ) {
+					alert("사이즈를 선택해 주세요.");
+					return false;
+
+				} else if (quantity.value > actualQuantity) {
+					alert("선택하신 사이즈는 " + actualQuantity + "개의 재고가 존재합니다.");
+					return false;
+				}
+
+				var params = "?code=" + code + "&size=" + size.val() + "&quantity=" + document.getElementById("quantity").value;
+				location.href = [[ @{/goods/checkout} ]] + params;
+			}
+
 // 				$(function() {
 // 					var uri = /*[[ @{/goods/} + ${goods.code} ]]*/;
 

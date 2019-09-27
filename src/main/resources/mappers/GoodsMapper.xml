@@ -9,6 +9,7 @@
 		, name
 		, description
 		, price
+		, rate
 		, status
 		, delete_yn
 		, insert_time
@@ -21,6 +22,7 @@
 		<result property="name" 		column="name" />
 		<result property="description" 	column="description" />
 		<result property="price" 		column="price" />
+		<result property="rate" 		column="rate" />
 		<result property="status" 		column="status" />
 		<result property="deleteYn" 	column="delete_yn" />
 		<result property="insertTime" 	column="insert_time" />
@@ -47,6 +49,7 @@
 			, #{name}
 			, #{description}
 			, #{price}
+			, IFNULL(#{rate}, 0)
 			, IFNULL(#{status}, 'Y')
 			, 'N'
 			, NOW()
@@ -60,7 +63,7 @@
 		FROM
 			goods
 		WHERE
-			(status = 'Y' AND delete_yn = 'N')
+			delete_yn = 'N'
 		AND
 			code = #{code}
 	</select>
@@ -78,8 +81,11 @@
 		  <if test="@com.dy.util.MyBatisUtils@isEmpty( price ) == false">
 			, price = #{price}
 		  </if>
+		  <if test="@com.dy.util.MyBatisUtils@isEmpty( rate ) == false">
+			, rate = #{rate}
+		  </if>
 		  <if test="@com.dy.util.MyBatisUtils@isEmpty( status ) == false">
-			, status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}}
+			, status = #{status}
 		  </if>
 		WHERE
 			code = #{code}
@@ -111,6 +117,7 @@
 			  g.code
 			, g.name
 		    , g.price
+		    , g.rate
 		    , a.stored_name
 		    , a.insert_time
 		FROM
@@ -126,6 +133,9 @@
 		    goods AS g ON first.code = g.code
 		<where>
 			g.delete_yn = 'N'
+			<if test="@com.dy.util.MyBatisUtils@isEmpty( status ) == false">
+				AND g.status = #{status}
+			</if>
 			<include refid="CommonMapper.search" />
 		</where>
 		<choose>
@@ -157,6 +167,10 @@
 			goods
 		WHERE
 			delete_yn = 'N'
+		<if test="@com.dy.util.MyBatisUtils@isEmpty( status ) == false">
+			AND
+				status = #{status}
+		</if>
 		<include refid="CommonMapper.search" />
 	</select>
 

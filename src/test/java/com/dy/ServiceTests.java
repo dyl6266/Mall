@@ -41,6 +41,18 @@ public class ServiceTests {
 
 	@Autowired
 	private PasswordEncoder encoder;
+	
+	@Test
+	public void 제이슨() {
+		
+		GoodsDTO goods = service.getGoodsDetails("GOODS-00029");
+		String optionsStr = goods.getStock().getOptions();
+
+		JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
+		for (String key : options.keySet()) {
+			System.out.println(key + " : " + options.get(key));
+		}
+	}
 
 	@Test
 	public void 회원가입() {

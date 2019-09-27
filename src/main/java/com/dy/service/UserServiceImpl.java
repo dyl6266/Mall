@@ -68,6 +68,14 @@ public class UserServiceImpl implements UserService {
 	 * 사용자가 익명의 사용자인지 확인
 	 */
 	@Override
+	public boolean isAnonymousUser() {
+		return "anonymousUser".equals(getAuthentication().getName());
+	}
+
+	/**
+	 * 사용자가 익명의 사용자인지 확인
+	 */
+	@Override
 	public boolean isAnonymousUser(String username) {
 		return "anonymousUser".equals(username);
 	}
@@ -132,7 +140,8 @@ public class UserServiceImpl implements UserService {
 			users = userMapper.selectUserList();
 
 			for (UserDTO user : users) {
-				Collection<? extends GrantedAuthority> authorities = authorityMapper.selectUserGrantedAuthorities(user.getUsername());
+				Collection<? extends GrantedAuthority> authorities = authorityMapper
+						.selectUserGrantedAuthorities(user.getUsername());
 				user.setAuthorities(authorities);
 
 				List<String> authorityNames = new ArrayList<>();
