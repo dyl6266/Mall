@@ -12,28 +12,7 @@
 		<result property="deleteYn"			column="delete_yn" />
 		<result property="insertTime"		column="insert_time" />
 		<result property="updateTime"		column="update_time" />
-
-		<association property="goods"			javaType="GoodsDTO">
-			<id		property="idx"				column="idx" />
-			<result property="code"				column="code" />
-			<result property="name"				column="name" />
-			<result property="description"		column="description" />
-			<result property="price"			column="price" />
-			<result property="status"			column="status" />
-			<result property="deleteYn"			column="delete_yn" />
-			<result property="insertTime"		column="insert_time" />
-			<result property="updateTime"		column="update_time" />
-
-			<association property="stock"			javaType="StockDTO">
-				<id property="idx"					column="idx" />
-				<result property="code"				column="code" />
-				<result property="color"			column="color" />
-				<result property="options"			column="options" />
-				<result property="deleteYn"			column="delete_yn" />
-				<result property="insertTime"		column="insert_time" />
-				<result property="updateTime"		column="update_time" />
-			</association>
-		</association>
+		<association property="goods"		resultMap="com.dy.mapper.GoodsMapper.goodsResultMap"/>
 	</resultMap>
 
 	<sql id="cartColumns">
@@ -90,23 +69,36 @@
 
 	<select id="selectGoodsListInCart" parameterType="string" resultMap="carResultMap">
 		SELECT 
-			  G.code
-			, C.size
-			, C.quantity
-		    , G.name
-		    , G.price
-		    , S.color
-		    , S.options
+			  g.code
+			, c.size
+			, c.quantity
+			, g.name
+			, g.price
+			, s.color
+			, s.options
+			, a.stored_name
+			, a.insert_time
 		FROM
-		    cart AS C
-		        INNER JOIN
-		    goods AS G ON (C.code = G.code)
-		        INNER JOIN
-		    stock AS S ON (S.code = G.code)
+			(SELECT 
+				g.code, MIN(a.idx) AS idx
+			FROM
+				goods AS g
+			INNER JOIN attach AS a ON g.code = a.code
+			GROUP BY g.code) AS first
+				INNER JOIN
+			attach AS a ON first.idx = a.idx
+				INNER JOIN
+			goods AS g ON first.code = g.code
+				INNER JOIN
+				cart AS c ON first.code = c.code
+				INNER JOIN
+			stock AS s ON first.code = s.code
 		WHERE
-			(C.delete_yn = 'N' AND G.delete_yn = 'N' AND S.delete_yn = 'N')
+			c.delete_yn = 'N'
 		AND
-		    C.username = #{username}
+			c.username = #{username}
+		ORDER BY
+			  c.idx DESC, c.insert_time DESC
 	</select>
 
 	<select id="selectGoodsCountInCart" parameterType="CartDTO" resultType="int">

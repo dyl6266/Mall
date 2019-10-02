@@ -114,9 +114,9 @@ public class Const {
 	public enum SearchOrder {
 		/* 상품 */
 		  NEW("최신 상품")
+		, BEST("인기 상품")
 		, LOW("낮은 가격")
 		, HIGH("높은 가격");
-		// , BEST("인기 상품")
 		// , GRADE("평점")
 
 		private String searchOrder;

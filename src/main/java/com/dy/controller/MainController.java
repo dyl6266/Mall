@@ -10,12 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.dy.common.Const.SearchOrder;
 import com.dy.common.Const.Status;
-import com.dy.common.paging.Criteria;
 import com.dy.domain.GoodsDTO;
-import com.dy.domain.PurchaseDTO;
 import com.dy.service.GoodsService;
-import com.dy.service.PurchaseService;
 
 @Controller
 public class MainController {
@@ -25,14 +23,8 @@ public class MainController {
 	@Autowired
 	private GoodsService goodsService;
 
-	@Autowired
-	private PurchaseService purchaseService;
-
 	@GetMapping(value = "/index")
 	public String openIndexPage(Model model) {
-
-		/* 가장 많이 팔린 상품 (베스트 셀러) */
-//		List<PurchaseDTO> bestSeller = goodsService.getGoodsList(new GoodsDTO());
 
 		/* 출력할 상품 수 */
 		GoodsDTO params = new GoodsDTO();
@@ -42,7 +34,13 @@ public class MainController {
 		List<GoodsDTO> newGoods = goodsService.getGoodsList(params);
 		model.addAttribute("newGoods", newGoods);
 
+		/* 베스트 셀러 */
+		params.setSearchOrder(SearchOrder.BEST);
+		List<GoodsDTO> bestGoods = goodsService.getGoodsList(params);
+		model.addAttribute("bestGoods", bestGoods);
+
 		/* 할인 상품 */
+		params.setSearchOrder(null);
 		params.setStatus(Status.D);
 		List<GoodsDTO> saleGoods = goodsService.getGoodsList(params);
 		model.addAttribute("saleGoods", saleGoods);

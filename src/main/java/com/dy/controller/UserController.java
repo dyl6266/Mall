@@ -1,6 +1,5 @@
 package com.dy.controller;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.thymeleaf.util.StringUtils;
 
 import com.dy.common.Const.Method;
-import com.dy.domain.CartDTO;
 import com.dy.domain.UserDTO;
 import com.dy.service.CartService;
 import com.dy.service.UserService;
@@ -48,7 +45,8 @@ public class UserController extends UiUtils {
 	@GetMapping(value = "/access-denied")
 	public String openAccessDenied(Model model) {
 
-		return showMessageWithRedirect("접근이 허용되지 않은 계정입니다.", request.getContextPath() + "/index", Method.GET, null, model);
+		return showMessageWithRedirect("접근이 허용되지 않은 계정입니다.", request.getContextPath() + "/index", Method.GET, null,
+				model);
 	}
 
 	@GetMapping(value = "/user/join")
@@ -258,30 +256,6 @@ public class UserController extends UiUtils {
 		}
 
 		return jsonObj;
-	}
-
-	// TODO => user/cart ? 아니면 CartController를 따로 만들어서 처리할지 생각해보기
-	@GetMapping(value = "/cart")
-	public String openCart(Model model) {
-
-		String username = userService.getAuthentication().getName();
-		if ("anonymousUser".equals(username)) {
-			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
-		}
-
-		/* 전체 상품 목록 */
-		List<CartDTO> goodsList = cartService.getListOfGoodsInCart(username);
-		if (CollectionUtils.isEmpty(goodsList)) {
-			return showMessageWithRedirect("장바구니가 비어있습니다.", request.getContextPath() + "/goods/list", Method.GET, null,
-					model);
-		}
-		/* 전체 상품 금액 */
-		int totalAmount = cartService.getTotalAmount(username);
-
-		model.addAttribute("goodsList", goodsList);
-		model.addAttribute("totalAmount", totalAmount);
-
-		return "user/cart";
 	}
 
 }

@@ -15,13 +15,14 @@
 			</div>
 			<ul class="table table_body" th:if="${not #lists.isEmpty( addressBook )}">
 				<li class="table_row" th:each="row : ${addressBook}">
-					<div class="col1">집
+					<div class="col1">
+						<span th:text="${row.name}"></span>
 						<span class="label label_basic" th:if="${#strings.equals( row.defaultYn, 'Y' )}">기본 배송지</span>
 					</div>
 					<div class="col2" th:text="${row.address}"></div>
 					<div class="col3">
 						<button type="button" class="btn btn_border_black" th:onclick="choiceAddress([[ ${row.postcode} ]], [[ ${row.address} ]], [[ ${row.detailAddress} ]])">선택</button>
-						<button type="button" class="btn btn_border_black" th:onclick="deleteAddress([[ ${row.idx} ]])">삭제</button>
+						<button type="button" class="btn btn_border_black" th:onclick="deleteAddress([[ ${row.idx} ]], [[ ${row.name} ]])">삭제</button>
 					</div>
 				</li>
 			</ul>
@@ -47,7 +48,12 @@
 			popClose(".btn_close");
 		}
 
-		function deleteAddress(idx) {
+		function deleteAddress(idx, name) {
+
+			var message = name + " 배송지를 삭제하시겠어요?";
+			if (confirm(message) == false) {
+				return false;
+			}
 
 			/*[- spring security csrf token -]*/
 			var token = $("meta[name='_csrf']").attr("content");

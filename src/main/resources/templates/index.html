@@ -13,9 +13,9 @@
 				<!-- slide -->
 				<div class="main_slide_wrap">
 					<div class="main_slide">
-						<div class="" style="background: url('/user/images/common/visual.jpg') center center no-repeat;">slide01</div>
-						<div class="" style="background: url('/user/images/common/visual.jpg') center center no-repeat;">slide01</div>
-						<div class="" style="background: url('/user/images/common/visual.jpg') center center no-repeat;">slide01</div>
+						<div style="background: url('/user/images/common/do_young1.jpg') center center no-repeat;">slide01</div>
+						<div style="background: url('/user/images/common/do_young2.jpg') center center no-repeat;">slide01</div>
+						<div style="background: url('/user/images/common/do_young3.jpg') center center no-repeat;">slide01</div>
 					</div>
 					<script>
 						$(document).ready(function () {
@@ -34,45 +34,20 @@
 			<div class="favorite main_goods clear">
 				<div class="inner">
 					<p class="title">BEST SELLER</p>
-					<ul>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
+					<ul th:if="${not #lists.isEmpty(bestGoods)}">
+						<li th:each="row, status : ${bestGoods}">
+							<a th:href="@{/goods/details( code=${row.code} )}" class="img_wrap">
+								<span class="img_box">
+									<img th:src="@{/goods/images/} + ${#temporals.format(row.attachList[0].insertTime, 'yy-MM-dd')} + '/' + ${row.attachList[0].storedName}" th:alt="shoes + ${status.index}" />
+								</span>
 							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<span class="price">100,700</span>
-							</a>
-						</li>
-						<li>
-							<a href="" class="img_wrap">
-								<span class="img_box"><img th:src="@{/user/images/common/thumb.jpg}" alt="" /></span>
-							</a>
-							<a href="" class="txt_wrap">
-								<span class="name">나이키</span>
-								<span class="price">100,700</span>
+							<a th:href="@{/goods/details( code=${row.code} )}" class="txt_wrap">
+								<span class="name" th:text="${row.name}"></span>
+								<span class="price" th:text="${#numbers.formatInteger( row.price, 3, 'COMMA' )}"></span>
 							</a>
 						</li>
 					</ul>
-					<a href="#" class="btn btn_border_black btn_more clear">+ 더보기</a>
+					<a th:href="@{/goods/list( searchOrder=BEST )}" class="btn btn_border_black btn_more clear">+ 더보기</a>
 				</div>
 			</div>
 
@@ -93,7 +68,7 @@
 							</a>
 						</li>
 					</ul>
-					<a href="#" class="btn btn_border_black btn_more clear">+ 더보기</a>
+					<a th:href="@{/goods/list}" class="btn btn_border_black btn_more clear">+ 더보기</a>
 				</div>
 			</div>
 
@@ -115,7 +90,7 @@
 							</a>
 						</li>
 					</ul>
-					<a href="#" class="btn btn_border_black btn_more clear">+ 더보기</a>
+					<a th:href="@{/goods/list( status=D)}" class="btn btn_border_black btn_more clear">+ 더보기</a>
 				</div>
 			</div>
 		</div>

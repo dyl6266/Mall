@@ -42,8 +42,12 @@
 		UPDATE stock
 		SET
 			  update_time = NOW()
+			<if test="@com.dy.util.MyBatisUtils@isEmpty( color ) == false">
 			, color = #{color}
+			</if>
+			<if test="@com.dy.util.MyBatisUtils@isEmpty( options ) == false">
 			, options = #{options}
+			</if>
 		WHERE
 			code = #{code}
 	</update>

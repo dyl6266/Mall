@@ -48,6 +48,31 @@ public class CartController extends UiUtils {
 	private GoodsService goodsService;
 
 	/**
+	 * 장바구니 HTML
+	 * 
+	 * @return 페이지
+	 */
+	@GetMapping(value = "/cart")
+	public String openCart(Model model) {
+
+		String username = userService.getAuthentication().getName();
+
+		/* 전체 상품 목록 */
+		List<CartDTO> goodsList = cartService.getListOfGoodsInCart(username);
+		if (CollectionUtils.isEmpty(goodsList)) {
+			return showMessageWithRedirect("장바구니가 비어있습니다.", request.getContextPath() + "/goods/list", Method.GET, null,
+					model);
+		}
+		/* 전체 상품 금액 */
+		int totalAmount = cartService.getTotalAmount(username);
+
+		model.addAttribute("goodsList", goodsList);
+		model.addAttribute("totalAmount", totalAmount);
+
+		return "user/cart";
+	}
+
+	/**
 	 * 장바구니 상품 추가
 	 * 
 	 * @param params - CartDTO 오브젝트

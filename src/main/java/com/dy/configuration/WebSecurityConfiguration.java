@@ -70,6 +70,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/css/**", "/font/**", "/images/**", "/jquery/**", "/js/**").permitAll()
 		.antMatchers("/admin/**").hasAnyRole("ADMIN", "MANAGER") // 관리자 전체
 		.antMatchers("/goods/checkout").authenticated() // 상품 주문
+		.antMatchers("/cart").authenticated() // 장바구니
 		.antMatchers("/**").permitAll();
 //		.antMatchers("/user/**", "/users/**").hasAnyRole("ADMIN", "MANAGER", "MEMBER")
 //        .anyRequest().authenticated();

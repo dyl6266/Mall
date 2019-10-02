@@ -28,6 +28,16 @@
 		<result property="insertTime" 	column="insert_time" />
 		<result property="updateTime" 	column="update_time" />
 
+		<association property="stock"			javaType="StockDTO">
+			<id 	property="idx"				column="idx" />
+			<result property="code"				column="code" />
+			<result property="color"			column="color" />
+			<result property="options"			column="options" />
+			<result property="deleteYn"			column="delete_yn" />
+			<result property="insertTime"		column="insert_time" />
+			<result property="updateTime"		column="update_time" />
+		</association>
+
 		<collection property="attachList" javaType="list" ofType="AttachDTO">
 			<id 	property="idx" 			column="idx" />
 			<result property="code" 		column="code" />
@@ -131,6 +141,10 @@
 		    attach AS a ON first.idx = a.idx
 		        RIGHT OUTER JOIN
 		    goods AS g ON first.code = g.code
+	    	<if test="@com.dy.util.MyBatisUtils@isEmpty( searchOrder ) == false and searchOrder.name() == 'BEST'">
+		    		INNER JOIN
+		    	v_goods_purchase AS gp ON g.code = gp.code
+		    </if>
 		<where>
 			g.delete_yn = 'N'
 			<if test="@com.dy.util.MyBatisUtils@isEmpty( status ) == false">
@@ -143,13 +157,16 @@
 			<when test="@com.dy.util.MyBatisUtils@isEmpty( searchOrder ) == false">
 				<choose>
 					<when test='searchOrder.name() == "NEW"'>
-						ORDER BY g.idx DESC , g.insert_time DESC 
+						ORDER BY g.idx DESC, g.insert_time DESC
 					</when>
 					<when test='searchOrder.name() == "LOW"'>
-						ORDER BY g.price ASC 
+						ORDER BY g.price ASC
 					</when>
 					<when test='searchOrder.name() == "HIGH"'>
-						ORDER BY g.price DESC 
+						ORDER BY g.price DESC
+					</when>
+					<when test='searchOrder.name() == "BEST"'>
+						ORDER BY gp.cnt DESC, g.idx DESC, g.insert_time DESC 
 					</when>
 				</choose>
 			</when>
