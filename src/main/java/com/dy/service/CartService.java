@@ -8,6 +8,8 @@ public interface CartService {
 
 	public boolean registerGoodsToCart(CartDTO params);
 
+	public CartDTO getGoodsDetailsInCart(String username, String code);
+
 	public boolean deleteGoodsInCart(String username, List<String> codes);
 
 	public List<CartDTO> getListOfGoodsInCart(String username);

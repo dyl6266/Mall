@@ -3,7 +3,7 @@
 
 <mapper namespace="com.dy.mapper.CartMapper">
 
-	<resultMap id="carResultMap"			type="CartDTO">
+	<resultMap id="cartResultMap"			type="CartDTO">
 		<id		property="idx"				column="idx" />
 		<result property="username"			column="username" />
 		<result property="code"				column="code" />
@@ -41,6 +41,17 @@
 		)
 	</insert>
 
+	<select id="selectGoodsDetailsInCart" parameterType="hashmap" resultMap="cartResultMap">
+		SELECT
+			<include refid="cartColumns" />
+		FROM
+			cart
+		WHERE
+			username = #{username}
+		AND
+			code = #{code}
+	</select>
+
 	<update id="updateGoodsInCart" parameterType="CartDTO">
 		UPDATE cart
 		SET
@@ -67,7 +78,7 @@
 			</foreach>
 	</update>
 
-	<select id="selectGoodsListInCart" parameterType="string" resultMap="carResultMap">
+	<select id="selectGoodsListInCart" parameterType="string" resultMap="cartResultMap">
 		SELECT 
 			  g.code
 			, c.size

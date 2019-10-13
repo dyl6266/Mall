@@ -42,6 +42,7 @@ import com.dy.domain.GoodsDTO;
 import com.dy.domain.PurchaseDTO;
 import com.dy.domain.UserDTO;
 import com.dy.service.AddressBookService;
+import com.dy.service.CartService;
 import com.dy.service.GoodsService;
 import com.dy.service.PurchaseService;
 import com.dy.service.UserService;
@@ -69,6 +70,9 @@ public class GoodsController extends UiUtils {
 
 	@Autowired
 	private PurchaseService purchaseService;
+
+	@Autowired
+	private CartService cartService;
 
 	@GetMapping(value = "/goods/register")
 	public String openGoodsRegister(Model model) {
@@ -148,117 +152,130 @@ public class GoodsController extends UiUtils {
 		return entity;
 	}
 
-//	@GetMapping(value = "/goods/checkout")
-//	public String openCheckout(@ModelAttribute("goodsList") List<CartDTO> cartList, Model model) {
-//
-//		if (CollectionUtils.isEmpty(cartList)) {
-//			return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getContextPath() + "/goods/list", Method.GET, null, model);
-//		}
-//
-//		for (CartDTO cart : cartList) {
-//			if (StringUtils.isEmpty(cart.getCode())) {
-//				return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getContextPath() + "/goods/list", Method.GET, null, model);
-//				
-//			} else if (StringUtils.isEmpty(cart.getSize()) || cart.getQuantity() < 1) {
-//				return showMessageWithRedirect("사이즈 또는 수량을 확인해 주세요.", request.getHeader("referer"), Method.GET, null, model);
-//			}
-//
-//			try {
-//				Map<String, Object> map = goodsService.getGoodsDetailsWithImages(cart.getCode());
-//				for (String key : map.keySet()) {
-//					model.addAttribute(key, map.get(key));
-//				}
-//
-//				if (map.get("goods") != null) {
-//					GoodsDTO goods = (GoodsDTO) map.get("goods");
-//
-//					/* 상품의 사이즈와 수량을 key, value 형태로 가지는 Json 문자열 */
-//					String optionsStr = goods.getStock().getOptions();
-//					/* Json 문자열을 JsonObject로 변환 */
-//					JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
-//					/* DB에 저장된 실제 수량 */
-//					int actualQuantity = Integer.parseInt(String.valueOf(options.get(String.valueOf(cart.getSize()))));
-//
-//					if (cart.getQuantity() > actualQuantity) {
-//						return showMessageWithRedirect("선택된 수량이 재고 수량보다 많습니다.", request.getHeader("referer"), Method.GET, null, model);
-//					}
-//
-//					/* 해당 사이즈의 수량을 업데이트한 JSON 프로퍼티 추가 (결제 로직에서 사용하기 위해 뷰로 전달) */
-//					options.addProperty(String.valueOf(cart.getSize()), (actualQuantity - cart.getQuantity()));
-//					cart.getGoods().getStock().setOptions(new Gson().toJson(options));
-//				}
-//				
-//			} catch (NullPointerException e) {
-//				return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
-//				
-//			} catch (Exception e) {
-//				return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
-//			}
-//		}
-//		// end of for
-//	}
-//	// end of method
-
 	@GetMapping(value = "/goods/checkout")
-	public String openCheckout(@RequestParam(value = "code", required = false) String code,
-			@RequestParam(value = "size", required = false) Integer size,
-			@RequestParam(value = "quantity", required = false) Integer quantity, Model model) {
+	public String openCheckout(@RequestParam(value = "codes", required = false) List<String> codes, Model model) {
 
-		if (StringUtils.isEmpty(code)) {
-			return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getContextPath() + "/goods/list", Method.GET, null,
-					model);
-
-		} else if (StringUtils.isEmpty(size) || StringUtils.isEmpty(quantity)) {
-			return showMessageWithRedirect("사이즈 또는 수량을 확인해 주세요.", request.getHeader("referer"), Method.GET, null,
-					model);
+		if (CollectionUtils.isEmpty(codes)) {
+			return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getHeader("referer"), Method.GET, null, model);
 		}
 
-		try {
-			Map<String, Object> map = goodsService.getGoodsDetailsWithImages(code);
-			for (String key : map.keySet()) {
-				model.addAttribute(key, map.get(key));
-			}
+		String username = userService.getAuthentication().getName();
 
-			if (map.get("goods") != null) {
-				GoodsDTO goods = (GoodsDTO) map.get("goods");
+//		for (String code : codes) {
 
-				/* 상품의 사이즈와 수량을 key, value 형태로 가지는 Json 문자열 */
-				String optionsStr = goods.getStock().getOptions();
-				/* Json 문자열을 JsonObject로 변환 */
-				JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
-				/* DB에 저장된 실제 수량 */
-				int actualQuantity = Integer.parseInt(String.valueOf(options.get(String.valueOf(size))));
-
-				if (quantity > actualQuantity) {
-					return showMessageWithRedirect("선택된 수량이 재고 수량보다 많습니다.", request.getHeader("referer"), Method.GET,
-							null, model);
+			try {
+				List<Map<String, Object>> datas = goodsService.getListOfGoodsDetailsWithImages(codes);
+				if (CollectionUtils.isEmpty(datas)) {
+					return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getHeader("referer"), Method.GET, null, model);
 				}
 
-				/* 해당 사이즈의 수량을 업데이트한 JSON 프로퍼티 추가 (결제 로직에서 사용하기 위해 뷰로 전달) */
-				options.addProperty(String.valueOf(size), (actualQuantity - quantity));
-				model.addAttribute("options", new Gson().toJson(options));
+				for (Map<String, Object> data : datas) {
+					/* 상품 상세 정보 */
+					GoodsDTO goods = (GoodsDTO) data.get("goods");
+					/* 장바구니 상세 정보 */
+					CartDTO cart = cartService.getGoodsDetailsInCart(username, goods.getCode());
 
-				model.addAttribute("size", size);
-				model.addAttribute("quantity", quantity);
+					/* 상품의 사이즈와 수량을 key, value 형태로 가지는 Json 문자열 */
+					String optionsStr = goods.getStock().getOptions();
+					/* Json 문자열을 JsonObject로 변환 */
+					JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
+					/* DB에 저장된 실제 수량 */
+					int actualQuantity = Integer.parseInt(String.valueOf(options.get(String.valueOf(cart.getSize()))));
+
+					if (cart.getQuantity() > actualQuantity) {
+						return showMessageWithRedirect("선택된 수량이 재고보다 많습니다.", request.getHeader("referer"), Method.GET, null, model);
+					}
+
+					/* 해당 사이즈의 수량을 업데이트한 값으로 변경 (결제 로직에서 사용) */
+					options.addProperty(String.valueOf(cart.getSize()), (actualQuantity - cart.getQuantity()));
+					goods.getStock().setOptions(new Gson().toJson(options));
+
+					data.put("goods", goods);
+					data.put("cart", cart);
+				}
+
+				model.addAttribute("datas", datas);
+
+			} catch (NullPointerException e) {
+				return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
+
+			} catch (Exception e) {
+				return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
 			}
+//		}
 
-			/* 로그인 회원 정보 */
-			String username = userService.getAuthentication().getName();
-			UserDTO user = (UserDTO) userService.loadUserByUsername(username);
-			model.addAttribute("user", user);
+		/* 로그인 회원 정보 */
+		UserDTO user = (UserDTO) userService.loadUserByUsername(username);
+		model.addAttribute("user", user);
 
-			/* th:object로 사용할 비어있는 인스턴스 */
-			model.addAttribute("purchase", new PurchaseDTO());
-
-		} catch (NullPointerException e) {
-			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
-
-		} catch (Exception e) {
-			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
-		}
-
+		/* th:object로 사용할 비어있는 인스턴스 */
+		model.addAttribute("purchase", new PurchaseDTO());
+		
 		return "goods/checkout";
 	}
+	// end of method
+
+//	@GetMapping(value = "/goods/checkout")
+//	public String openCheckout(@RequestParam(value = "code", required = false) String code,
+//			@RequestParam(value = "size", required = false) Integer size,
+//			@RequestParam(value = "quantity", required = false) Integer quantity, Model model) {
+//
+//		if (StringUtils.isEmpty(code)) {
+//			return showMessageWithRedirect("올바르지 않은 접근입니다.", request.getContextPath() + "/goods/list", Method.GET, null,
+//					model);
+//
+//		} else if (StringUtils.isEmpty(size) || StringUtils.isEmpty(quantity)) {
+//			return showMessageWithRedirect("사이즈 또는 수량을 확인해 주세요.", request.getHeader("referer"), Method.GET, null,
+//					model);
+//		}
+//
+//		try {
+//			Map<String, Object> map = goodsService.getGoodsDetailsWithImages(code);
+//			for (String key : map.keySet()) {
+//				model.addAttribute(key, map.get(key));
+//			}
+//
+//			if (map.get("goods") != null) {
+//				GoodsDTO goods = (GoodsDTO) map.get("goods");
+//
+//				/* 상품의 사이즈와 수량을 key, value 형태로 가지는 Json 문자열 */
+//				String optionsStr = goods.getStock().getOptions();
+//				/* Json 문자열을 JsonObject로 변환 */
+//				JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
+//				/* DB에 저장된 실제 수량 */
+//				int actualQuantity = Integer.parseInt(String.valueOf(options.get(String.valueOf(size))));
+//
+//				if (quantity > actualQuantity) {
+//					return showMessageWithRedirect("선택된 수량이 재고 수량보다 많습니다.", request.getHeader("referer"), Method.GET,
+//							null, model);
+//				}
+//
+//				// goods, images ==>> Map에서 가지고 옴
+//				/* 해당 사이즈의 수량을 업데이트한 JSON 프로퍼티 추가 (결제 로직에서 사용하기 위해 뷰로 전달) */
+//				options.addProperty(String.valueOf(size), (actualQuantity - quantity));
+//				model.addAttribute("options", new Gson().toJson(options));
+//
+//				model.addAttribute("size", size);
+//				model.addAttribute("quantity", quantity);
+//			}
+//
+//			/* 로그인 회원 정보 */
+//			String username = userService.getAuthentication().getName();
+//			UserDTO user = (UserDTO) userService.loadUserByUsername(username);
+//			model.addAttribute("user", user);
+//
+//			/* th:object로 사용할 비어있는 인스턴스 */
+//			model.addAttribute("purchase", new PurchaseDTO());
+//
+//		} catch (NullPointerException e) {
+//			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
+//
+//		} catch (Exception e) {
+//			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", request.getHeader("referer"), Method.GET, null, model);
+//		}
+//
+//		return "goods/checkout";
+//	}
 
 	/**
 	 * 구매자 배송지 리스트 HTML (Ajax Success Response)

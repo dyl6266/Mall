@@ -14,21 +14,21 @@
 				<div class="order form_write">
 					<form th:action="@{/goods/purchase}" th:object="${purchase}" method="post" onsubmit="return validationOfForm(this)">
 						<!--/* 상품 코드 hidden 파라미터 */-->
-						<input type="hidden" name="code" th:value="${goods.code}" />
+						<!-- <input type="hidden" name="code" th:value="${goods.code}" /> -->
 
 						<div class="box pd_box">
 							<p class="box_title">상품 정보</p>
 							<div>
-								<ul>
+								<ul th:if="${not #lists.isEmpty( datas )}" th:each="row, status: ${datas}">
 									<li>
 										<div class="img_box">
-											<img th:src="@{/goods/images/} + ${#temporals.format( images[0].insertTime, 'yy-MM-dd' )} + '/' + ${images[0].storedName}" th:alt="${images[0].originalName}" />
+											<img th:src="@{/goods/images/} + ${#temporals.format( row.images[0].insertTime, 'yy-MM-dd' )} + '/' + ${row.images[0].storedName}" th:alt="${row.images[0].originalName}" />
 										</div>
 										<div class="txt_box">
-											<p class="name" th:text="${goods.name}"></p>
-											<p class="option" th:text="|${goods.stock.color} / ${size}|"></p>
-											<p class="quantity" th:text="|${quantity}개|"></p>
-											<p class="price orange" th:text="|${#numbers.formatInteger(goods.price, 3, 'COMMA')}원|"></p>
+											<p class="name" th:text="${row.goods.name}"></p>
+											<p class="option" th:text="|${row.goods.stock.color} / ${row.cart.size}|"></p>
+											<p class="quantity" th:text="|${row.cart.quantity}개|"></p>
+											<p class="price orange" th:text="|${#numbers.formatInteger(row.goods.price, 3, 'COMMA')}원|"></p>
 										</div>
 									</li>
 									<!--/* repeat */-->

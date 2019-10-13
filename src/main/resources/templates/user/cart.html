@@ -75,7 +75,7 @@
 					</div>
 
 					<div class="btn_wrap text_center clear">
-						<button type="button" class="btn btn_orange">주문하기</button>
+						<button type="button" class="btn btn_orange" th:onclick="goMultiplePurchase([[ ${goodsList} ]])">주문하기</button>
 						<a th:href="@{/goods/list}" class="btn btn_gray">쇼핑 계속하기</a>
 					</div>
 				</div>
@@ -137,8 +137,49 @@
 			 * 주문하기
 			 */
 			function goPurchase(code, size, quantity) {
-				location.href = [[ @{/goods/checkout} ]] + "?code=" + code + "&size=" + size + "&quantity=" + quantity;
+				location.href = [[ @{/goods/checkout} ]] + "?codes=" + code;
 			}
+
+
+			function goMultiplePurchase(goodsList) {
+
+				var codes = "";
+				goodsList.forEach(function(obj, idx) {
+					codes += obj.code + ",";
+				});
+
+				location.href = [[ @{/goods/checkout} ]] + "?codes=" + encodeURI(codes.slice(0, -1));
+			}
+
+// 			function goMultiplePurchase(goodsList) {
+
+// 				var params = { "cartList" : [] };
+
+// 				goodsList.forEach(function(obj, idx) {
+// 					var goods = {
+// 						"code" : obj.code,
+// 						"size" : obj.size,
+// 						"quantity" : obj.quantity
+// 					};
+// 					params["cartList"].push(goods);
+// 				});
+
+// 				var queryString = "";
+
+// 				params["cartList"].forEach(function(obj, idx) {
+// 					queryString += (idx < 1) ? "code["+ idx +"]=" + obj.code : "&code["+ idx +"]=" + obj.code;
+// 					queryString += "&size["+ idx +"]=" + obj.size;
+// 					queryString += "&quantity["+ idx +"]=" + obj.quantity;
+// 				});
+// 				console.log(queryString);
+
+// // 				var queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
+// // 				var queryString = Object.keys(params).map((key) => {
+// // 				    return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+// // 				}).join('&');
+
+// 				location.href = [[ @{/goods/checkout} ]] + "?" + queryString;
+// 			}
 
 
 			/**

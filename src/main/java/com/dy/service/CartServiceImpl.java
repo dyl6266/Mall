@@ -46,6 +46,17 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
+	public CartDTO getGoodsDetailsInCart(String username, String code) {
+
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("username", username);
+		params.put("code", code);
+
+		CartDTO goods = cartMapper.selectGoodsDetailsInCart(params);
+		return goods;
+	}
+
+	@Override
 	public boolean deleteGoodsInCart(String username, List<String> codes) {
 
 		HashMap<String, Object> params = new HashMap<>();

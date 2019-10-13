@@ -1,5 +1,6 @@
 package com.dy.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,6 +167,35 @@ public class GoodsServiceImpl implements GoodsService {
 		}
 
 		return map;
+	}
+
+	@Override
+	public List<Map<String, Object>> getListOfGoodsDetailsWithImages(List<String> codes) {
+
+		List<Map<String, Object>> datas = new ArrayList<>();
+
+		for (String code : codes) {
+			Map<String, Object> map = new HashMap<>();
+
+			/* 상품 상세 정보 */
+			GoodsDTO goods = goodsMapper.selectGoodsDetails(code);
+			/* 상품 이미지 리스트 */
+			List<AttachDTO> attachList = attachMapper.selectAttachList(code);
+
+			if (goods == null || CollectionUtils.isEmpty(attachList)) {
+				return null;
+			}
+
+			StockDTO stock = stockMapper.selectStockDetails(code);
+			goods.setStock(stock);
+
+			map.put("goods", goods);
+			map.put("images", attachList);
+
+			datas.add(map);
+		}
+
+		return datas;
 	}
 
 	@Override

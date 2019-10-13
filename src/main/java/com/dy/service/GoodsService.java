@@ -17,6 +17,8 @@ public interface GoodsService {
 
 	public Map<String, Object> getGoodsDetailsWithImages(String code);
 
+	public List<Map<String, Object>> getListOfGoodsDetailsWithImages(List<String> codes);
+
 	public boolean deleteGoods(List<String> codes);
 
 	public List<GoodsDTO> getGoodsList(GoodsDTO params);
