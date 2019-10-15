@@ -86,7 +86,7 @@
 							<a th:href="@{/goods/details( code=${row.code} )}" class="txt_wrap">
 								<span class="name" th:text="${row.name}"></span>
 								<del th:text="${#numbers.formatInteger( row.price, 3, 'COMMA' )}"></del>
-								<span class="price" th:text="${ #numbers.formatInteger((row.price * (1 - row.rate / 100.0)), 3, 'COMMA')}"></span>
+								<span class="price" th:text="${#numbers.formatInteger((row.price * (1 - row.rate / 100.0)), 3, 'COMMA')}"></span>
 							</a>
 						</li>
 					</ul>

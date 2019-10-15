@@ -45,7 +45,7 @@
 								<span class="orange" th:text="|${#numbers.formatInteger( row.goods.price * row.quantity, 3, 'COMMA' )}원|">가격</span>
 							</div>
 							<div class="col4">
-								<button type="button" class="btn btn_black" th:onclick="goPurchase([[ ${row.code} ]], [[ ${row.size} ]], [[ ${row.quantity} ]])">주문하기</button>
+								<button type="button" class="btn btn_black" th:onclick="goPurchase([[ ${row.code} ]])">주문하기</button>
 								<button type="button" class="btn btn_gray" th:onclick="deleteGoods([[ ${row.code} ]], [[ ${row.goods.name} ]])">삭제하기</button>
 							</div>
 						</li>
@@ -136,11 +136,14 @@
 			/**
 			 * 주문하기
 			 */
-			function goPurchase(code, size, quantity) {
+			function goPurchase(code) {
 				location.href = [[ @{/goods/checkout} ]] + "?codes=" + code;
 			}
 
 
+			/**
+			 * 상품 주문하기
+			 */
 			function goMultiplePurchase(goodsList) {
 
 				var codes = "";
@@ -148,7 +151,7 @@
 					codes += obj.code + ",";
 				});
 
-				location.href = [[ @{/goods/checkout} ]] + "?codes=" + encodeURI(codes.slice(0, -1));
+				location.href = [[ @{/goods/checkout} ]] + "?codes=" + codes.slice(0, -1);
 			}
 
 // 			function goMultiplePurchase(goodsList) {

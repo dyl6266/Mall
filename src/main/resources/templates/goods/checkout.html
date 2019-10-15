@@ -24,11 +24,12 @@
 										<div class="img_box">
 											<img th:src="@{/goods/images/} + ${#temporals.format( row.images[0].insertTime, 'yy-MM-dd' )} + '/' + ${row.images[0].storedName}" th:alt="${row.images[0].originalName}" />
 										</div>
-										<div class="txt_box">
+										<!--/* 정상가, 할인가 변수 처리 (th:with) */-->
+										<div class="txt_box" th:with="normal=${#numbers.formatInteger(row.goods.price * row.cart.quantity, 3, 'COMMA')}, sale=${#numbers.formatInteger(row.goods.price * (1- row.goods.rate / 100.0) * row.cart.quantity, 3, 'COMMA')}">
 											<p class="name" th:text="${row.goods.name}"></p>
 											<p class="option" th:text="|${row.goods.stock.color} / ${row.cart.size}|"></p>
 											<p class="quantity" th:text="|${row.cart.quantity}개|"></p>
-											<p class="price orange" th:text="|${#numbers.formatInteger(row.goods.price, 3, 'COMMA')}원|"></p>
+											<p class="price orange" th:text="${row.goods.status == T(com.dy.common.Const.Status).D} ? ${sale} : ${normal}"></p>
 										</div>
 									</li>
 									<!--/* repeat */-->
@@ -219,11 +220,24 @@
 					"defaultYn" : form.defaultYn.value
 				};
 
-				/*[- 사이즈와 수량을 key, value 형태로 갖는 JSON 문자열 (재고 업데이트에 사용되는 파라미터) -]*/
-				var options = /*[[ ${options} ]]*/;
-				params["goods"] = {
-					"stock" : { "options" : options }
-				};
+				/*[- 상품 리스트를 담을 배열 -]*/
+				params["goodsList"] = [];
+
+				/*[- 상품 리스트 데이터 (각 상품의 코드, 금액, 재고) -]*/
+				var datas = /*[[ ${datas} ]]*/;
+				datas.forEach(function(obj, idx) {
+					var amount = (obj.goods.status == "D") ? (obj.goods.price * (1 - obj.goods.rate / 100.0)) * obj.cart.quantity : (obj.goods.price * obj.cart.quantity);
+					var goods = {
+						"code" : obj.goods.code,
+						"price" : amount,
+						"stock" : { 
+							"options" : obj.goods.stock.options,
+							"code" : obj.goods.code
+						}
+					};
+
+					params["goodsList"].push(goods);
+				});
 
 				/*[- spring security csrf token -]*/
 				var token = $("meta[name='_csrf']").attr("content");

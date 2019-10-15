@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.dy.common.Const.YesNo;
+import com.dy.domain.GoodsDTO;
 import com.dy.domain.PurchaseDTO;
 import com.dy.mapper.AddressBookMapper;
 import com.dy.mapper.PurchaseMapper;
@@ -46,17 +48,26 @@ public class PurchaseServiceImpl implements PurchaseService {
 			params.getAddressBook().setDetailAddress(params.getDetailAddress());
 			queryResult = addressBookMapper.insertAddress(params.getAddressBook());
 		}
-		// TODO => 상품이 리스트 형태로 넘어오는 경우에는 foreach로 처리를 해야 할까? 어떻게 해야 할지 생각해보기
-		queryResult = purchaseMapper.insertPurchase(params);
-		if (queryResult != 1) {
+
+		if (CollectionUtils.isEmpty(params.getGoodsList())) {
 			return false;
 		}
 
-		/* 재고 업데이트 */
-		params.getGoods().getStock().setCode(params.getCode());
-		queryResult = stockMapper.updateStock(params.getGoods().getStock());
-		if (queryResult != 1) {
-			return false;
+		/* 구매하는 상품 개수만큼 forEach */
+		for (GoodsDTO goods : params.getGoodsList()) {
+			params.setCode(goods.getCode());
+			params.setAmount(goods.getPrice()); /* 상품 금액 * 수량을 처리한 값 */
+
+			queryResult = purchaseMapper.insertPurchase(params);
+			if (queryResult != 1) {
+				return false;
+			}
+
+			/* 재고 업데이트 */
+			queryResult = stockMapper.updateStock(goods.getStock());
+			if (queryResult != 1) {
+				return false;
+			}
 		}
 
 		return true;
