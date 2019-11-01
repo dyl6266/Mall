@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dy.mapper.SequenceMapper">
+
+	<select id="selectNextSequence" resultType="integer">
+		SELECT
+			MAX(next_sequence) + 1
+		FROM
+			sequence
+		WHERE
+			table_name = #{tableName}
+	</select>
+
+	<update id="updateSequence" parameterType="hashmap">
+		UPDATE sequence
+		SET
+			next_sequence = #{nextSequence}
+		WHERE
+			table_name = #{tableName}
+	</update>
+
+</mapper>

@@ -1,5 +1,6 @@
 package com.dy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -9,16 +10,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.CollectionUtils;
 
 import com.dy.common.Const.Authority;
 import com.dy.domain.AttachDTO;
 import com.dy.domain.AuthorityDTO;
 import com.dy.domain.GoodsDTO;
+import com.dy.domain.PurchaseDTO;
 import com.dy.domain.UserDTO;
 import com.dy.mapper.AddressBookMapper;
 import com.dy.mapper.AttachMapper;
 import com.dy.mapper.AuthorityMapper;
 import com.dy.mapper.GoodsMapper;
+import com.dy.mapper.PurchaseMapper;
 import com.dy.mapper.UserMapper;
 import com.dy.util.AttachFileUtils;
 import com.dy.util.CommonUtils;
@@ -44,6 +48,28 @@ public class MapperTests {
 
 	@Autowired
 	private AttachMapper attachMapper;
+	
+	@Autowired
+	private PurchaseMapper purchaseMapper;
+	
+	@Test
+	public void 구매상품_목록() {
+		
+		List<List<PurchaseDTO>> purchaseList = new ArrayList<>();
+//		List<PurchaseDTO> purchaseList = new ArrayList<>();
+		try {
+			List<Integer> seqList = purchaseMapper.selectPurchaseSequenceList("dyl6266@naver.com");
+			if (CollectionUtils.isEmpty(seqList) == false) {
+				for (Integer seq : seqList) {
+					List<PurchaseDTO> purList = purchaseMapper.selectPurchaseGoodsList(seq);
+					purchaseList.add(purList);
+				}
+			}
+			System.out.println(purchaseList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void 파일_삭제() {

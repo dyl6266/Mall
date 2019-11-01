@@ -22,4 +22,8 @@ public interface PurchaseMapper {
 
 	public int selectPurchaseTotalCount(String username);
 
+	public List<Integer> selectPurchaseSequenceList(String username);
+
+	public List<PurchaseDTO> selectPurchaseGoodsList(Integer sequence);
+
 }

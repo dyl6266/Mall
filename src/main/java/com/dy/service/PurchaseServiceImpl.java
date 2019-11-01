@@ -1,18 +1,22 @@
 package com.dy.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.dy.common.Const.TableName;
 import com.dy.common.Const.YesNo;
 import com.dy.domain.GoodsDTO;
 import com.dy.domain.PurchaseDTO;
 import com.dy.mapper.AddressBookMapper;
 import com.dy.mapper.PurchaseMapper;
+import com.dy.mapper.SequenceMapper;
 import com.dy.mapper.StockMapper;
 
 @Service
@@ -26,6 +30,12 @@ public class PurchaseServiceImpl implements PurchaseService {
 
 	@Autowired
 	private StockMapper stockMapper;
+
+	@Autowired
+	private SequenceMapper sequenceMapper;
+
+	@Autowired
+	private GoodsService goodsService;
 
 	@Override
 	public boolean purchaseGoods(PurchaseDTO params) {
@@ -53,9 +63,13 @@ public class PurchaseServiceImpl implements PurchaseService {
 			return false;
 		}
 
+		/* 다음 구매 시퀀스 */
+		int nextSequence = sequenceMapper.selectNextSequence(TableName.PURCHASE);
+
 		/* 구매하는 상품 개수만큼 forEach */
 		for (GoodsDTO goods : params.getGoodsList()) {
 			params.setCode(goods.getCode());
+			params.setSequence(nextSequence); /* 묶음 구매 처리를 위한 구매 시퀀스 처리 */
 			params.setAmount(goods.getPrice()); /* 상품 금액 * 수량을 처리한 값 */
 
 			queryResult = purchaseMapper.insertPurchase(params);
@@ -68,6 +82,16 @@ public class PurchaseServiceImpl implements PurchaseService {
 			if (queryResult != 1) {
 				return false;
 			}
+		}
+
+		/* 다음 구매 시퀀스 증가 처리 */
+		HashMap<String, Object> sequenceParams = new HashMap<>();
+		sequenceParams.put("tableName", TableName.PURCHASE);
+		sequenceParams.put("nextSequence", nextSequence);
+
+		queryResult = sequenceMapper.updateSequence(sequenceParams);
+		if (queryResult != 1) {
+			return false;
 		}
 
 		return true;
@@ -100,13 +124,34 @@ public class PurchaseServiceImpl implements PurchaseService {
 	}
 
 	@Override
-	public List<PurchaseDTO> getPurchaseList(String username) {
+	public List<List<Map<String, Object>>> getPurchaseList(String username) {
 
-		List<PurchaseDTO> purchaseList = null;
+		/* 구매한 상품과 상품의 이미지를 담는 리스트 */
+		List<List<Map<String, Object>>> purchaseList = new ArrayList<>();
 
-		int totalCount = purchaseMapper.selectPurchaseTotalCount(username);
-		if (totalCount > 0) {
-			purchaseList = purchaseMapper.selectPurchaseList(username);
+		/* 구매 시퀀스 리스트 */
+		List<Integer> sequenceList = purchaseMapper.selectPurchaseSequenceList(username);
+
+		if (CollectionUtils.isEmpty(sequenceList) == false) {
+			for (Integer sequence : sequenceList) {
+
+				/* 상품 코드 리스트 */
+				List<String> codes = new ArrayList<>();
+
+				/* 시퀀스별 구매 상품 리스트 */
+				List<PurchaseDTO> purchaseGoodsList = purchaseMapper.selectPurchaseGoodsList(sequence);
+
+				for (PurchaseDTO purchaseGoods : purchaseGoodsList) {
+					codes.add(purchaseGoods.getCode());
+				}
+
+				/* 구매한 상품의 상세 정보 & 이미지 */
+				List<Map<String, Object>> goodsList = goodsService.getListOfGoodsDetailsWithImages(codes);
+
+				/* 리스트 안에 시퀀스별 구매 상품 리스트 추가 */
+				purchaseList.add(goodsList);
+			}
+
 		}
 
 		return purchaseList;

@@ -97,7 +97,8 @@
 
 							<div class="btn_wrap">
 								<a href="javascript: void(0)" class="btn btn_black" th:onclick="addToCart([[ *{code} ]])">장바구니 담기</a>
-								<a href="javascript: void(0)" class="btn btn_orange" th:onclick="goPurchase([[ *{code} ]])">바로 구매</a>
+								<!--/* TODO => 바로 구매 처리하기 */-->
+								<!--/* <a href="javascript: void(0)" class="btn btn_orange" th:onclick="goPurchase([[ *{code} ]])">바로 구매</a> */-->
 							</div>
 						</form>
 					</div>
@@ -414,37 +415,9 @@
 					return false;
 				}
 
-				var params = "?code=" + code + "&size=" + size.val() + "&quantity=" + document.getElementById("quantity").value;
+				var params = "?codes=" + code + "&size=" + size.val() + "&quantity=" + document.getElementById("quantity").value;
 				location.href = [[ @{/goods/checkout} ]] + params;
 			}
-
-// 				$(function() {
-// 					var uri = /*[[ @{/goods/} + ${goods.code} ]]*/;
-
-// 					$.ajax({
-// 						url : uri,
-// 						type : "get",
-// 						headers: {
-// 							"Content-Type" : "application/json",
-// 							"X-HTTP-Method-Override" : "get"
-// 						 },
-// 						dataType : "json",
-// 						async : false,
-// 						success : function(response) {
-// 							var options = JSON.parse(response.goods.stock.options);
-// 							var colors = Object.keys(options);
-// 							var test = options[colors];
-// 							$(colors).each(function(idx, color) {
-// 								$(".option_color > h2").append("<span>"+color+"</span>");
-// 							});
-// 						},
-// 						error : function(request, status, error) {
-// 							alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
-// 						}
-// 					});
-		
-// 					return false;
-// 				});
 
 			/* ]]> */
 	</script>

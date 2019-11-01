@@ -3,6 +3,7 @@ package com.dy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,16 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.CollectionUtils;
 
-import com.dy.common.Const.Authority;
-import com.dy.common.Const.Status;
 import com.dy.common.Const.TableName;
 import com.dy.domain.GoodsDTO;
+import com.dy.domain.PurchaseDTO;
 import com.dy.domain.StockDTO;
 import com.dy.mapper.GoodsMapper;
+import com.dy.mapper.PurchaseMapper;
 import com.dy.mapper.StockMapper;
 import com.dy.service.CartService;
 import com.dy.service.GoodsService;
+import com.dy.service.PurchaseService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -41,6 +44,46 @@ public class ServiceTests {
 
 	@Autowired
 	private PasswordEncoder encoder;
+	
+	@Autowired
+	private PurchaseService purService;
+	
+	@Autowired
+	private GoodsService goodsService;
+	
+	@Autowired
+	private PurchaseMapper purchaseMapper;
+	
+	@Test
+	public void 구매상품_리스트() {
+		
+		List<List<Map<String, Object>>> purchaseList = new ArrayList<>();
+
+		/* 구매 시퀀스 리스트 */
+		List<Integer> sequenceList = purchaseMapper.selectPurchaseSequenceList("dyl6266@naver.com");
+		
+		if (CollectionUtils.isEmpty(sequenceList) == false) {
+			
+			for (Integer sequence : sequenceList) {
+				List<String> codes = new ArrayList<>();
+				
+				/* 시퀀스별 구매 상품 리스트 */
+				List<PurchaseDTO> purchaseGoodsList = purchaseMapper.selectPurchaseGoodsList(sequence);
+				
+				for (PurchaseDTO purchaseGoods : purchaseGoodsList) {
+					codes.add(purchaseGoods.getCode());
+				}
+				
+				/* 구매 상품 상세 정보 & 이미지 */
+				List<Map<String, Object>> goodsList = goodsService.getListOfGoodsDetailsWithImages(codes);
+				
+				/* 리스트 안에 시퀀스별 구매 상품 리스트 추가 */
+				purchaseList.add(goodsList);
+			}
+			
+		}
+		
+	}
 	
 	@Test
 	public void 제이슨() {

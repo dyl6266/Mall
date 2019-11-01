@@ -24,6 +24,9 @@ public class PurchaseDTO extends CommonDTO {
 	/** 상품 코드 (FK) */
 	private String code;
 
+	/** 구매 시퀀스 (묶음 처리) */
+	private Integer sequence;
+
 	/** 결제 금액 */
 	private int amount;
 

@@ -7,6 +7,7 @@
 		  idx
 		, username
 		, code
+		, sequence
 		, amount
 		, recipient
 		, phone
@@ -28,6 +29,7 @@
 			  #{idx}
 			, #{username}
 			, #{code}
+			, #{sequence}
 			, #{amount}
 			, #{recipient}
 			, #{phone}
@@ -87,6 +89,49 @@
 			delete_yn = 'N'
 		AND
 			username = #{username}
+	</select>
+
+	<!-- 민성이형이 도와주신 쿼리! (아래 두 개의 셀렉트를 다음과 같이 처리할 수 있음) -->
+	<!-- <resultMap id="selectMyPpurchase" type="MyCartDTO">
+		<result property="sequence"         column="sequence"/>
+		<collection property="myList" column="{sequence=sequence}" select="getListMyPpurchaseTwo" javaType="java.util.ArrayList"/>
+	</resultMap>
+	<select id="getListMyPpurchase" parameterType="string" resultMap="selectMyPpurchase">
+		SELECT sequence
+		FROM purchase
+		WHERE username = #{username}
+		GROUP BY sequence
+	</select>
+	<select id="getListMyPpurchaseTwo" parameterType="MyCartDTO" resultType="MyCartDTO">
+		SELECT *
+		FROM purchase
+		WHERE sequence = #{sequence}
+	</select> -->
+
+	<select id="selectPurchaseSequenceList" parameterType="string" resultType="integer">
+		SELECT
+			sequence
+		FROM
+			purchase
+		WHERE
+			username = #{username}
+		AND
+			status = 'Y'
+		GROUP BY
+			sequence
+		ORDER BY
+			sequence DESC
+	</select>
+
+	<select id="selectPurchaseGoodsList" parameterType="integer" resultType="PurchaseDTO">
+		SELECT
+			<include refid="purchaseColumns" />
+		FROM
+			purchase
+		WHERE
+			sequence = #{sequence}
+		AND
+			status = 'Y'
 	</select>
 
 </mapper>

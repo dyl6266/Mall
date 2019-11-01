@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/basic">
+
+	<th:block layout:fragment="content">
+		<div id="container">
+			<div class="inner cart_wrap fl_wrap">
+				<div class="page_title text_center clear">장바구니</div>
+
+				<div class="cart">
+					<div class="table table_head">
+						<div class="table_row">
+							<div class="col1">
+								<label class="check_style">
+									<input type="checkbox" />
+									<span></span>
+								</label>
+							</div>
+							<div class="col2">상품명</div>
+							<div class="col3">금액</div>
+							<div class="col4">선택</div>
+						</div>
+					</div>
+
+					<!--/* 장바구니 리스트 */-->
+					<ul class="table table_body" th:if="${not #lists.isEmpty( purchaseList )}">
+						<li class="table_row" th:each="row, status : ${purchaseList}">
+							<div class="col1">
+								<label class="check_style">
+									<span></span>
+								</label>
+							</div>
+							<div class="col2">
+								<div th:each="row2, status : ${row}">
+									<div class="img_box">
+										<img th:src="@{/goods/images/} + ${#temporals.format(row2.images[0].insertTime, 'yy-MM-dd')} + '/' + ${row2.images[0].storedName}" th:alt="${row2.goods.name}" />
+									</div>
+									<div class="txt_box">
+										<p class="name" th:text="${row2.goods.name}">상품명</p>
+										<p class="option">색상 / 사이즈</p>
+										<p class="quantity">수량 : 개수</p>
+									</div>
+								</div>
+							</div>
+							<div class="col3">
+								<span class="orange">가격</span>
+							</div>
+							<div class="col4">
+								<button type="button" class="btn btn_black" onclick="javascript: alert('준비 중입니다.'); return false;">배송조회</button>
+								<button type="button" class="btn btn_gray">반품신청</button>
+							</div>
+						</li>
+					</ul>
+
+					<div class="sm_btn_wrap">
+						<button type="button" class="btn btn_gray" onclick="deleteAllGoods()">전체상품 삭제</button>
+						<button type="button" class="btn btn_gray" onclick="deleteCheckedGoods()">선택상품 삭제</button>
+					</div>
+				</div>
+
+				<div class="total_price">
+					<div class="price">
+						<p>
+							<span>상품 금액</span>
+							<strong></strong>
+						</p>
+						<p>
+							<span>배송비</span>
+							<strong></strong>
+						</p>
+						<p class="last">
+							<span>총 결제금액</span>
+							<!-- 전체 상품 금액이 50,000원 미만의 경우에는 배송비 2500원이 추가되고, 50,000원 이상의 경우에는 무료 배송 -->
+							<strong class="orange"></strong>
+						</p>
+					</div>
+
+					<div class="btn_wrap text_center clear">
+						<button type="button" class="btn btn_orange" th:onclick="goMultiplePurchase([[ ${goodsList} ]])">주문하기</button>
+						<a th:href="@{/goods/list}" class="btn btn_gray">쇼핑 계속하기</a>
+					</div>
+				</div>
+			</div>
+
+			<!--/* 옵션 변경 팝업 */-->
+			<div id="optionPop" class="popup_wrap"></div>
+		</div>
+		<!--/* //#container */-->
+	</th:block>
+
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+		/* <![CDATA[ */
+
+
+		/* ]]> */
+		</script>
+	</th:block>
+
+</html>
