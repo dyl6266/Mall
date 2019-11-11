@@ -18,6 +18,6 @@ public interface ReviewMapper {
 
 	public List<ReviewDTO> selectReviewList(ReviewDTO params);
 
-	public int selectReviewTotalCount(ReviewDTO params);
+	public int selectReviewTotalCount(String code);
 
 }

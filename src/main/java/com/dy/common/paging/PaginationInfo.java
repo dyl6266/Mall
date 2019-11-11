@@ -70,8 +70,8 @@ public class PaginationInfo {
 		return uriComponents.toUriString();
 	}
 
-	/** 페이징 계산에 필요한 파라미터들이 담긴 클래스 */
-	private Criteria criteria;
+	/** 페이징 계산에 필요한 파라미터들이 담긴 클래스 (transient 한정자 => 순환 참조 에러 처리 / Jackson은 JsonBackReference 애너테이션으로 처리 가능) */
+	private transient Criteria criteria;
 
 	/** 전체 페이지 개수 */
 	private int totalPageCount;

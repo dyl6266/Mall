@@ -55,7 +55,14 @@
 		AND
 			username = #{username}
 		AND
-			idx = #{idx}
+		<choose>
+			<when test="@com.dy.util.MyBatisUtils@isEmpty( idx ) == false">
+				idx = #{idx}
+			</when>
+			<when test="@com.dy.util.MyBatisUtils@isEmpty( code ) == false">
+				code = #{code}
+			</when>
+		</choose>
 	</select>
 
 	<!-- TODO => 구매 내역 삭제도 필요한지 검토해보기 -->

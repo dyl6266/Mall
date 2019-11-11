@@ -11,6 +11,8 @@ public interface PurchaseService {
 
 	public PurchaseDTO getPurchaseDetails(Integer idx, String username);
 
+	public PurchaseDTO getPurchaseDetails(String username, String code);
+
 	// TODO => 삭제도 필요한지 검토해보기 (Mapper와 같이)
 	public boolean deletePurchaseInfo(Integer idx, String username);
 

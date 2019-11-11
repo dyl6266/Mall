@@ -65,9 +65,22 @@
 			review
 		WHERE
 			delete_yn = 'N'
+		AND
+			code = #{code}
 		ORDER BY
 			idx DESC, insert_time DESC
 		<include refid="CommonMapper.paging" />
+	</select>
+
+	<select id="selectReviewTotalCount" parameterType="string" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			review
+		WHERE
+			delete_yn = 'N'
+		AND
+			code = #{code}
 	</select>
 
 </mapper>

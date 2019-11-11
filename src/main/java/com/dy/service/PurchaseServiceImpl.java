@@ -107,6 +107,16 @@ public class PurchaseServiceImpl implements PurchaseService {
 		return purchaseMapper.selectPurchaseDetails(params);
 	}
 
+	@Override
+	public PurchaseDTO getPurchaseDetails(String username, String code) {
+
+		HashMap<String, Object> params = new HashMap<>();
+		params.put("username", username);
+		params.put("code", code);
+
+		return purchaseMapper.selectPurchaseDetails(params);
+	}
+
 	// TODO => 삭제가 필요한지 생각해보기
 	@Override
 	public boolean deletePurchaseInfo(Integer idx, String username) {

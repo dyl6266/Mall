@@ -132,12 +132,12 @@ function nvl(value1, value2) {
 /**
  * 입력받은 숫자에 콤마를 포함해 반환한다.
  * 
- * @param obj
+ * @param target
  * @returns 콤마가 붙은 숫자
  */
 function makeCommas(target) {
 	var regexp = /\B(?=(\d{3})+(?!\d))/g;
-	target.value = target.value.replace(regexp, ',');
+	return target.toString().replace(regexp, ",");
 }
 
 /**
