@@ -27,6 +27,7 @@ import com.dy.domain.CartDTO;
 import com.dy.domain.GoodsDTO;
 import com.dy.service.CartService;
 import com.dy.service.GoodsService;
+import com.dy.service.ReviewService;
 import com.dy.service.UserService;
 import com.dy.util.UiUtils;
 import com.google.gson.Gson;
@@ -47,29 +48,29 @@ public class CartController extends UiUtils {
 	@Autowired
 	private GoodsService goodsService;
 
+	@Autowired
+	private ReviewService reviewService;
+
 	/**
 	 * 장바구니 HTML
 	 * 
 	 * @return 페이지
 	 */
 	@GetMapping(value = "/cart")
-	public String openCart(Model model) {
+	public String openCart(@RequestParam(value = "isAjax", defaultValue = "false") boolean isAjax, Model model) {
 
 		String username = userService.getAuthentication().getName();
 
 		/* 전체 상품 목록 */
 		List<CartDTO> goodsList = cartService.getListOfGoodsInCart(username);
 		if (CollectionUtils.isEmpty(goodsList)) {
-			return showMessageWithRedirect("장바구니가 비어있습니다.", request.getContextPath() + "/goods/list", Method.GET, null,
+			return showMessageWithRedirect("장바구니가 비어있습니다.", request.getContextPath() + "/index", Method.GET, null,
 					model);
 		}
-		/* 전체 상품 금액 */
-		int totalAmount = cartService.getTotalAmount(username);
-
 		model.addAttribute("goodsList", goodsList);
-		model.addAttribute("totalAmount", totalAmount);
 
-		return "user/cart";
+		String page = isAjax == false ? "user/cart" : "user/cart/goods-list";
+		return page;
 	}
 
 	/**
@@ -85,19 +86,18 @@ public class CartController extends UiUtils {
 
 		JsonObject jsonObj = new JsonObject();
 
-		String username = userService.getAuthentication().getName();
-
 		if (bindingResult.hasErrors()) {
 			FieldError fieldError = bindingResult.getFieldError();
 			jsonObj.addProperty("message", fieldError.getDefaultMessage());
 			jsonObj.addProperty("result", false);
 
-		} else if ("anonymousUser".equals(username)) {
+		} else if (userService.isAnonymousUser() == true) {
 			jsonObj.addProperty("message", "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠어요?");
 			jsonObj.addProperty("type", 1);
 			jsonObj.addProperty("result", false);
 
 		} else {
+			String username = userService.getAuthentication().getName();
 			params.setUsername(username);
 			try {
 				/* 장바구니에 같은 상품이 존재하는지 확인 */
@@ -237,50 +237,25 @@ public class CartController extends UiUtils {
 	public String returnChangeOptionPopupHTML(@RequestParam(value = "code", required = false) String code,
 			Model model) {
 
-		String username = userService.getAuthentication().getName();
-		if ("anonymousUser".equals(username)) {
-			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
-		} else if (StringUtils.isEmpty(code)) {
+		if (StringUtils.isEmpty(code)) {
 			return showMessageWithRedirect("올바르지 않은 접근입니다.", "/goods/list", Method.GET, null, model);
 		}
 
 		/* 상품 상세 정보 */
 		GoodsDTO goods = goodsService.getGoodsDetails(code);
+		model.addAttribute("goods", goods);
+
 		/* 옵션 Json 문자열 */
 		String optionsStr = goods.getStock().getOptions();
 		/* 옵션 Json 문자열을 key, value 형태의 Json 오브젝트로 파싱 */
 		JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
-
-		model.addAttribute("goods", goods);
 		model.addAttribute("options", options);
+
+		/* 리뷰 평점 */
+		int reviewAverage = reviewService.getReviewAverage(code);
+		model.addAttribute("reviewAverage", reviewAverage);
 
 		return "user/cart/option-popup";
 	}
-
-	/**
-	 * 장바구니 상품 목록 HTML (Ajax Success Response)
-	 * TODO => user/cart 매핑으로 처리하기 굳이 두 ㄱㅐ로 나누지 않아도 될 듯함
-	 * @param model
-	 * @return 페이지
-	 */
-	@GetMapping(value = "/cart/goods-list")
-	public String returnGoodsListInCartHTML(Model model) {
-
-		String username = userService.getAuthentication().getName();
-		if ("anonymousUser".equals(username)) {
-			return showMessageWithRedirect("로그인이 필요한 서비스입니다.", "/login", Method.GET, null, model);
-		}
-
-		/* 전체 상품 목록 */
-		List<CartDTO> goodsList = cartService.getListOfGoodsInCart(username);
-		/* 전체 상품 금액 */
-		int totalAmount = cartService.getTotalAmount(username);
-
-		model.addAttribute("goodsList", goodsList);
-		model.addAttribute("totalAmount", totalAmount);
-
-		return "user/cart/goods-list";
-	}
-	// end of method
 
 }

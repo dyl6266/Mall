@@ -1,10 +1,11 @@
 package com.dy.util;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.util.Random;
 import java.util.UUID;
+
+import com.dy.common.Const.YesNo;
 
 public class CommonUtils {
 
@@ -20,10 +21,46 @@ public class CommonUtils {
 	/**
 	 * 숫자를 포함한 랜덤 문자열 10글자를 반환
 	 * @param length
-	 * @return
+	 * @return 랜덤 문자열
 	 */
 	public static String getRandomString(int length) {
 		return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+	}
+
+	/**
+	 * length 만큼의 랜덤 숫자 반화
+	 * @param length - 생성할 숫자 길이
+	 * @param useYn  - 중복 허용 여부
+	 * 
+	 * @return 랜덤 숫자
+	 */
+	public static String getRandomNumber(int length, YesNo yesNo) {
+
+		String result = "";
+		Random random = new Random();
+
+		if (yesNo == YesNo.Y) {
+			for (int i = 0; i < length; i++) {
+				/* 0 ~ 9 사이의 난수 */
+				String randomNumber = Integer.toString(random.nextInt(10));
+				result += randomNumber;
+			}
+
+		} else {
+			for (int i = 0; i < length; i++) {
+				/* 0 ~ 9 사이의 난수 */
+				String randomNumber = Integer.toString(random.nextInt(10));
+
+				/* result에 randomNumber와 동일한 숫자가 존재하면 continue */
+				if (result.contains(randomNumber)) {
+					i -= 1;
+					continue;
+				}
+				result += randomNumber;
+			}
+		}
+
+		return result;
 	}
 
 //	/**

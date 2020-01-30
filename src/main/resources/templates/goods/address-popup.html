@@ -55,8 +55,6 @@
 				return false;
 			}
 
-			/*[- spring security csrf token -]*/
-			var token = $("meta[name='_csrf']").attr("content");
 			var uri = [[ @{/address-book/} ]] + idx;
 
 			$.ajax({
@@ -65,7 +63,7 @@
 				headers : {
 					"Content-Type" : "application/json",
 					"X-HTTP-Method-Override" : "delete",
-					"X-CSRF-TOKEN" : token,
+					"X-CSRF-TOKEN" : getToken(),
 				},
 				dataType : "json",
 				async : false,

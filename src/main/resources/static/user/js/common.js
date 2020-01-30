@@ -178,3 +178,12 @@ function makeAjaxRequestData(form) {
 function isPushStateAvailable() {
 	return (typeof(history.pushState) == "function");
 }
+
+/**
+ * 스프링 시큐리티 CSRF 토큰 반환
+ * 
+ * @returns CSRF 토큰
+ */
+function getToken() {
+	return document.getElementById("_csrf").getAttribute("content");
+}

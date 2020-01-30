@@ -7,6 +7,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.dy.common.Const.Status;
 
 import lombok.Getter;
@@ -45,6 +47,11 @@ public class GoodsDTO extends CommonDTO {
 	/** 재고 정보 */
 	@Valid
 	private StockDTO stock;
+	
+	/*
+	 * TODO => 컨트롤러가 아닌 DTO에서 멤버로 가지고 있어도 파라미터로 받을 수 있음
+	 */
+	private MultipartFile[] files;
 
 	/** 이미지 리스트 */
 	private List<AttachDTO> attachList;

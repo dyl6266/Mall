@@ -84,6 +84,7 @@ input.btn {display: inline-block; height: 40px; padding: 0 30px; line-height: 40
 .btn_lightgray {color:#fff !important; background: #999; border: 1px solid #999 !important;}
 .btn_black {color:#fff !important; background: #000; border: 1px solid #000 !important;}
 .btn_border_black {color:#000 !important; background: #fff; border: 1px solid #000 !important;}
+.btn_border_black.active {color: #f70061 !important; background: #fff; border: 1px solid #f70061 !important;}
 .btn_orange {color:#fff !important; background: #ee782f; border: 1px solid #ee782f !important;}
 
 .btn_round {border-radius: 50px;}

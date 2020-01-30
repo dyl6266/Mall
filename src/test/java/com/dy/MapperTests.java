@@ -1,6 +1,7 @@
 package com.dy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -8,19 +9,24 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import com.dy.common.Const.Authority;
+import com.dy.common.Const.Status;
+import com.dy.common.Const.YesNo;
 import com.dy.domain.AttachDTO;
-import com.dy.domain.AuthorityDTO;
+import com.dy.domain.AuthrotiyDto;
+import com.dy.domain.FavoriteDTO;
 import com.dy.domain.GoodsDTO;
 import com.dy.domain.PurchaseDTO;
 import com.dy.domain.UserDTO;
 import com.dy.mapper.AddressBookMapper;
 import com.dy.mapper.AttachMapper;
 import com.dy.mapper.AuthorityMapper;
+import com.dy.mapper.FavoriteMapper;
 import com.dy.mapper.GoodsMapper;
 import com.dy.mapper.PurchaseMapper;
 import com.dy.mapper.UserMapper;
@@ -51,6 +57,49 @@ public class MapperTests {
 	
 	@Autowired
 	private PurchaseMapper purchaseMapper;
+	
+	@Autowired
+	private FavoriteMapper favoriteMapper;
+	
+	@Test
+	public void 테스트2() {
+		Collection<?extends SimpleGrantedAuthority> authorities = authMapper.selectUserGrantedAuthorities("admin");
+		for (SimpleGrantedAuthority auth : authorities) {
+			System.out.println(auth);
+		}
+	}
+	
+	@Test
+	public void 테스트() {
+		String ran1 = CommonUtils.getRandomNumber(6, YesNo.Y);
+		String ran2 = CommonUtils.getRandomNumber(6, YesNo.N);
+		System.out.println(ran1);
+		System.out.println(ran2);
+	}
+	
+	@Test
+	public void 좋아요() {
+		FavoriteDTO params = new FavoriteDTO();
+		params.setUsername("dyl6266@nate.com");
+		params.setCode("GOODS-00020");
+
+		favoriteMapper.insertFavorite(params);
+	}
+	
+	@Test
+	public void 좋아요_취소() {
+		FavoriteDTO params = new FavoriteDTO();
+		params.setStatus(Status.N);
+		params.setUsername("dyl6266@naver.com");
+		params.setCode("GOODS-00020");
+		
+		favoriteMapper.updateFavorite(params);
+	}
+	
+	@Test
+	public void 좋아요_카운트() {
+		favoriteMapper.selectFavoriteTotalCount("GOODS-00020");
+	}
 	
 	@Test
 	public void 구매상품_목록() {
@@ -112,7 +161,7 @@ public class MapperTests {
 		try {
 			int result = userMapper.insertUser(user);
 			if (result > 0) {
-				AuthorityDTO auth = new AuthorityDTO(user.getUsername(), Authority.MEMBER);
+				AuthrotiyDto auth = new AuthrotiyDto(user.getUsername(), Authority.MEMBER);
 				authMapper.insertUserAuthority(auth);
 			}
 		} catch (DataAccessException e) {

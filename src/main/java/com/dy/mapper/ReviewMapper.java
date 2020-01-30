@@ -20,4 +20,6 @@ public interface ReviewMapper {
 
 	public int selectReviewTotalCount(String code);
 
+	public int selectReviewAverage(String code);
+
 }

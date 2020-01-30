@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.dy.common.Const.Authority;
 import com.dy.common.Const.MailType;
-import com.dy.domain.AuthorityDTO;
+import com.dy.domain.AuthrotiyDto;
 import com.dy.domain.UserDTO;
 import com.dy.mapper.AuthorityMapper;
 import com.dy.mapper.UserMapper;
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 		UserDTO user = userMapper.selectUserDetailsByUsername(username);
 		if (user != null) {
 			Collection<? extends GrantedAuthority> authorities = null;
-			int authorityCount = authorityMapper.selectUserAuthorityTotalCount(new AuthorityDTO(username, null));
+			int authorityCount = authorityMapper.selectUserAuthorityTotalCount(new AuthrotiyDto(username, null));
 			if (authorityCount > 0) {
 				authorities = authorityMapper.selectUserGrantedAuthorities(username);
 				user.setAuthorities(authorities);
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
 			}
 
 			/* TODO => 관리자에서 등록하는 경우 authorities로 처리하기 */
-			AuthorityDTO authority = new AuthorityDTO(params.getUsername(), Authority.MEMBER);
+			AuthrotiyDto authority = new AuthrotiyDto(params.getUsername(), Authority.MEMBER);
 			/* 권한 등록 쿼리 */
 			queryResult = authorityMapper.insertUserAuthority(authority);
 			if (queryResult != 1) {

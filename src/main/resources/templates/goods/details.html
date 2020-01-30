@@ -58,9 +58,11 @@
 							<!-- 상세 이름, 가격, 별점 -->
 							<div class="pd_title_wrap">
 								<h1 th:text="${goods.name}" class="pd_title">상품명</h1>
-								<p th:text="${#numbers.formatInteger( goods.price, 3, 'COMMA' )}" class="pd_price"></p>
+								<del th:text="${#numbers.formatInteger( goods.price, 3, 'COMMA' )}" style="font-size: 17px;"></del>
+								<p th:if="${status == T(com.dy.common.Const.Status).D}" th:text="${#numbers.formatInteger( goods.price, 3, 'COMMA' )}" class="pd_price"></p>
+								<p th:unless="${status == T(com.dy.common.Const.Status).D}" th:text="${#numbers.formatInteger(T(Math).floor(((goods.price * (1 - goods.rate / 100.0)) / 10.0)) * 10.0, 3, 'COMMA')}" class="pd_price"></p>
 								<div class="pd_review">
-									<span class="ic_star ic_star3"></span>
+									<span th:class="|ic_star ic_star${reviewAverage}|"></span>
 								</div> 
 							</div>
 							<!-- //상세 이름, 가격 -->
@@ -79,7 +81,7 @@
 									<div class="cont">
 										<label class="radio_size" th:if="${not #arrays.isEmpty( options )}" th:each="size : ${options.keySet()}" th:for="size + ${size}" th:classappend="${#strings.equals( options.get(size), '0' )} ? 'soldout'">
 											<input type="radio" name="size" th:id="size + ${size}" th:value="${size}" th:attr="data-actual-quantity=${options.get(size)}" th:disabled="${#strings.equals( options.get(size), '0' )}" />
-											<span class="" th:text="${size}">사이즈</span>
+											<span th:text="${size}">사이즈</span>
 										</label>
 									</div>
 								</div>
@@ -87,7 +89,7 @@
 								<div class="pd_option option_quantity">
 									<h2 class="tit">수량</h2>
 									<div class="cont">
-										<input type="text" id="quantity" name="quantity" value="1" maxlength="1" onfocusout="checkQuantity(this)" />
+										<input type="text" id="quantity" name="quantity" value="1" maxlength="2" onfocusout="checkQuantity(this)" />
 										<button type="button" class="btn_plus" onclick="addQuantity(document.getElementById('quantity'))">+</button>
 										<button type="button" class="btn_minus" onclick="reduceQuantity(document.getElementById('quantity'))">-</button>
 									</div>
@@ -96,7 +98,9 @@
 							<!-- //상세 옵션 -->
 
 							<div class="btn_wrap">
-								<a href="javascript: void(0)" class="btn btn_black" th:onclick="addToCart([[ *{code} ]])">장바구니 담기</a>
+								<a th:if="${favoriteStatus == 1}" href="javascript:void(0)" class="btn btn_border_black active" onclick="changeFavoriteStatus(this)" th:text="|💗  ${favoriteTotalCount}|"></a>
+								<a th:unless="${favoriteStatus == 1}" href="javascript:void(0)" class="btn btn_border_black" onclick="favorite(this)" th:text="|💗  ${favoriteTotalCount}|"></a>
+								<a href="javascript:void(0)" class="btn btn_black" th:onclick="addToCart([[ *{code} ]])">장바구니 담기</a>
 								<!--/* TODO => 바로 구매 처리하기 */-->
 								<!--/* <a href="javascript: void(0)" class="btn btn_orange" th:onclick="goPurchase([[ *{code} ]])">바로 구매</a> */-->
 							</div>
@@ -227,27 +231,33 @@
 		/* <![CDATA[ */
 
 			$(function() {
-				/*[- 사이즈 lables 처리 -]*/
+				/*[- 사이즈 lables active 처리 -]*/
 				var lables = $(".radio_size").not(".soldout");
-
 				lables.children("span").on("click", function() {
 					lables.removeClass("active");
 					$(this).parent().addClass("active");
 					$(this).siblings("input").prop("checked", true);
+
+					/*[- 재고 수량 보여주기 -]*/
+					var actualQuantity = $(this).prev().data("actual-quantity");
+					$(".option_quantity > h2").text("수량 - [재고 : " + actualQuantity + "개]");
+
+					/*[- 선택 수량 초기화 -]*/
+					document.getElementById("quantity").value = 1;
 				});
 
 				/*[- 리뷰 불러오기 -]*/
 				getReviews(1, 10, 5);
 			});
-			
+
+
+			 /*[- /TODO => 바로 구매 처리하기 -]*/
 			function validationOfForm(form) {
 				
 				if ( isEmpty(form.size.value) ) {
 					alert("사이즈를 선택해 주세요.");
 					return false;
 				}
-				console.log(form.size.value);
-				return false;
 			}
 
 			/**
@@ -255,9 +265,23 @@
 			 */
 			function addQuantity(obj) {
 
+				/*[- 사이즈 선택 여부 -]*/
+				var isChecked = $(".radio_size").hasClass("active");
+				if (isChecked == false) {
+					alert("사이즈를 선택해 주세요.");
+					return false;
+				}
+
+				/*[- 선택한 수량 -]*/
 				var quantity = parseInt(obj.value);
-				if (quantity >= 3) {
-					alert("수량은 최대 3개까지 설정할 수 있습니다.");
+				/*[- 선택한 사이즈의 재고 수량 -]*/
+				var actualQuantity = parseInt($(".radio_size.active > input").data("actual-quantity"));
+				/*[- 선택한 상품의 사이즈 -]*/
+				var size = $(".radio_size.active > input").val();
+
+				if (quantity >= actualQuantity) {
+					alert(size + " 사이즈는 " + actualQuantity + "개까지 구매할 수 있습니다.");
+					obj.value = actualQuantity;
 					return false;
 				}
 
@@ -269,6 +293,14 @@
 			 */
 			function reduceQuantity(obj) {
 
+				/*[- 사이즈 선택 여부 -]*/
+				var isChecked = $(".radio_size").hasClass("active");
+				if (isChecked == false) {
+					alert("사이즈를 선택해 주세요.");
+					return false;
+				}
+
+				/*[- 선택한 수량 -]*/
 				var quantity = parseInt(obj.value);
 				if (quantity <= 1) {
 					alert("수량은 최소 1개까지 설정할 수 있습니다.");
@@ -282,9 +314,13 @@
 			 * 수량 focusout
 			 */
 			function checkQuantity(obj) {
-				if (obj.value < 1 || obj.value > 3) {
-					alert("수량은 최소 1개에서 최대 3개까지 선택할 수 있습니다.");
-					obj.value = 0;
+
+				/*[- 선택한 사이즈의 재고 수량 -]*/
+				var actualQuantity = parseInt($(".radio_size.active > input").data("actual-quantity"));
+
+				if (obj.value < 1 || obj.value >= actualQuantity) {
+					alert("수량은 최소 1개에서 최대 " + actualQuantity + "개까지 선택할 수 있습니다.");
+					obj.value = 1;
 					return false;
 				}
 			}
@@ -293,6 +329,14 @@
 			 * 장바구니 담기
 			 */
 			function addToCart(code) {
+
+				if (/*[[ ${isAnonymousUser} ]]*/) {
+					var message = "로그인이 필요한 서비스입니다. 로그인 페이지로 이동할까요?";
+					if (confirm(message) == true) {
+						location.href = /*[[ @{/login} ]]*/;
+					}
+					return false;
+				}
 
 				/*[- 상품 사이즈 -]*/
 				var size = $(".radio_size.active").children("span").text();
@@ -309,8 +353,6 @@
 					return false;
 				}
 
-				/*[- spring security csrf token -]*/
-				var token = $("meta[name='_csrf']").attr("content");
 				/*[- 서버로 전송할 데이터 -]*/
 				var params = {
 					"code" : code,
@@ -324,7 +366,7 @@
 					headers : {
 						"Content-Type" : "application/json",
 						"X-HTTP-Method-Override" : "post",
-						"X-CSRF-TOKEN" : token,
+						"X-CSRF-TOKEN" : getToken(),
 					},
 					dataType : "json",
 					data : JSON.stringify(params),
@@ -358,6 +400,7 @@
 
 				return false;
 			}
+
 
 			/**
 			 * 바로 구매
@@ -405,62 +448,77 @@
 					async : false,
 					success : function(response) {
 						var html = "";
-		 				html += '<p class="fl_wrap">';
-			 				html += '<strong class="orange fl_left">'+ makeCommas(response.params.totalRecordCount) +'</strong>개의 리뷰가 있습니다.';
-			 				/*[- 로그인한 회원에게만 리뷰 쓰기 버튼이 보이도록 처리 -]*/
-			 				if (response.isAnonymousUser == false) {
-				 				html += '<a href="javascript:void(0)" class="btn btn_black fl_right" onclick="popOpen(\'#reviewPop\');">리뷰 쓰기</a>';
-			 				}
-						html += '</p>';
-			 			html += '<ul class="clear">';
 
-						response.reviews.forEach(function(obj, idx) {
-							var date = obj.insertTime.date;
-				 				html += '<li>';
-				 					html += '<p class="re_title">';
-					 					html += '<span class="re_name">'+ obj.nickname +'</span>';
-					 					html += '<span class="re_date">'+ date.year + "." + date.month + "." + date.day +'</span>';
-					 					html += '<span class="re_star icon ic_star ic_star'+ obj.grade +'"></span>';
-				 					html += '</p>';
-				 					html += '<div class="re_cont">';
-				 						html += '<p>'+ obj.content +'</p>';
-				 					html += '</div>';
-				 				html += '</li>';
-						});
-						/*[- end of forEach -]*/
-
-			 			html += '</ul>';
-
-			 			/*[- 페이징 -]*/
-			 			if (isEmpty(response.params) == false) {
-			 				var paginationInfo = response.params.paginationInfo; /*[- 계산된 페이징 정보 -]*/
-
-				 			html += '<div class="paging">';
-				 				if (paginationInfo.previousPage == true) {
-				 					html += '<a href="javascript: void(0)" class="btn_arrow btn_first" onclick="getReviews('+ 1 +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">처음</a>';
-									html += '<a href="javascript: void(0)" class="btn_arrow btn_previous" onclick="getReviews('+ (parseInt(paginationInfo.firstPage) - 1) +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">이전</a>';
+						/*[- 리뷰가 존재하지 않으면 -]*/
+						if (isEmpty(response) == true) {
+			 				html += '<p class="fl_wrap">';
+				 				html += '<strong class="orange fl_left">0</strong>개의 리뷰가 있습니다.';
+				 				/*[- 로그인한 회원에게만 리뷰 쓰기 버튼이 보이도록 처리 -]*/
+				 				if (/*[[ ${isAnonymousUser} == false ]]*/) {
+					 				html += '<a href="javascript:void(0)" class="btn btn_black fl_right" onclick="popOpen(\'#reviewPop\');">리뷰 쓰기</a>';
 				 				}
-				 				for (var i = paginationInfo.firstPage; i <= paginationInfo.lastPage; i++) {
-				 					/*[- 현재 페이지와 페이지 번호가 동일한 경우 active 처리 -]*/
-				 					if (i == response.params.currentPageNo) {
-				 						html += '<a href="javascript: void(0)" class="active" onclick="getReviews('+ i +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">'+ i +'</a>';
-				 					} else {
-										html += '<a href="javascript: void(0)" onclick="getReviews('+ i +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">'+ i +'</a>';
-				 					}
+							html += '</p>';
+
+						} else {
+			 				html += '<p class="fl_wrap">';
+				 				html += '<strong class="orange fl_left">'+ makeCommas(response.params.totalRecordCount) +'</strong>개의 리뷰가 있습니다.';
+				 				/*[- 로그인한 회원에게만 리뷰 쓰기 버튼이 보이도록 처리 -]*/
+				 				if (response.isAnonymousUser == false) {
+					 				html += '<a href="javascript:void(0)" class="btn btn_black fl_right" onclick="popOpen(\'#reviewPop\');">리뷰 쓰기</a>';
 				 				}
-								if (paginationInfo.nextPage == true) {
-									html += '<a href="javascript: void(0)" class="btn_arrow btn_next" onclick="getReviews('+ (parseInt(paginationInfo.lastPage) + 1) +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">다음</a>';
-									html += '<a href="javascript: void(0)" class="btn_arrow btn_last" onclick="getReviews('+ paginationInfo.totalPageCount +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">마지막</a>';
-				 				}
-							html += '</div>';
-			 			}
-			 			$("#pdReview").html(html); /*[- html 함수를 사용할 때, 상위 요소를 셀렉터로 사용하기 -]*/
-			 			/*[- ajax 새로고침 문제를 해결하기 위한 pushState -]*/
-			 			if (isPushStateAvailable() == true) {
-			 				/*[- 오브젝트를 쿼리 스트링 형태로 replace => new URLSearchParams(params).toString()과 같은 방법도 사용할 수 있음 -]*/
-							var queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
-							history.pushState(null, null, "/goods/details?" + queryString); /*[- state, title, uri -]*/
+							html += '</p>';
+				 			html += '<ul class="clear">';
+	
+							response.reviews.forEach(function(obj, idx) {
+								var date = obj.insertTime.date;
+					 				html += '<li>';
+					 					html += '<p class="re_title">';
+						 					html += '<span class="re_name">'+ obj.nickname +'</span>';
+						 					html += '<span class="re_date">'+ date.year + "." + date.month + "." + date.day +'</span>';
+						 					html += '<span class="re_star icon ic_star ic_star'+ obj.grade +'"></span>';
+					 					html += '</p>';
+					 					html += '<div class="re_cont">';
+					 						html += '<p>'+ obj.content +'</p>';
+					 					html += '</div>';
+					 				html += '</li>';
+							});
+							/*[- end of forEach -]*/
+	
+				 			html += '</ul>';
+	
+				 			/*[- 페이징 -]*/
+				 			if (isEmpty(response.params) == false) {
+				 				var paginationInfo = response.params.paginationInfo; /*[- 계산된 페이징 정보 -]*/
+	
+					 			html += '<div class="paging">';
+					 				if (paginationInfo.previousPage == true) {
+					 					html += '<a href="javascript: void(0)" class="btn_arrow btn_first" onclick="getReviews('+ 1 +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">처음</a>';
+										html += '<a href="javascript: void(0)" class="btn_arrow btn_previous" onclick="getReviews('+ (parseInt(paginationInfo.firstPage) - 1) +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">이전</a>';
+					 				}
+					 				for (var i = paginationInfo.firstPage; i <= paginationInfo.lastPage; i++) {
+					 					/*[- 현재 페이지와 페이지 번호가 동일한 경우 active 처리 -]*/
+					 					if (i == response.params.currentPageNo) {
+					 						html += '<a href="javascript: void(0)" class="active" onclick="getReviews('+ i +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">'+ i +'</a>';
+					 					} else {
+											html += '<a href="javascript: void(0)" onclick="getReviews('+ i +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">'+ i +'</a>';
+					 					}
+					 				}
+									if (paginationInfo.nextPage == true) {
+										html += '<a href="javascript: void(0)" class="btn_arrow btn_next" onclick="getReviews('+ (parseInt(paginationInfo.lastPage) + 1) +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">다음</a>';
+										html += '<a href="javascript: void(0)" class="btn_arrow btn_last" onclick="getReviews('+ paginationInfo.totalPageCount +', '+ response.params.recordCountPerPage +', '+ response.params.pageSize +')">마지막</a>';
+					 				}
+								html += '</div>';
+				 			}
+				 			/*[- ajax 새로고침 문제를 해결하기 위한 pushState -]*/
+				 			if (isPushStateAvailable() == true) {
+				 				/*[- 오브젝트를 쿼리 스트링 형태로 replace => new URLSearchParams(params).toString()과 같은 방법도 사용할 수 있음 -]*/
+								var queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
+								history.pushState(null, null, "/goods/details?" + queryString); /*[- state, title, uri -]*/
+							}
 						}
+						/*[- end of else -]*/
+
+			 			$("#pdReview").html(html); /*[- html 함수를 사용할 때, 상위 요소를 셀렉터로 사용하기 -]*/
 					},
 					error : function(request, status, error) {
 						alert("오류가 발생하였습니다. 새로고침 후에 다시 시도해 주세요.");
@@ -513,16 +571,13 @@
 				/*[- ajax 요청에 필요한 key, value 형태의 오브젝트 생성 -]*/
 				var params = makeAjaxRequestData(form);
 
-				/*[- spring security csrf token -]*/
-				var token = $("meta[name='_csrf']").attr("content");
-
 				$.ajax({
 					url : /*[[ @{/reviews} ]]*/,
 					type : form.method,
 					headers : {
 						"Content-Type" : "application/json",
 						"X-HTTP-Method-Override" : form.method,
-						"X-CSRF-TOKEN" : token
+						"X-CSRF-TOKEN" : getToken()
 					},
 					dataType : "json",
 					data : JSON.stringify(params),
@@ -536,6 +591,85 @@
 						alert("리뷰가 등록되었습니다.");
 						popClose(".btn_close"); /*[- 리뷰 등록 팝업 닫기 -]*/
 						getReviews(1, 10, 5); /*[- 리뷰 불러오기 -]*/
+					},
+					error : function(request, status, error) {
+						alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
+					}
+				});
+				/*[- end of ajax -]*/
+
+				return false;
+			}
+			/*[- end of function -]*/
+
+
+			/**
+			 * 좋아요
+			 */
+			function favorite(obj) {
+
+				if (/*[[ ${isAnonymousUser} ]]*/) {
+					var message = "로그인이 필요한 서비스입니다. 로그인 페이지로 이동할까요?";
+					if (confirm(message) == true) {
+						location.href = /*[[ @{/login} ]]*/;
+					}
+					return false;
+				}
+
+				$.ajax({
+					url : /*[[ @{/favorite} ]]*/,
+					type : "post",
+					headers : {
+						"Content-Type" : "application/json",
+						"X-HTTP-Method-Override" : "post",
+						"X-CSRF-TOKEN" : getToken()
+					},
+					dataType : "json",
+					data : JSON.stringify({ "code" : /*[[ ${goods.code} ]]*/ }),
+					async : false,
+					success : function(response) {
+						if (isEmpty(response.message) == false) {
+							alert(response.message);
+							return false;
+						}
+						addActive(obj);
+						$(obj).text("💗 " + response.totalCount);
+						$(obj).attr("onclick", "changeFavoriteStatus(this)");
+
+					},
+					error : function(request, status, error) {
+						alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");
+					}
+				});
+				/*[- end of ajax -]*/
+
+				return false;
+			}
+			/*[- end of function -]*/
+
+
+			/**
+			 * 좋아요 상태 변경
+			 */
+			function changeFavoriteStatus(obj) {
+
+				$.ajax({
+					url : /*[[ @{/favorite/} + ${goods.code} ]]*/,
+					type : "patch",
+					headers : {
+						"Content-Type" : "application/json",
+						"X-HTTP-Method-Override" : "patch",
+						"X-CSRF-TOKEN" : getToken()
+					},
+					dataType : "json",
+					async : false,
+					success : function(response) {
+						if (isEmpty(response.message) == false) {
+							alert(response.message);
+							return false;
+						}
+						addActive(obj);
+						$(obj).text("💗 " + response.totalCount);
 					},
 					error : function(request, status, error) {
 						alert("오류가 발생했습니다. 새로고침 후에 다시 시도해 주세요.");

@@ -11,6 +11,13 @@ import lombok.Setter;
 @Setter
 public class ReviewDTO extends CommonDTO {
 
+	public ReviewDTO() {
+	}
+
+	public ReviewDTO(String code) {
+		this.code = code;
+	}
+
 	/** 댓글 번호 (PK) */
 	private Integer idx;
 

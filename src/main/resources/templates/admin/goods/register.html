@@ -111,7 +111,7 @@
 												파일 선택
 												<input type="file" name="files" onchange="document.getElementById('file0').value = this.value" />
 											</label>
-											<button type="button" class="btn btn_navy" onclick="addFile(this)">+ 추가</button>
+											<button type="button" class="btn btn_navy" onclick="test(this)">+ 추가</button>
 										</div>
 										<br />
 									</td>
@@ -122,7 +122,7 @@
 												파일 선택
 												<input type="file" name="files" onchange="document.getElementById('file0').value = this.value" />
 											</label>
-											<button type="button" class="btn btn_navy" onclick="addFile(this)">+ 추가</button>
+											<button type="button" class="btn btn_navy" onclick="test(this)">+ 추가</button>
 										</div>
 										<br />
 										<ul class="file_list">
@@ -158,7 +158,7 @@
 			 */
 			/*[- files의 id에 파읾명을 지정하기 위한 인덱스 -]*/
 			var idx = 0;
-			function addFile(obj) {
+			function test(obj) {
 
 				var filename = $(".file_box").last().children("input").val();
 				if (isEmpty(filename)) {
@@ -201,8 +201,6 @@
 					return false;
 				}
 
-				/*[- spring security csrf token -]*/
-				var token = $("meta[name='_csrf']").attr("content");
 				var uri = /*[[ @{/admin/goods/} + ${goods.code} ]]*/;
 
 				$.ajax({
@@ -210,7 +208,7 @@
 					type : "delete",
 					headers : {
 						"X-HTTP-Method-Override" : "delete",
-						"X-CSRF-TOKEN" : token,
+						"X-CSRF-TOKEN" : getToken(),
 					},
 					dataType : "json",
 					data : { "idx" : idx },
@@ -251,9 +249,6 @@
 				var formData = new FormData(form);
 				formData.append("stock.options", JSON.stringify(options));
 				
-				/*[- spring security csrf token -]*/
-				var token = $("meta[name='_csrf']").attr("content");
-
 				/*[- 상품 초기 등록과 수정의 경우 달라지는 uri와 type 처리 -]*/
 				var uri = isEmpty(form.code.value) ? form.action : form.action + "/" + form.code.value;
 
@@ -264,7 +259,7 @@
 					type : "post",
 					headers : {
 						"X-HTTP-Method-Override" : "post",
-						"X-CSRF-TOKEN" : token
+						"X-CSRF-TOKEN" : getToken()
 					},
 					dataType : "json",
 					data : formData,

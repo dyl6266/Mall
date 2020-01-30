@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.util.StringUtils;
 
 import com.dy.service.UserService;
 
@@ -39,18 +40,24 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 
-		String username = request.getParameter("username");
 		/* 실패 카운트 초기화 */
-		userService.initializeLoginFailureCount(username);
+		userService.initializeLoginFailureCount(request.getParameter("username"));
 		/* 로그인 실패 에러 세션 제거 */
 		clearAuthenticationAttributes(request);
 
-		/* 로그인 화면 이전의 URI를 가지고 오는 데 사용하는 오브젝트 */
+		/* 로그인 화면 이전의 URI를 가지고 오는 데 사용하는 오브젝트 (WebSecurityConfiguration에 지정된 GET 방식으로 호출하는 URI만 해당) */
 		SavedRequest savedRequest = requestCache.getRequest(request, response);
+		/* 로그인 화면 이전의 URI를 가지고 오는 데 사용하는 오브젝트 (WebSecurityConfiguration에 지정된 GET이 아닌 방식으로 호출하는 URI만 해당) */
+		String previousUri = (String) request.getSession().getAttribute("referer");
+
 		if (savedRequest != null) {
-			/*  권한이 필요한 페이지로 이동한 경우 */
-			String targetUrl = savedRequest.getRedirectUrl();
-			redirectStrategy.sendRedirect(request, response, targetUrl);
+			/* 권한이 필요한 페이지로 이동한 경우 */
+			String targetUri = savedRequest.getRedirectUrl();
+			redirectStrategy.sendRedirect(request, response, targetUri);
+
+		} else if (StringUtils.isEmpty(previousUri) == false && previousUri.contains("login") == false) {
+			/* 로그인이 필요한 상태에서 이전 페이지 정보를 가지는 경우 */
+			redirectStrategy.sendRedirect(request, response, previousUri);
 
 		} else {
 			/* 직접 로그인 페이지로 이동한 경우 */

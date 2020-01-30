@@ -32,7 +32,9 @@
 							</a>
 							<a th:href="@{/goods/details( code=${row.code} )}" class="txt_wrap">
 								<span th:text="${row.name}" class="name">상품명</span>
-								<span th:text="${#numbers.formatInteger( row.price, 3, 'COMMA' )}" class="price">가격</span>
+								<del th:if="${row.status == T(com.dy.common.Const.Status).D}" th:text="${#numbers.formatInteger( row.price, 3, 'COMMA' )}"></del>
+								<span th:if="${row.status == T(com.dy.common.Const.Status).D}" class="price" th:text="${#numbers.formatInteger(T(Math).floor(((row.price * (1 - row.rate / 100.0)) / 10.0)) * 10.0, 3, 'COMMA')}">할인된 가격</span>
+								<span th:unless="${row.status == T(com.dy.common.Const.Status).D}" class="price" th:text="${#numbers.formatInteger(row.price, 3, 'COMMA')}">가격</span>
 							</a>
 						</li>
 					</ul>

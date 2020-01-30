@@ -50,6 +50,7 @@
 		</collection>
 	</resultMap>
 
+	<!-- useGeneratedKeys, keyProperty를 지정하면 자동 생성 키를 프로퍼티에 저장할 수 있음 (하지만 지정하지 않아도 처리가 되는 듯함) -->
 	<insert id="insertGoods" parameterType="GoodsDTO">
 		INSERT INTO goods (
 			<include refid="goodsColumns" />
@@ -128,6 +129,7 @@
 			, g.name
 		    , g.price
 		    , g.rate
+		    , g.status
 		    , a.stored_name
 		    , a.insert_time
 		FROM

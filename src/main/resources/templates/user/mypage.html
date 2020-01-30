@@ -74,16 +74,13 @@
 					return false;
 				}
 
-				/*[- spring security csrf token -]*/
-				var token = $("meta[name='_csrf']").attr("content");
-
 				$.ajax({
 					url : form.action,
 					type : "patch",
 					headers: {
 						"Content-Type" : "application/json",
 						"X-HTTP-Method-Override" : "patch",
-						"X-CSRF-TOKEN" : token,
+						"X-CSRF-TOKEN" : getToken(),
 					},
 					dataType : "json",
 					data : JSON.stringify(params),

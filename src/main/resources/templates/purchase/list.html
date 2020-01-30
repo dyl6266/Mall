@@ -47,7 +47,7 @@
 							<div class="col4">
 								<button type="button" class="btn btn_black" onclick="javascript: alert('준비 중입니다.'); return false;">배송조회</button>
 								<button type="button" class="btn btn_gray">반품신청</button>
-								<button type="button" class="btn btn_gray">리뷰작성</button>
+								<button type="button" class="btn btn_gray" th:onclick="writeReview()">리뷰작성</button>
 							</div>
 						</li>
 					</ul>
@@ -92,6 +92,12 @@
 		<script th:inline="javascript">
 		/* <![CDATA[ */
 
+			/**
+			 * 리뷰 작성
+			 */
+			function writeReview(code) {
+// 				location.href = /*@{ /goods/details(code=code) }*/
+			}
 
 		/* ]]> */
 		</script>

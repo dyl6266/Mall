@@ -239,16 +239,13 @@
 					params["goodsList"].push(goods);
 				});
 
-				/*[- spring security csrf token -]*/
-				var token = $("meta[name='_csrf']").attr("content");
-
 				$.ajax({
 					url : /*[[ @{/goods/purchase} ]]*/,
 					type : form.method,
 					headers : {
 						"Content-Type" : "application/json",
 						"X-HTTP-Method-Override" : form.method,
-						"X-CSRF-TOKEN" : token
+						"X-CSRF-TOKEN" : getToken()
 					},
 					dataType : "json",
 					data : JSON.stringify(params),

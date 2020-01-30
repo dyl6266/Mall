@@ -83,4 +83,15 @@
 			code = #{code}
 	</select>
 
+	<select id="selectReviewAverage" parameterType="string" resultType="int">
+		SELECT
+			IFNULL(ROUND(SUM(grade) / COUNT(*)), 1) AS average
+		FROM
+			review
+		WHERE
+			delete_yn = 'N'
+		AND
+			code = #{code}
+	</select>
+
 </mapper>

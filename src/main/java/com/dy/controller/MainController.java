@@ -2,11 +2,14 @@ package com.dy.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -19,6 +22,9 @@ import com.dy.service.GoodsService;
 public class MainController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private HttpServletRequest request;
 
 	@Autowired
 	private GoodsService goodsService;
@@ -59,7 +65,13 @@ public class MainController {
 	 * @return 페이지
 	 */
 	@RequestMapping(value = "/login")
-	public String openLoginPage() {
+	public String openLoginPage(Model model) {
+
+		/* 이전 페이지 URI */
+		String referer = request.getHeader("referer");
+		if (StringUtils.isEmpty(referer) == false) {
+			request.getSession().setAttribute("referer", referer);
+		}
 
 		return "login";
 	}

@@ -12,4 +12,6 @@ public interface ReviewService {
 
 	public List<ReviewDTO> getReviewList(ReviewDTO params);
 
+	public int getReviewAverage(String code);
+
 }

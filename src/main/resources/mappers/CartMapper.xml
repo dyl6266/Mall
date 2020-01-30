@@ -81,10 +81,12 @@
 	<select id="selectGoodsListInCart" parameterType="string" resultMap="cartResultMap">
 		SELECT 
 			  g.code
-			, c.size
-			, c.quantity
 			, g.name
 			, g.price
+			, g.rate
+			, g.status
+			, c.size
+			, c.quantity
 			, s.color
 			, s.options
 			, a.stored_name

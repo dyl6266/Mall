@@ -26,7 +26,7 @@ public class CartDTO extends CommonDTO {
 	private String size;
 
 	/** 수량 */
-	@Range(min = 1, max = 3, message = "수량은 최소 1개에서 최대 3개까지 선택할 수 있습니다.")
+	@Range(min = 1, message = "수량은 최소 1개까지 선택할 수 있습니다.")
 	private int quantity;
 
 	/** 상품 정보 */

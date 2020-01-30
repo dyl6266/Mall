@@ -1,5 +1,6 @@
 package com.dy.util;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,234 @@ public class AttachFileUtils {
 	/* 업로드 경로 */
 	private final static String uploadPath = "C:" + File.separator + "upload" + File.separator
 			+ CommonUtils.getCurrentTime().substring(2, 10);
+	
+	
+//	private static boolean makeThumbnail5(String storedName, String extension) {
+//
+//		File target = new File(uploadPath, storedName);
+//		try {
+//			/* 원본 이미지에 대한 메모리상의 이미지를 의미하는 인스턴스 */
+//			BufferedImage sourceImage = ImageIO.read(target);
+//
+//			/* 썸네일의 너비와 높이 */
+//			int tWidth = 450, tHeight = 270;
+//
+//			/* 원본 이미지의 너비와 높이 */
+//			int oWidth = sourceImage.getWidth();
+//			int oHeight = sourceImage.getHeight();
+//
+//			/* 늘어날 길이를 계산하여 패딩 */
+//			int padding = 0;
+//			if (oWidth > oHeight) {
+//				padding = (int) (Math.abs((tHeight * oWidth / (double) tWidth) - oHeight) / 2d);
+//			} else {
+//				padding = (int) (Math.abs((tWidth * oHeight / (double) tHeight) - oWidth) / 2d);
+//			}
+//
+//			/* 주어진 색상으로 이미지 가장자리 주위에 패딩을 적용하여 추가 패딩 공간을 채워주는 메소드 (상/하/좌/우 동일하게 적용됨) */
+//			sourceImage = Scalr.pad(sourceImage, padding, Color.BLACK, Scalr.OP_ANTIALIAS);
+//
+//			/* pad() 메소드로 변경된 이미지 사이즈 가져오기 */
+//			oWidth = sourceImage.getWidth();
+//			oHeight = sourceImage.getHeight();
+//
+//			/* 썸네일 비율로 크롭할 크기 지정 (crop될 너비와 높이) */
+//			int cWidth = oWidth;
+//			int cHeight = (oWidth * tHeight) / tWidth;
+//			if (cHeight > oHeight) {
+//				cWidth = (oHeight * tWidth) / tHeight;
+//				cHeight = oHeight;
+//			}
+//
+//			/*
+//			 * 늘어난 이미지의 중앙을 썸네일 비율로 크롭
+//			 * 
+//			 * 두 번째 인자 => crop할 좌상단의 X 좌표
+//			 * 세 번째 인자 => crop할 좌상단의 Y 좌표
+//			 */
+//			BufferedImage cropImage = Scalr.crop(sourceImage, (oWidth - cWidth) / 2, (oHeight - cHeight) / 2, cWidth,
+//					cHeight);
+//			/* 이미지 크기 조정 (썸네일 생성) */
+//			BufferedImage destImage = Scalr.resize(cropImage, tWidth, tHeight);
+//
+//			/* 썸네일 이미지 경로 + 파일명 */
+//			String thumbnail = uploadPath + File.separator + "t_" + storedName;
+//			/* 썸네일 이미지 인스턴스 */
+//			target = new File(thumbnail);
+//			/* 디스크에 이미지 파일 생성 */
+//			ImageIO.write(destImage, extension.toUpperCase(), target);
+//
+//			/* 테스트용 크롭 이미지 */
+//			String crop = uploadPath + File.separator + "crop_" + storedName;
+//			target = new File(crop);
+//			ImageIO.write(cropImage, extension.toUpperCase(), target);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//
+//		return true;
+//	}
+//	
+//	
+//
+//	private static boolean makeThumbnail3(String storedName, String extension) {
+//
+//		File target = new File(uploadPath, storedName);
+//		try {
+//			/* 원본 이미지에 대한 메모리상의 이미지를 의미하는 인스턴스 */
+//			BufferedImage srcImg = ImageIO.read(target);
+//
+//			/* 썸네일의 너비와 높이 */
+//			int dw = 450, dh = 270;
+//
+//			/* 원본 이미지의 너비와 높이 */
+//			int ow = srcImg.getWidth();
+//			int oh = srcImg.getHeight();
+//
+//			// 늘어날 길이를 계산하여 패딩합니다.
+//			int pd = 0;
+//			if (ow > oh) {
+//				pd = (int) (Math.abs((dh * ow / (double) dw) - oh) / 2d);
+//			} else {
+//				pd = (int) (Math.abs((dw * oh / (double) dh) - ow) / 2d);
+//			}
+//			srcImg = Scalr.pad(srcImg, pd, Color.WHITE, Scalr.OP_ANTIALIAS);
+//
+//			// 이미지 크기가 변경되었으므로 다시 구합니다.
+//			ow = srcImg.getWidth();
+//			oh = srcImg.getHeight();
+//
+//			// 썸네일 비율로 크롭할 크기를 구합니다.
+//			int nw = ow;
+//			int nh = (ow * dh) / dw;
+//			if (nh > oh) {
+//				nw = (oh * dw) / dh;
+//				nh = oh;
+//			}
+//
+//			// 늘려진 이미지의 중앙을 썸네일 비율로 크롭 합니다.
+//			BufferedImage cropImg = Scalr.crop(srcImg, (ow - nw) / 2, (oh - nh) / 2, nw, nh);
+//			// 리사이즈(썸네일 생성)
+//			BufferedImage destImg = Scalr.resize(cropImg, dw, dh);
+//
+//			/* 썸네일 이미지 경로 + 파일명 */
+//			String thumbnail = uploadPath + File.separator + "testtest_" + storedName;
+//			/* 썸네일 이미지 인스턴스 */
+//			target = new File(thumbnail);
+//
+//			ImageIO.write(destImg, extension.toUpperCase(), target);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//
+//		return true;
+//	}
+//	
+//	private static boolean makeThumbnail4(String storedName, String extension) {
+//
+//		File target = new File(uploadPath, storedName);
+//		try {
+//			/* 원본 이미지에 대한 메모리상의 이미지를 의미하는 인스턴스 */
+//			BufferedImage srcImg = ImageIO.read(target);
+//
+//			// 썸네일의 너비와 높이 입니다.
+//			int dw = 250, dh = 150;
+//			// 원본 이미지의 너비와 높이 입니다.
+//			int ow = srcImg.getWidth();
+//			int oh = srcImg.getHeight();
+//
+//			// 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
+//			int nw = ow;
+//			int nh = (ow * dh) / dw;
+//			// 계산된 높이가 원본보다 높다면 crop이 안되므로
+//			// 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
+//			if (nh > oh) {
+//				nw = (oh * dw) / dh;
+//				nh = oh;
+//			}
+//			// 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
+//			BufferedImage cropImg = Scalr.crop(srcImg, (ow - nw) / 2, (oh - nh) / 2, nw, nh);
+//			// crop된 이미지로 썸네일을 생성합니다.
+////			BufferedImage destImg = Scalr.resize(cropImg, dw, dh);
+//			BufferedImage destImg = Scalr.resize(srcImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH, 250);
+//
+//			/* 썸네일 이미지 경로 + 파일명 */
+//			String thumbnail = uploadPath + File.separator + "width_" + storedName;
+//			/* 썸네일 이미지 인스턴스 */
+//			target = new File(thumbnail);
+//
+//			ImageIO.write(destImg, extension.toUpperCase(), target);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//
+//		return true;
+//	}
+//
+//	private static boolean makeThumbnail2(String storedName, String extension) {
+//
+//		File target = new File(uploadPath, storedName);
+//		try {
+//			/* 원본 이미지에 대한 메모리상의 이미지를 의미하는 인스턴스 */
+//			BufferedImage srcImg = ImageIO.read(target);
+//
+//			// 썸네일의 너비와 높이 입니다.
+//			int dw = 250, dh = 150;
+//			// 원본 이미지의 너비와 높이 입니다.
+//			int ow = srcImg.getWidth();
+//			int oh = srcImg.getHeight();
+//
+//			// 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
+//			int nw = ow;
+//			int nh = (ow * dh) / dw;
+//			// 계산된 높이가 원본보다 높다면 crop이 안되므로
+//			// 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
+//			if (nh > oh) {
+//				nw = (oh * dw) / dh;
+//				nh = oh;
+//			}
+//			// 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
+//			BufferedImage cropImg = Scalr.crop(srcImg, (ow - nw) / 2, (oh - nh) / 2, nw, nh);
+//			// crop된 이미지로 썸네일을 생성합니다.
+////			BufferedImage destImg = Scalr.resize(cropImg, dw, dh);
+//			BufferedImage destImg = Scalr.resize(srcImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, 150);
+//
+//			/* 썸네일 이미지 경로 + 파일명 */
+//			String thumbnail = uploadPath + File.separator + "height_" + storedName;
+//			/* 썸네일 이미지 인스턴스 */
+//			target = new File(thumbnail);
+//
+//			ImageIO.write(destImg, extension.toUpperCase(), target);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//
+//		return true;
+//	}
 
 	private static boolean makeThumbnail(String storedName, String extension) {
 

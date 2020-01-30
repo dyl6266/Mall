@@ -75,4 +75,10 @@ public class ReviewServiceImpl implements ReviewService {
 		return reviewList;
 	}
 
+	@Override
+	public int getReviewAverage(String code) {
+
+		return reviewMapper.selectReviewAverage(code);
+	}
+
 }

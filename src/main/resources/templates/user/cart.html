@@ -41,8 +41,11 @@
 									<a href="javascript: void(0)" class="btn btn_border_black" th:onclick="changeOption([[ ${row.code} ]], [[ ${row.size} ]], [[ ${row.quantity} ]], [[ |${#numbers.formatInteger( row.goods.price * row.quantity, 3, 'COMMA' )}원| ]])">옵션 변경</a>
 								</div>
 							</div>
-							<div class="col3">
-								<span class="orange" th:text="|${#numbers.formatInteger( row.goods.price * row.quantity, 3, 'COMMA' )}원|">가격</span>
+							<div class="col3" th:with="normal=${#numbers.formatInteger( (row.goods.price * row.quantity), 3, 'COMMA' )}, sale=${#numbers.formatInteger((T(Math).floor(((row.goods.price * (1 - row.goods.rate / 100.0)) / 10.0)) * 10.0) * row.quantity, 3, 'COMMA')}">
+								<del th:if="${row.goods.status == T(com.dy.common.Const.Status).D}" th:text="${normal}"></del>
+								<br th:if="${row.goods.status == T(com.dy.common.Const.Status).D}" />
+								<span name="price" th:if="${row.goods.status == T(com.dy.common.Const.Status).D}" class="orange" th:text="${sale}" th:attr="data-price=${#numbers.formatInteger((T(Math).floor(((row.goods.price * (1 - row.goods.rate / 100.0)) / 10.0)) * 10.0) * row.quantity, 3)}">가격</span>
+								<span name="price" th:unless="${row.goods.status == T(com.dy.common.Const.Status).D}" class="orange" th:text="${normal}" th:attr="data-price=${row.goods.price * row.quantity}">가격</span>
 							</div>
 							<div class="col4">
 								<button type="button" class="btn btn_black" th:onclick="goPurchase([[ ${row.code} ]])">주문하기</button>
@@ -59,18 +62,17 @@
 
 				<div class="total_price">
 					<div class="price">
-						<p>
+						<p id="totalGoodsAmount">
 							<span>상품 금액</span>
-							<strong th:text="|${#numbers.formatInteger( totalAmount, 3, 'COMMA' )}원|"></strong>
+							<strong></strong>
 						</p>
-						<p>
+						<p id="deliveryCharge">
 							<span>배송비</span>
-							<strong th:text="${totalAmount < 50000 ? '2,500원' : '무료'}"></strong>
+							<strong></strong>
 						</p>
-						<p class="last">
-							<span>총 결제금액</span>
-							<!-- 전체 상품 금액이 50,000원 미만의 경우에는 배송비 2500원이 추가되고, 50,000원 이상의 경우에는 무료 배송 -->
-							<strong class="orange" th:text="|${totalAmount < 50000 ? #numbers.formatInteger( totalAmount + 2500, 3, 'COMMA' ) : #numbers.formatInteger( totalAmount, 3, 'COMMA' )}원|"></strong>
+						<p id="paymentAmount" class="last">
+							<span>총 결제 금액</span>
+							<strong class="orange"></strong>
 						</p>
 					</div>
 
@@ -90,6 +92,23 @@
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
 		/* <![CDATA[ */
+
+			$(function() {
+				var totalAmount = 0;
+				var prices = document.getElementsByName("price");
+				prices.forEach(function(obj, idx) {
+					totalAmount += parseInt(obj.dataset.price);
+				});
+
+				/*[- 상품 금액 -]*/
+				$("#totalGoodsAmount > strong").text(makeCommas(totalAmount + "원"));
+				/*[- 배송비 -]*/
+				var deliveryCharge = totalAmount >= 50000 ? "무료" : "2,500원";
+				$("#deliveryCharge > strong").text(deliveryCharge);
+				/*[- 총 결제 금액 -]*/
+				var paymentAmount = totalAmount >= 50000 ? totalAmount + 0 : totalAmount + 2500;
+				$("#paymentAmount > strong").text(makeCommas(paymentAmount));
+			});
 
 			/**
 			 * 장바구니 상품 옵션 변경 팝업 불러오기
@@ -154,36 +173,6 @@
 				location.href = [[ @{/goods/checkout} ]] + "?codes=" + codes.slice(0, -1);
 			}
 
-// 			function goMultiplePurchase(goodsList) {
-
-// 				var params = { "cartList" : [] };
-
-// 				goodsList.forEach(function(obj, idx) {
-// 					var goods = {
-// 						"code" : obj.code,
-// 						"size" : obj.size,
-// 						"quantity" : obj.quantity
-// 					};
-// 					params["cartList"].push(goods);
-// 				});
-
-// 				var queryString = "";
-
-// 				params["cartList"].forEach(function(obj, idx) {
-// 					queryString += (idx < 1) ? "code["+ idx +"]=" + obj.code : "&code["+ idx +"]=" + obj.code;
-// 					queryString += "&size["+ idx +"]=" + obj.size;
-// 					queryString += "&quantity["+ idx +"]=" + obj.quantity;
-// 				});
-// 				console.log(queryString);
-
-// // 				var queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
-// // 				var queryString = Object.keys(params).map((key) => {
-// // 				    return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-// // 				}).join('&');
-
-// 				location.href = [[ @{/goods/checkout} ]] + "?" + queryString;
-// 			}
-
 
 			/**
 			 * 장바구니 상품 삭제
@@ -196,8 +185,6 @@
 					}
 				}
 
-				/*[- spring security csrf token -]*/
-				var token = $("meta[name='_csrf']").attr("content");
 				var uri = [[ @{/cart/} ]] + codes;
 
 				$.ajax({
@@ -206,7 +193,7 @@
 					headers : {
 						"Content-Type" : "application/json",
 						"X-HTTP-Method-Override" : "delete",
-						"X-CSRF-TOKEN" : token,
+						"X-CSRF-TOKEN" : getToken(),
 					},
 					dataType : "json",
 					async : false,
@@ -297,7 +284,7 @@
 			function getGoodsList() {
 
 				$.ajax({
-					url : /*[[ @{/cart/goods-list} ]]*/,
+					url : /*[[ @{/cart( isAjax=true )} ]]*/,
 					type : "get",
 					headers : {
 						"Content-Type" : "application/json",

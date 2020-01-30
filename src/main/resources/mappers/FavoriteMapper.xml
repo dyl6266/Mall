@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dy.mapper.FavoriteMapper">
+
+	<sql id="favoriteColumns">
+		  idx
+		, username
+		, code
+		, status
+	</sql>
+
+	<insert id="insertFavorite" parameterType="FavoriteDTO">
+		INSERT INTO favorite (
+			<include refid="favoriteColumns" />
+		) VALUES (
+			  #{idx}
+			, #{username}
+			, #{code}
+			, 'Y'
+		)
+	</insert>
+
+	<select id="selectFavoriteDetails" parameterType="FavoriteDTO" resultType="FavoriteDTO">
+		SELECT
+			<include refid="favoriteColumns" />
+		FROM
+			favorite
+		WHERE
+			username = #{username}
+		AND
+			code = #{code}
+	</select>
+
+	<update id="updateFavorite" parameterType="FavoriteDTO">
+		UPDATE favorite
+		SET
+			status = #{status}
+		WHERE
+			username = #{username}
+		AND
+			code = #{code}
+	</update>
+
+	<select id="selectFavoriteTotalCount" parameterType="string" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			favorite
+		WHERE
+			status = 'Y'
+		AND
+			code = #{code}
+	</select>
+
+	<select id="selectFavoriteStatus" parameterType="object" resultType="int">
+		SELECT
+			IFNULL(
+				CASE status
+					WHEN 'Y' THEN 1
+					ELSE 0
+				END, COUNT(*)) AS status
+		FROM
+			favorite
+		WHERE
+			username = #{username}
+		AND
+			code = #{code}
+	</select>
+
+</mapper>

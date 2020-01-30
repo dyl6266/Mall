@@ -42,8 +42,10 @@ import com.dy.domain.GoodsDTO;
 import com.dy.domain.PurchaseDTO;
 import com.dy.service.AddressBookService;
 import com.dy.service.CartService;
+import com.dy.service.FavoriteService;
 import com.dy.service.GoodsService;
 import com.dy.service.PurchaseService;
+import com.dy.service.ReviewService;
 import com.dy.service.UserService;
 import com.dy.util.MediaUtils;
 import com.dy.util.UiUtils;
@@ -73,6 +75,12 @@ public class GoodsController extends UiUtils {
 	@Autowired
 	private CartService cartService;
 
+	@Autowired
+	private ReviewService reviewService;
+
+	@Autowired
+	private FavoriteService favoriteService;
+
 	@GetMapping(value = "/goods/register")
 	public String openGoodsRegister(Model model) {
 
@@ -98,17 +106,39 @@ public class GoodsController extends UiUtils {
 			return showMessageWithRedirect("올바르지 않은 접근입니다.", "/goods/list", Method.GET, null, model);
 		}
 
+		/* 상품 정보와 상품 이미지 리스트를 가지는 Map */
 		Map<String, Object> map = goodsService.getGoodsDetailsWithImages(code);
 		for (String key : map.keySet()) {
 			model.addAttribute(key, map.get(key));
 		}
 
+		/* options => 상품의 사이즈와 각 사이즈별 재고를 가지는 변수 */
 		if (map.get("goods") != null) {
 			GoodsDTO goods = (GoodsDTO) map.get("goods");
 			String optionsStr = goods.getStock().getOptions();
 
 			JsonObject options = new Gson().fromJson(optionsStr, JsonObject.class);
 			model.addAttribute("options", options);
+		}
+
+		/* 리뷰 평점 */
+		int reviewAverage = reviewService.getReviewAverage(code);
+		model.addAttribute("reviewAverage", reviewAverage);
+
+		/* 상품 좋아요 수 */
+		int favoriteTotalCount = favoriteService.getFavoriteTotalCount(code);
+		model.addAttribute("favoriteTotalCount", favoriteTotalCount);
+
+		/* 로그인 여부 */
+		boolean isAnonymousUser = userService.isAnonymousUser();
+		model.addAttribute("isAnonymousUser", isAnonymousUser);
+
+		/* 상품 좋아요 여부 (1 = true / 0 = false) */
+		if (isAnonymousUser == false) {
+			String username = userService.getAuthentication().getName();
+
+			int status = favoriteService.getFavoriteStatus(username, code);
+			model.addAttribute("favoriteStatus", status);
 		}
 
 		return "goods/details";

@@ -56,6 +56,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		// auth.userDetailsService(userService).passwordEncoder(passwordEncoder()); 이것도 사용 가능
 		auth.authenticationProvider(authenticationProvider);
 	}
 
@@ -73,7 +74,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/cart").authenticated() // 장바구니
 		.antMatchers("/**").permitAll();
 //		.antMatchers("/user/**", "/users/**").hasAnyRole("ADMIN", "MANAGER", "MEMBER")
-//        .anyRequest().authenticated();
+//        .anyRequest().authenticated(); // anyRequest를 잘 활용해도 좋을 듯함
 
 		http.formLogin()
 		.loginPage("/login")
@@ -91,7 +92,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.invalidateHttpSession(true).permitAll();
 //		.deleteCookies(cookieNamesToClear);
 //		.logoutSuccessHandler()
-//		.logoutRequestMatcher() TODO => 이건 뭔지 찾아보자
+//		.logoutRequestMatcher() => 로그아웃의 기본 URI를 다른 URI로 재정의
+//		ex:) .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		
 		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
 		http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
